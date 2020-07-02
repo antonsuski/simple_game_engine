@@ -1,4 +1,4 @@
-#include <cassert>
+﻿#include <cassert>
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -6,6 +6,7 @@
 
 #include "engine.hxx"
 #include "shader.hxx"
+#include "stuff.hxx"
 #include "texture2d.hxx"
 
 int main(int /*argc*/, char* /*argv*/[])
@@ -18,6 +19,9 @@ int main(int /*argc*/, char* /*argv*/[])
         std::cerr << "init failed" << std::endl;
         return EXIT_FAILURE;
     }
+
+    std::cerr << engine::ndc_mesh({ 5, 5 }, { 40, 30 }) << std::endl;
+    std::cerr << engine::ndc_txture({ 5, 5 }, { 40, 30 }) << std::endl;
 
     engine::shader tr_sh("../../res/shaders/default_shader.vs",
                          "../../res/shaders/default_shader.fs");

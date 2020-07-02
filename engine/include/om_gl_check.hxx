@@ -1,13 +1,13 @@
-#pragma once
+﻿#pragma once
 
-//#include "glad/glad.h"
+#include "glad/glad.h"
 
 #include <array>
 #include <cassert>
 #include <iostream>
 
-#include <SDL_opengl.h>
-#include <SDL_opengl_glext.h>
+//#include <SDL_opengl.h>
+//#include <SDL_opengl_glext.h>
 
 #define OM_GL_CHECK()                                                          \
     {                                                                          \

@@ -1,4 +1,4 @@
-#include "stuff.hxx"
+﻿#include "stuff.hxx"
 
 #include <cmath>
 
@@ -170,6 +170,36 @@ m_2x3 operator*(const m_2x3& m1, const m_2x3& m2)
     r.delta.y = m1.delta.x * m2.col1.x + m1.delta.y * m2.col1.y + m2.delta.y;
 
     return r;
+}
+
+v_2 ndc_mesh(v_2 vec, v_2 res_ratio)
+{
+    if ((-1 <= vec.x && vec.x <= 1) || (-1 <= vec.y && vec.y <= 1))
+    {
+        std::cerr << "coordinates already normolized!" << std::endl;
+    }
+    if (vec.x < 1 || vec.y < 1)
+    {
+        std::cerr << "uncorect mesh coordinate" << std::endl;
+        return vec;
+    }
+    return v_2(((2.f / res_ratio.x) * vec.x) - 1,
+               (((2.f / res_ratio.y) * vec.y) - 1) * -1);
+}
+
+v_2 ndc_txture(v_2 vec, v_2 res_ratio)
+{
+    if ((-1 <= vec.x && vec.x <= 1) || (-1 <= vec.y && vec.y <= 1))
+    {
+        std::cerr << "coordinates already normolized!" << std::endl;
+    }
+    if (vec.x < 1 || vec.y < 1)
+    {
+        std::cerr << "uncorect mesh coordinate" << std::endl;
+        return vec;
+    }
+    return v_2(((1.f / res_ratio.x) * vec.x),
+               -((1.f / res_ratio.y) * vec.y - 1));
 }
 
 } // namespace engine

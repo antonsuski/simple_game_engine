@@ -1,5 +1,5 @@
-#include "engine.hxx"
-//#include "glad/glad.h"
+﻿#include "engine.hxx"
+#include "glad/glad.h"
 #include "om_gl_check.hxx"
 #include "stuff.hxx"
 
@@ -93,6 +93,8 @@ private:
     GLuint        VAO         = 0;
     GLuint        EBO         = 0;
     GLuint        shd_proc    = 0;
+    int           width_      = 0;
+    int           height_     = 0;
 
 public:
     uniform tmp_uni;
@@ -128,7 +130,7 @@ public:
         OM_GL_CHECK()
     }
 
-    bool init_my_opengl(size_t w, size_t h) override
+    bool init_my_opengl() override
     {
         glEnable(GL_DEBUG_OUTPUT);
         glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
@@ -136,7 +138,7 @@ public:
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0,
                               nullptr, GL_TRUE);
 
-        glViewport(0, 0, w, h);
+        glViewport(0, 0, width_, height_);
         OM_GL_CHECK()
 
         genBuffers();
@@ -306,6 +308,8 @@ public:
         if (width > 1366 || height > 768)
         {
             std::cerr << "uncorrect resolution" << std::endl;
+            width_  = width;
+            height_ = height;
         }
 
         if (SDL_COMPILEDVERSION !=
@@ -370,7 +374,7 @@ public:
                 std::clog << "error: failed to initialize glad" << std::endl;
             }
         }
-        return init_my_opengl(width, height);
+        return init_my_opengl();
     }
 
     bool read_event(event& e) final override
@@ -800,4 +804,5 @@ void destroy_engine(core* e)
 }
 
 core::~core(){};
+
 } // namespace engine

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <array>
 #include <iostream>
@@ -57,7 +57,7 @@ public:
     virtual void  render_my_triangle(const triangle&, shader&, texture2d&) = 0;
     virtual void  render_grid(shader&)                                     = 0;
     virtual float get_time_for_init()                                      = 0;
-    virtual bool  init_my_opengl(size_t, size_t)                           = 0;
+    virtual bool  init_my_opengl()                                         = 0;
     virtual bool  load_texture(std::string_view)                           = 0;
 };
 ENGINE_DECLSPEC engine::core* create_engine();
