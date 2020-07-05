@@ -1,11 +1,12 @@
-#include "shader.hxx"
+﻿#include "shader.hxx"
 #include "om_gl_check.hxx"
 
 #include <vector>
 
 namespace engine
 {
-shader::shader(const char* vert_shader_path, const char* frag_shader_path)
+shader_es_32::shader_es_32(const char* vert_shader_path,
+                           const char* frag_shader_path)
 {
     std::string   vert_shader_src;
     std::string   frag_shader_src;
@@ -148,12 +149,12 @@ shader::shader(const char* vert_shader_path, const char* frag_shader_path)
     glDeleteShader(frag_shader);
 }
 
-void shader::use()
+void shader_es_32::use()
 {
     glUseProgram(id);
     OM_GL_CHECK()
 }
 
-void shader::set_uniform() {}
+void shader_es_32::set_uniform() {}
 
 } // namespace engine

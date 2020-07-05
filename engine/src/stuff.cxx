@@ -1,6 +1,8 @@
 ﻿#include "stuff.hxx"
 
+#include <algorithm>
 #include <cmath>
+#include <fstream>
 
 namespace engine
 {
@@ -200,6 +202,22 @@ v_2 ndc_txture(v_2 vec, v_2 res_ratio)
     }
     return v_2(((1.f / res_ratio.x) * vec.x),
                -((1.f / res_ratio.y) * vec.y - 1));
+}
+
+size_t get_line_count(std::fstream& file)
+{
+    size_t count = std::count(std::istreambuf_iterator<char>(file),
+                              std::istreambuf_iterator<char>(), '\n');
+    return count;
+}
+
+void restart_file(std::fstream& file)
+{
+    file.clear();
+    file.seekg(file.beg);
+
+    std::cout << "tellg(): " << file.tellg() << "| tellp(): " << file.tellp()
+              << std::endl;
 }
 
 } // namespace engine

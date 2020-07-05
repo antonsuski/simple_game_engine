@@ -1,5 +1,9 @@
 ﻿#pragma once
 
+#include "glad/glad.h"
+
+#include <algorithm>
+#include <fstream>
 #include <iostream>
 
 #ifndef ENGINE_DECLSPEC
@@ -146,6 +150,11 @@ struct ENGINE_DECLSPEC m_3x3
     v_3          delta;
 };
 
+struct ENGINE_DECLSPEC attribute
+{
+    const GLvoid* pointer;
+};
+
 ENGINE_DECLSPEC std::istream& operator>>(std::istream& is, v_2&);
 ENGINE_DECLSPEC std::ostream& operator<<(std::ostream& stream, const v_2&);
 
@@ -161,7 +170,8 @@ ENGINE_DECLSPEC v_2 operator+(const v_2& left, const v_2 right);
 ENGINE_DECLSPEC v_3 operator+(const v_3& left, const v_3 right);
 ENGINE_DECLSPEC v_8 operator+(const v_8& left, const v_8 right);
 
-ENGINE_DECLSPEC v_2 ndc_mesh(v_2 vec, v_2 res_ratio);
-ENGINE_DECLSPEC v_2 ndc_txture(v_2 vec, v_2 res_ratio);
-
+ENGINE_DECLSPEC v_2    ndc_mesh(v_2 vec, v_2 res_ratio);
+ENGINE_DECLSPEC v_2    ndc_txture(v_2 vec, v_2 res_ratio);
+ENGINE_DECLSPEC size_t get_line_count(std::fstream& file);
+ENGINE_DECLSPEC void   restart_file(std::fstream& file);
 } // namespace engine

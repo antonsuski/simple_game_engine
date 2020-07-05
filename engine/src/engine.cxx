@@ -545,7 +545,7 @@ public:
         return vert_arr;
     }
 
-    void render_my_triangle(const triangle& t, shader& shader_,
+    void render_my_triangle(const triangle& t, shader_es_32& shader_,
                             texture2d& txt) final override
     {
         shader_.use();
@@ -631,7 +631,7 @@ public:
 
     // bool my_shd_is_exist = false;
 
-    void render_grid(shader& shader_) final override
+    void render_grid(shader_es_32& shader_) final override
     {
         shader_.use();
         shd_proc = shader_.id;

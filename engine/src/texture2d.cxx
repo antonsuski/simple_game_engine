@@ -41,7 +41,7 @@ texture2d::~texture2d()
     OM_GL_CHECK()
 }
 
-texture2d::texture2d(std::string_view path_, size_t id_, shader* shd)
+texture2d::texture2d(std::string_view path_, size_t id_, shader_es_32* shd)
 {
     id          = id_;
     path        = path_;

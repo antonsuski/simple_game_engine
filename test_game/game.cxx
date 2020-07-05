@@ -8,6 +8,7 @@
 #include "shader.hxx"
 #include "stuff.hxx"
 #include "texture2d.hxx"
+#include "vbo.hxx"
 
 int main(int /*argc*/, char* /*argv*/[])
 {
@@ -20,11 +21,13 @@ int main(int /*argc*/, char* /*argv*/[])
         return EXIT_FAILURE;
     }
 
+    engine::vbo_v_8 two_tr("../../res/vertexes.txt");
+
     std::cerr << engine::ndc_mesh({ 5, 5 }, { 40, 30 }) << std::endl;
     std::cerr << engine::ndc_txture({ 5, 5 }, { 40, 30 }) << std::endl;
 
-    engine::shader tr_sh("../../res/shaders/default_shader.vs",
-                         "../../res/shaders/default_shader.fs");
+    engine::shader_es_32 tr_sh("../../res/shaders/default_shader.vs",
+                               "../../res/shaders/default_shader.fs");
 
     engine::texture2d tank_texture("../../res/images/tank.png", 0, &tr_sh);
     engine::texture2d tank_1("../../res/images/tank_1.png", 1, &tr_sh);
@@ -51,6 +54,7 @@ int main(int /*argc*/, char* /*argv*/[])
         assert(!!file);
 
         engine::triangle tr1, tr2, tr3, tr4;
+
         file >> tr1 >> tr2 >> tr3 >> tr4;
 
         engine->render_my_triangle(tr1, tr_sh, tank_texture);

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef ENGINE_DECLSPEC
 #define ENGINE_DECLSPEC
@@ -29,12 +29,12 @@ class ENGINE_DECLSPEC texture2d
     std::uint32_t    width;
     std::uint32_t    height;
     v_8              coordinates;
-    shader*          txt_shader;
+    shader_es_32*    txt_shader;
     bool             load_texture(std::string_view);
 
 public:
     ~texture2d();
-    explicit texture2d(std::string_view, size_t, shader*);
+    explicit texture2d(std::string_view, size_t, shader_es_32*);
 
     std::uint32_t get_width() const;
     std::uint32_t get_height() const;
