@@ -1,3 +1,4 @@
+/*#version 320 es*/
 precision mediump float;
 /*mediump in*/varying vec4 out_color;
 /*mediump in*/varying vec2 out_txt_pos;

@@ -1,3 +1,4 @@
+/*#version 320 es*/
 /*layout(location = 0) in*/attribute vec3 pos;
 /*layout(location = 1) in*/attribute vec3 color;
 /*layout(location = 2) in*/attribute vec2 txt_pos;

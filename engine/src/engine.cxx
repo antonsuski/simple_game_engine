@@ -629,6 +629,13 @@ public:
         delete indexes;
     }
 
+    void render_(vbo_v_8& buffer, shader_es_32& shader) final override
+    {
+        shader.use();
+        buffer.bind_vao();
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+    }
+
     // bool my_shd_is_exist = false;
 
     void render_grid(shader_es_32& shader_) final override

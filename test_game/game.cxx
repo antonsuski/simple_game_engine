@@ -50,18 +50,20 @@ int main(int /*argc*/, char* /*argv*/[])
             }
         }
 
-        std::ifstream file("../../res/vertexes.txt");
-        assert(!!file);
+        //        std::ifstream file("../../res/vertexes.txt");
+        //        assert(!!file);
 
-        engine::triangle tr1, tr2, tr3, tr4;
+        //        engine::triangle tr1, tr2, tr3, tr4;
 
-        file >> tr1 >> tr2 >> tr3 >> tr4;
+        //        file >> tr1 >> tr2 >> tr3 >> tr4;
 
-        engine->render_my_triangle(tr1, tr_sh, tank_texture);
-        engine->render_my_triangle(tr2, tr_sh, tank_texture);
+        //        engine->render_my_triangle(tr1, tr_sh, tank_texture);
+        //        engine->render_my_triangle(tr2, tr_sh, tank_texture);
 
-        engine->render_my_triangle(tr3, tr_sh, tank_1);
-        engine->render_my_triangle(tr4, tr_sh, tank_1);
+        //        engine->render_my_triangle(tr3, tr_sh, tank_1);
+        //        engine->render_my_triangle(tr4, tr_sh, tank_1);
+
+        engine->render_(two_tr, tr_sh);
 
         engine->swap_buffers();
     }
