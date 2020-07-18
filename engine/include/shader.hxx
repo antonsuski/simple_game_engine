@@ -23,6 +23,5 @@ public:
     // explicit shader_es_32(const char*, const char*, );
 
     void use();
-    void set_uniform();
 };
 } // namespace engine

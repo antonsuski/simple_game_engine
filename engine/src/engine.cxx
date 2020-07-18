@@ -122,11 +122,11 @@ public:
     {
         glGenBuffers(1, &VBO);
         OM_GL_CHECK()
-
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        OM_GL_CHECK()
         glGenVertexArrays(1, &VAO);
         OM_GL_CHECK()
-
-        glGenBuffers(1, &EBO);
+        glBindVertexArray(VAO);
         OM_GL_CHECK()
     }
 
@@ -140,6 +140,8 @@ public:
 
         glViewport(0, 0, width_, height_);
         OM_GL_CHECK()
+
+        std::clog << "Resolution: " << width_ << "x" << height_ << std::endl;
 
         genBuffers();
 
@@ -305,9 +307,14 @@ public:
         SDL_VERSION(&compiled)
         SDL_GetVersion(&linked);
 
-        if (width > 1366 || height > 768)
+        if (width >= 1366 || height >= 768)
         {
             std::cerr << "uncorrect resolution" << std::endl;
+            width_  = 640;
+            height_ = 320;
+        }
+        else
+        {
             width_  = width;
             height_ = height;
         }
@@ -336,9 +343,9 @@ public:
                           << SDL_GetError() << std::endl;
                 return false;
             }
-            int gl_major_ver = 3;
-            int gl_minor_ver = 2;
-            // int gl_context_profile = SDL_GL_CONTEXT_PROFILE_ES;
+            int gl_major_ver       = 3;
+            int gl_minor_ver       = 2;
+            int gl_context_profile = SDL_GL_CONTEXT_PROFILE_ES;
 
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
                                 SDL_GL_CONTEXT_PROFILE_ES);
@@ -367,6 +374,19 @@ public:
                           << "need openg ES version at least: 3.2\n"
                           << std::flush;
                 throw std::runtime_error("opengl version too low");
+            }
+            else
+            {
+                if (gl_context_profile == SDL_GL_CONTEXT_PROFILE_ES)
+                {
+                    std::clog << "OpenGL ES " << gl_major_ver << '.'
+                              << gl_minor_ver << '\n';
+                }
+                else
+                {
+                    std::clog << "OpenGL " << gl_major_ver << '.'
+                              << gl_minor_ver << '\n';
+                }
             }
 
             if (gladLoadGLES2Loader(SDL_GL_GetProcAddress) == 0)
@@ -442,21 +462,26 @@ public:
         return false;
     }
 
-    void render() final override
+    void render(vbo_v_3& buffer, shader_es_32& shader) final override
     {
+        shader.use();
+        buffer.bind_vao();
 
-        glClearColor(0.f, 0.f, 1.f, 0.0f);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
         OM_GL_CHECK()
+
+        glClearColor(0.3f, 0.3f, 1.f, 0.0f);
+        OM_GL_CHECK()
+
         glClear(GL_COLOR_BUFFER_BIT);
         OM_GL_CHECK()
-        // TODO continue...
     }
 
     void swap_buffers() final override
     {
         SDL_GL_SwapWindow(window);
 
-        glClearColor(0.3f, 0.3f, 1.0f, 0.0f);
+        glClearColor(0.3f, 0.3f, 0.8f, 0.0f);
         OM_GL_CHECK()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         OM_GL_CHECK()
@@ -545,61 +570,63 @@ public:
         return vert_arr;
     }
 
-    void render_my_triangle(const triangle& t, shader_es_32& shader_,
-                            texture2d& txt) final override
+    void render_my_triangle(const triangle& t,
+                            shader_es_32&   shader_) final override
     {
-        shader_.use();
-        txt.bind();
-        shd_proc = shader_.id;
-        set_uniforms();
-        //  my_shd_is_ex
-        std::vector<uint32_t>* indexes = new std::vector<uint32_t>;
-        // std::vector<vertex>    vert_buff = make_grid_(50, 50, *indexes);
-
-        indexes->push_back(0);
-        indexes->push_back(1);
-        indexes->push_back(2);
-
-        glBindVertexArray(VAO);
-        OM_GL_CHECK()
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        OM_GL_CHECK()
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        OM_GL_CHECK()
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                     sizeof(uint32_t) * indexes->size(), indexes->data(),
-                     GL_STATIC_DRAW);
-        OM_GL_CHECK()
         glBufferData(GL_ARRAY_BUFFER, sizeof(t), &t, GL_STATIC_DRAW);
         OM_GL_CHECK()
-
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(v_8), nullptr);
-        OM_GL_CHECK()
-
-        glVertexAttribPointer(
-            1, 3, GL_FLOAT, GL_FALSE, sizeof(v_8),
-            /*reinterpret_cast<void*>(sizeof(float) * 3)*/ nullptr);
-        OM_GL_CHECK()
-
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(v_8),
-                              reinterpret_cast<void*>(3 * sizeof(float)));
-        OM_GL_CHECK()
-
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(v_8),
-                              reinterpret_cast<void*>(6 * sizeof(float)));
-        OM_GL_CHECK()
-
         glEnableVertexAttribArray(0);
+
+        GLintptr position_attr_offset = 0;
         OM_GL_CHECK()
-        glEnableVertexAttribArray(1);
+
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(v_3),
+                              reinterpret_cast<void*>(position_attr_offset));
         OM_GL_CHECK()
-        glEnableVertexAttribArray(2);
+
+        program_id_ = shader_.id;
+
+        glValidateProgram(program_id_);
         OM_GL_CHECK()
+
+        // Check the validate status
+        GLint validate_status = 0;
+        glGetProgramiv(program_id_, GL_VALIDATE_STATUS, &validate_status);
+        OM_GL_CHECK()
+        if (validate_status == GL_FALSE)
+        {
+            GLint infoLen = 0;
+            glGetProgramiv(program_id_, GL_INFO_LOG_LENGTH, &infoLen);
+            OM_GL_CHECK()
+            std::vector<char> infoLog(static_cast<size_t>(infoLen));
+            glGetProgramInfoLog(program_id_, infoLen, nullptr, infoLog.data());
+            OM_GL_CHECK()
+            std::cerr << "Error linking program:\n" << infoLog.data();
+            throw std::runtime_error("error");
+        }
+        shader_.use();
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+        OM_GL_CHECK()
+    }
+
+    void render_(vbo_v_8& buffer, shader_es_32& shader) final override
+    {
+        shader.use();
+        buffer.bind_vao();
+        glDrawArrays(GL_TRIANGLES, 0, 12);
+        OM_GL_CHECK()
+    }
+
+    void render_(vbo_v_3& buffer, shader_es_32& shader) final override
+    {
+        shader.use();
+        buffer.bind_vao();
+        shd_proc              = shader.id;
         GLuint shd_proc_value = shd_proc;
         glValidateProgram(shd_proc_value);
         OM_GL_CHECK()
 
-        // Check the validate status
+        //        // Check the validate status
 
         GLint validate_status = 0;
         glGetProgramiv(shd_proc_value, GL_VALIDATE_STATUS, &validate_status);
@@ -617,23 +644,8 @@ public:
             std::cerr << "Error linking program:\n" << infoLog.data();
             throw std::runtime_error("error");
         }
-
-        // set_uniforms();
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        OM_GL_CHECK()
-        // glDrawElements(GL_LINES, indexes->size(), GL_UNSIGNED_INT, 0);
         glDrawArrays(GL_TRIANGLES, 0, 3);
         OM_GL_CHECK()
-
-        delete indexes;
-    }
-
-    void render_(vbo_v_8& buffer, shader_es_32& shader) final override
-    {
-        shader.use();
-        buffer.bind_vao();
-        glDrawArrays(GL_TRIANGLES, 0, 3);
     }
 
     // bool my_shd_is_exist = false;
@@ -696,6 +708,7 @@ public:
                                 infoLog.data());
             OM_GL_CHECK()
             std::cerr << "Error linking program:\n" << infoLog.data();
+            delete indexes;
             throw std::runtime_error("error");
         }
 

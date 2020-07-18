@@ -31,7 +31,7 @@ shader_es_32::shader_es_32(const char* vert_shader_path,
         vert_shader_src = vert_shader_stream.str();
         frag_shader_src = frag_shader_stream.str();
     }
-    catch (std::ifstream::failure ex)
+    catch (std::ifstream::failure& ex)
     {
         std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
     }
@@ -116,11 +116,7 @@ shader_es_32::shader_es_32(const char* vert_shader_path,
     glAttachShader(id, frag_shader);
     OM_GL_CHECK()
 
-    glBindAttribLocation(id, 0, "pos");
-    OM_GL_CHECK()
-    glBindAttribLocation(id, 1, "color");
-    OM_GL_CHECK()
-    glBindAttribLocation(id, 2, "txt_pos");
+    // glBindAttribLocation(id, 0, "a_position");
     OM_GL_CHECK()
 
     glLinkProgram(id);
@@ -154,7 +150,4 @@ void shader_es_32::use()
     glUseProgram(id);
     OM_GL_CHECK()
 }
-
-void shader_es_32::set_uniform() {}
-
 } // namespace engine

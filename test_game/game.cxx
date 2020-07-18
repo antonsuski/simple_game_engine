@@ -15,22 +15,17 @@ int main(int /*argc*/, char* /*argv*/[])
     std::unique_ptr<engine::core, void (*)(engine::core*)> engine(
         engine::create_engine(), engine::destroy_engine);
 
-    if (!engine->init(1365, 767))
+    if (!engine->init(1364, 766))
     {
         std::cerr << "init failed" << std::endl;
         return EXIT_FAILURE;
     }
 
-    engine::vbo_v_8 two_tr("../../res/vertexes.txt");
-
-    std::cerr << engine::ndc_mesh({ 5, 5 }, { 40, 30 }) << std::endl;
-    std::cerr << engine::ndc_txture({ 5, 5 }, { 40, 30 }) << std::endl;
-
-    engine::shader_es_32 tr_sh("../../res/shaders/default_shader.vs",
-                               "../../res/shaders/default_shader.fs");
-
-    engine::texture2d tank_texture("../../res/images/tank.png", 0, &tr_sh);
-    engine::texture2d tank_1("../../res/images/tank_1.png", 1, &tr_sh);
+    engine::shader_es_32 sample_sh("../../../res/shaders/shader_v_3.vs",
+                                   "../../../res/shaders/shader_v_3.fs");
+    engine::shader_es_32 sh("../../../res/shaders/shader_v_3_no_version.vs",
+                            "../../../res/shaders/shader_v_3_no_version.fs");
+    engine::vbo_v_8      sampl("../../../res/vertexes.txt");
 
     bool continue_loop = true;
     while (continue_loop)
@@ -50,21 +45,12 @@ int main(int /*argc*/, char* /*argv*/[])
             }
         }
 
-        //        std::ifstream file("../../res/vertexes.txt");
-        //        assert(!!file);
-
-        //        engine::triangle tr1, tr2, tr3, tr4;
-
-        //        file >> tr1 >> tr2 >> tr3 >> tr4;
-
-        //        engine->render_my_triangle(tr1, tr_sh, tank_texture);
-        //        engine->render_my_triangle(tr2, tr_sh, tank_texture);
-
-        //        engine->render_my_triangle(tr3, tr_sh, tank_1);
-        //        engine->render_my_triangle(tr4, tr_sh, tank_1);
-
-        engine->render_(two_tr, tr_sh);
-
+        std::ifstream    file("../../../res/vertexes_v_3.txt");
+        engine::triangle tr;
+        file >> tr;
+        // engine->render_my_triangle(tr, sh);
+        engine->render_(sampl, sample_sh);
+        // engine->render_(sampl, sample_sh);
         engine->swap_buffers();
     }
     return EXIT_SUCCESS;

@@ -215,9 +215,6 @@ void restart_file(std::fstream& file)
 {
     file.clear();
     file.seekg(file.beg);
-
-    std::cout << "tellg(): " << file.tellg() << "| tellp(): " << file.tellp()
-              << std::endl;
 }
 
 } // namespace engine
