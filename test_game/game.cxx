@@ -23,8 +23,6 @@ int main(int /*argc*/, char* /*argv*/[])
 
     engine::shader_es_32 sample_sh("../../../res/shaders/shader_v_3.vs",
                                    "../../../res/shaders/shader_v_3.fs");
-    engine::shader_es_32 sh("../../../res/shaders/shader_v_3_no_version.vs",
-                            "../../../res/shaders/shader_v_3_no_version.fs");
     engine::vbo_v_8      sampl("../../../res/vertexes.txt");
 
     bool continue_loop = true;
@@ -45,12 +43,7 @@ int main(int /*argc*/, char* /*argv*/[])
             }
         }
 
-        std::ifstream    file("../../../res/vertexes_v_3.txt");
-        engine::triangle tr;
-        file >> tr;
-        // engine->render_my_triangle(tr, sh);
         engine->render_(sampl, sample_sh);
-        // engine->render_(sampl, sample_sh);
         engine->swap_buffers();
     }
     return EXIT_SUCCESS;

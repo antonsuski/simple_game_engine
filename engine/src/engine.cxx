@@ -611,6 +611,27 @@ public:
 
     void render_(vbo_v_8& buffer, shader_es_32& shader) final override
     {
+        // Check the validate status
+
+        shd_proc               = shader.id;
+        GLuint shd_proc_value  = shd_proc;
+        GLint  validate_status = 0;
+        glGetProgramiv(shd_proc_value, GL_VALIDATE_STATUS, &validate_status);
+        OM_GL_CHECK()
+
+        if (validate_status == GL_FALSE)
+        {
+            GLint infoLen = 0;
+            glGetProgramiv(shd_proc_value, GL_INFO_LOG_LENGTH, &infoLen);
+            OM_GL_CHECK()
+            std::vector<char> infoLog(static_cast<size_t>(infoLen));
+            glGetProgramInfoLog(shd_proc_value, infoLen, nullptr,
+                                infoLog.data());
+            OM_GL_CHECK()
+            std::cerr << "Error linking program:\n" << infoLog.data();
+            throw std::runtime_error("error");
+        }
+
         shader.use();
         buffer.bind_vao();
         glDrawArrays(GL_TRIANGLES, 0, 12);
@@ -626,7 +647,7 @@ public:
         glValidateProgram(shd_proc_value);
         OM_GL_CHECK()
 
-        //        // Check the validate status
+        // Check the validate status
 
         GLint validate_status = 0;
         glGetProgramiv(shd_proc_value, GL_VALIDATE_STATUS, &validate_status);
