@@ -116,8 +116,11 @@ shader_es_32::shader_es_32(const char* vert_shader_path,
     glAttachShader(id, frag_shader);
     OM_GL_CHECK()
 
-    // glBindAttribLocation(id, 0, "a_position");
-    OM_GL_CHECK()
+    //    glBindAttribLocation(id, 0, "a_pos");
+    //    OM_GL_CHECK()
+
+    //    glBindAttribLocation(id, 1, "a_color");
+    //    OM_GL_CHECK()
 
     glLinkProgram(id);
     OM_GL_CHECK()
@@ -133,6 +136,7 @@ shader_es_32::shader_es_32(const char* vert_shader_path,
         std::vector<char> infoLog(static_cast<size_t>(infoLen));
         glGetProgramInfoLog(id, infoLen, nullptr, infoLog.data());
         OM_GL_CHECK()
+        std::cerr << "Shader constructor!\n";
         std::cerr << "Error linking program:\n" << infoLog.data();
         glDeleteProgram(id);
         OM_GL_CHECK()
@@ -149,5 +153,46 @@ void shader_es_32::use()
 {
     glUseProgram(id);
     OM_GL_CHECK()
+}
+
+bool already_reported{ false };
+
+void shader_es_32::set_uniform_4f(std::vector<std::string_view>& uniforms_name,
+                                  uniform&                       uniforms_data)
+{
+    int current_uniform_location{ 0 };
+
+    for (auto iterator : uniforms_name)
+    {
+        current_uniform_location = glGetUniformLocation(id, iterator.data());
+        OM_GL_CHECK()
+
+        if (current_uniform_location == -1 && !already_reported)
+        {
+            std::cerr << "Uniform (" << iterator
+                      << ") location was not found!\n"
+                      << "location is (" << current_uniform_location << ")\n";
+
+            already_reported = true;
+        }
+        else
+        {
+            uniforms_location.push_back(current_uniform_location);
+        }
+    }
+
+    use();
+
+    for (auto iterator : uniforms_location)
+    {
+        // clang-format off
+        glUniform4f(iterator,
+                    uniforms_data.u0,
+                    uniforms_data.u1,
+                    uniforms_data.u2,
+                    uniforms_data.u3);
+        // clang-format on
+        OM_GL_CHECK()
+    }
 }
 } // namespace engine

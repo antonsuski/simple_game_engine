@@ -217,4 +217,25 @@ void restart_file(std::fstream& file)
     file.seekg(file.beg);
 }
 
+bool operator==(const v_2& left, const v_2 right)
+{
+    return (left.x == right.x && left.y == right.y) ? true : false;
+}
+
+bool operator==(const v_3& left, const v_3 right)
+{
+    return (left.x == right.x && left.y == right.y && left.z == right.z)
+               ? true
+               : false;
+}
+
+bool operator==(const v_8& left, const v_8 right)
+{
+    return (left.x == right.x && left.y == right.y && left.z == right.z &&
+            left.r == right.r && left.g == right.g && left.b == right.b &&
+            left.s == right.s && left.t == right.t)
+               ? true
+               : false;
+}
+
 } // namespace engine

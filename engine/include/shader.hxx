@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "glad/glad.h"
+#include "stuff.hxx"
 
 #ifndef ENGINE_DECLSPEC
 #define ENGINE_DECLSPEC
@@ -16,6 +17,9 @@ namespace engine
 {
 class ENGINE_DECLSPEC shader_es_32
 {
+
+    std::vector<GLint> uniforms_location;
+
 public:
     unsigned int id;
 
@@ -23,5 +27,6 @@ public:
     // explicit shader_es_32(const char*, const char*, );
 
     void use();
+    void set_uniform_4f(std::vector<std::string_view>&, uniform&);
 };
 } // namespace engine

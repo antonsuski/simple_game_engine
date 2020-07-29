@@ -1,4 +1,5 @@
 ﻿#include <cassert>
+#include <cmath>
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -9,6 +10,8 @@
 #include "stuff.hxx"
 #include "texture2d.hxx"
 #include "vbo.hxx"
+
+void change_color(engine::uniform& u);
 
 int main(int /*argc*/, char* /*argv*/[])
 {
@@ -23,7 +26,15 @@ int main(int /*argc*/, char* /*argv*/[])
 
     engine::shader_es_32 sample_sh("../../../res/shaders/shader_v_3.vs",
                                    "../../../res/shaders/shader_v_3.fs");
-    engine::vbo_v_8      sampl("../../../res/vertexes.txt");
+    engine::shader_es_32 default_shader(
+        "../../../res/shaders/default_shader.vs",
+        "../../../res/shaders/default_shader.fs");
+
+    engine::vbo_v_8 sampl("../../../res/vertexes.txt");
+    engine::vbo_v_8 triangle("../../../res/rgb_triangle.txt");
+
+    engine::uniform               u{ 0, 0, 0, 0 };
+    std::vector<std::string_view> u_name{ "my_color" };
 
     bool continue_loop = true;
     while (continue_loop)
@@ -43,6 +54,12 @@ int main(int /*argc*/, char* /*argv*/[])
             }
         }
 
+        float f = (sin(engine->get_time_for_init()) + 1.0f) / 2.0f;
+        // default_shader.set_uniform_4f(u_name, u);
+        // std::cerr << u.u0 << std::endl;
+        triangle.morf_color(f);
+        triangle.print_buffer();
+        engine->render_(triangle, default_shader);
         engine->render_(sampl, sample_sh);
         engine->swap_buffers();
     }

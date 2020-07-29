@@ -19,8 +19,6 @@
 namespace engine
 {
 
-using attribute_es_32 = std::vector<std::tuple<GLuint, std::string_view>>;
-
 class event
 {
 public:

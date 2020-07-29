@@ -1,14 +1,14 @@
-/*#version 320 es*/
+#version 320 es
+
 precision mediump float;
-/*mediump in*/varying vec4 out_color;
-/*mediump in*/varying vec2 out_txt_pos;
 
-///*mediump out*/varying vec4 FragColor;
+in vec3 v_color;
 
-uniform sampler2D ourTxt;
+uniform vec4 my_color;
+
+out vec4 fragColor;
 
 void main()
 {
-    //FragColor = vec4(out_color);
-    gl_FragColor = texture2D(ourTxt,out_txt_pos);
+ fragColor = vec4(v_color.r, v_color.g, v_color.b, 1.0);
 }

@@ -2,6 +2,7 @@
 #include "om_gl_check.hxx"
 #include "stuff.hxx"
 
+#include <cmath>
 #include <fstream>
 #include <sstream>
 #include <string_view>
@@ -16,6 +17,11 @@ engine::vbo_v_8::~vbo_v_8()
         delete vbo_data;
     }
     vbo_data = nullptr;
+
+    glDeleteVertexArrays(1, &vao_id);
+    OM_GL_CHECK()
+
+    glDeleteBuffers(1, &vbo_id);
 }
 
 engine::vbo_v_8::vbo_v_8(std::string_view path)
@@ -40,6 +46,8 @@ engine::vbo_v_8::vbo_v_8(std::string_view path)
         }
     }
 
+    vbo_data_size = vbo_data->size();
+
     for (auto i : *vbo_data)
     {
         std::clog << i;
@@ -59,7 +67,7 @@ engine::vbo_v_8::vbo_v_8(std::string_view path)
     bind_buffer();
     buffer_data(GL_DYNAMIC_DRAW);
 
-    vertex_attrib_pointer(0);
+    vertex_attrib_pointer();
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     OM_GL_CHECK()
@@ -71,9 +79,9 @@ engine::vbo_v_8::vbo_v_8(std::string_view path)
     vertex_file.close();
 }
 
-v_8* vbo_v_8::get_data()
+size_t vbo_v_8::size()
 {
-    return vbo_data->data();
+    return vbo_data_size;
 }
 
 void vbo_v_8::bind_buffer()
@@ -98,7 +106,7 @@ void vbo_v_8::buffer_data(GLenum flag)
     OM_GL_CHECK()
 }
 
-void vbo_v_8::vertex_attrib_pointer(GLuint attribute_id)
+void vbo_v_8::vertex_attrib_pointer()
 {
     // clang-format off
 
@@ -142,6 +150,48 @@ void vbo_v_8::bind_vao()
 {
     glBindVertexArray(vao_id);
     OM_GL_CHECK()
+}
+
+void vbo_v_8::unbind_vao()
+{
+    glBindVertexArray(0);
+    OM_GL_CHECK()
+}
+
+void vbo_v_8::print_buffer()
+{
+    for (auto iterator : *vbo_data)
+    {
+        std::cerr << iterator;
+    }
+}
+
+void vbo_v_8::morf_color(float& time)
+{
+    for (size_t iterator = 0; iterator < vbo_data_size; ++iterator)
+    {
+        if (vbo_data->at(iterator % 3).r || vbo_data->at((iterator + 1) % 3).r)
+        {
+            vbo_data->at(iterator % 3).r =
+                fabs(vbo_data->at(iterator % 3).r - 0.2f);
+            vbo_data->at((iterator + 1) % 3).r =
+                fabs(vbo_data->at((iterator + 1) % 3).r + 0.2f);
+        }
+        if (vbo_data->at(iterator % 3).g || vbo_data->at((iterator + 1) % 3).g)
+        {
+            vbo_data->at(iterator % 3).g =
+                fabs(vbo_data->at(iterator % 3).g - 0.2f);
+            vbo_data->at((iterator + 1) % 3).g =
+                fabs(vbo_data->at((iterator + 1) % 3).g + 0.2f);
+        }
+        if (vbo_data->at(iterator % 3).b || vbo_data->at((iterator + 1) % 3).b)
+        {
+            vbo_data->at(iterator % 3).b =
+                fabs(vbo_data->at(iterator % 3).b - 0.2f);
+            vbo_data->at((iterator + 1) % 3).b =
+                fabs(vbo_data->at((iterator + 1) % 3).b + 0.2f);
+        }
+    }
 }
 
 engine::vbo_v_3::~vbo_v_3()

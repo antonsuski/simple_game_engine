@@ -12,6 +12,8 @@
 
 namespace engine
 {
+using attribute_es_32 = std::vector<std::tuple<GLuint, std::string_view>>;
+
 class ENGINE_DECLSPEC vbo
 {
     virtual ~vbo() = 0;
@@ -20,6 +22,7 @@ class ENGINE_DECLSPEC vbo
 class ENGINE_DECLSPEC vbo_v_8
 {
     std::vector<v_8>* vbo_data = nullptr;
+    size_t            vbo_data_size;
     GLuint            vbo_id;
     GLuint            vao_id;
 
@@ -30,11 +33,15 @@ public:
     std::istream& operator>>(std::istream& is);
     std::ostream& operator<<(std::ostream& stream);
 
-    v_8* get_data();
+    size_t size();
+
     void bind_buffer();
     void buffer_data(GLenum);
-    void vertex_attrib_pointer(GLuint);
+    void vertex_attrib_pointer();
     void bind_vao();
+    void unbind_vao();
+    void print_buffer();
+    void morf_color(float&);
 };
 
 class ENGINE_DECLSPEC vbo_v_3

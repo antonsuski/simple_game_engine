@@ -1,16 +1,14 @@
+#version 320 es
 
-/*#version 320 es*/
-/*layout(location = 0) in*/attribute vec3 pos;
-/*layout(location = 1) in*/attribute vec3 color;
-/*layout(location = 2) in*/attribute vec2 txt_pos;
+precision mediump float;
 
-/*mediump out*/varying vec4 out_color;
-/*mediump out*/varying vec2 out_txt_pos;
-uniform vec4 in_uniform;
+layout(location = 0) in vec3 a_pos;
+layout(location = 1) in vec3 a_color;
+
+out vec3 v_color;
 
 void main()
 {
-    gl_Position = vec4(pos, 1.0);
-    out_color = vec4(in_uniform);
-    out_txt_pos = txt_pos;
+ v_color = a_color;
+ gl_Position = vec4(a_pos.x, a_pos.y, a_pos.z, 1.0);
 }
