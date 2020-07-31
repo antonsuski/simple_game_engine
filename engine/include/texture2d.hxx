@@ -42,4 +42,21 @@ public:
     int           get_id() const;
 };
 
+class ENGINE_DECLSPEC texture_2d_es_320
+{
+    GLuint texture_id;
+
+    int width;
+    int height;
+    int nr_channels;
+
+public:
+    explicit texture_2d_es_320(std::string_view);
+
+    std::uint32_t get_width() const;
+    std::uint32_t get_height() const;
+    void          bind();
+    int           get_id() const;
+};
+
 } // namespace engine

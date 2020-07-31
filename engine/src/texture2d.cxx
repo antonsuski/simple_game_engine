@@ -153,4 +153,47 @@ bool texture2d::load_texture(std::string_view path)
     return true;
 }
 
+texture_2d_es_320::texture_2d_es_320(std::string_view path)
+{
+    glGenTextures(1, &texture_id);
+    OM_GL_CHECK()
+
+    bind();
+
+    std::vector<unsigned char*> image_png;
+    std::ifstream               ifs(path.data(), std::ios_base::binary);
+    if (!ifs)
+    {
+        std::cerr << "Error: can't open file: " << path << std::endl;
+    }
+    ifs.seekg(0, std::ios_base::end);
+    size_t pos_in_file = static_cast<size_t>(ifs.tellg());
+    image_png.resize(pos_in_file);
+    ifs.seekg(0, std::ios_base::beg);
+    if (!ifs)
+    {
+        std::cerr << "Error: can't setup pointer to begin file " << std::endl;
+    }
+
+    image_png[0] = stbi_load(path.data(), &width, &height, &nr_channels, 0);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    OM_GL_CHECK()
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    OM_GL_CHECK()
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    OM_GL_CHECK()
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    OM_GL_CHECK()
+}
+
+void texture_2d_es_320::bind()
+{
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+    OM_GL_CHECK()
+}
+
 } // namespace engine

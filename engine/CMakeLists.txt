@@ -19,7 +19,8 @@ add_library(engine_shared SHARED
     include/stb_image.h
     include/texture2d.hxx
     include/stuff.hxx
-    include/vbo.hxx)
+    include/vbo.hxx
+    include/texture.hxx)
 
 find_package(SDL2 REQUIRED)
 
