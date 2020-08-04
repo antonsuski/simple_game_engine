@@ -18,10 +18,20 @@ engine::vbo_v_8::~vbo_v_8()
     }
     vbo_data = nullptr;
 
+    if (ebo_data != nullptr)
+    {
+        delete ebo_data;
+    }
+    ebo_data = nullptr;
+
     glDeleteVertexArrays(1, &vao_id);
     OM_GL_CHECK()
 
     glDeleteBuffers(1, &vbo_id);
+    OM_GL_CHECK()
+
+    glDeleteBuffers(1, &ebo_id);
+    OM_GL_CHECK()
 }
 
 engine::vbo_v_8::vbo_v_8(std::string_view path)
@@ -36,7 +46,7 @@ engine::vbo_v_8::vbo_v_8(std::string_view path)
         size_t count = get_line_count(vertex_file) - 1;
         restart_file(vertex_file);
         vbo_data = new std::vector<v_8>;
-
+        ebo_data = new std::vector<uint32_t>;
         v_8 tr;
 
         for (size_t iterator = 0; iterator < count; iterator++)
@@ -48,6 +58,20 @@ engine::vbo_v_8::vbo_v_8(std::string_view path)
 
     vbo_data_size = vbo_data->size();
 
+    for (size_t iterator = 0; iterator < vbo_data_size; iterator++)
+    {
+        ebo_data->push_back(iterator);
+    }
+
+    ebo_size = ebo_data->size();
+
+    std::clog << "----ebo----" << std::endl;
+    for (auto i : *ebo_data)
+    {
+
+        std::clog << i << std::endl;
+    }
+    std::clog << "----ebo----" << std::endl;
     for (auto i : *vbo_data)
     {
         std::clog << i;
@@ -61,18 +85,30 @@ engine::vbo_v_8::vbo_v_8(std::string_view path)
     glGenBuffers(1, &vbo_id);
     OM_GL_CHECK()
 
+    glGenBuffers(1, &ebo_id);
+    OM_GL_CHECK()
+
     glBindVertexArray(vao_id);
     OM_GL_CHECK();
 
     bind_buffer();
     buffer_data(GL_DYNAMIC_DRAW);
 
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_id);
+    OM_GL_CHECK();
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * ebo_data->size(),
+                 ebo_data->data(), GL_DYNAMIC_DRAW);
+    OM_GL_CHECK();
+
     vertex_attrib_pointer();
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     OM_GL_CHECK()
 
-    glBindVertexArray(vao_id);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    OM_GL_CHECK();
+
+    glBindVertexArray(0);
     OM_GL_CHECK()
 
     restart_file(vertex_file);
@@ -94,15 +130,22 @@ void vbo_v_8::buffer_data(GLenum flag)
 {
     using namespace std;
 
-    clog << "szieof(vbo_data): " << sizeof(vbo_data) << endl
-         << "vbo_data->size(): " << vbo_data->size() << endl
-         << "sizeof(vbo_data[0]): " << sizeof(vbo_data[0]) << endl
-         << "szieof(vbo_data[0] * vbo_data->size(): "
-         << sizeof(vbo_data[0]) * vbo_data->size() << endl
-         << "sizeof(vertex_8): " << sizeof(v_8) << endl;
+    //    clog << "szieof(vbo_data): " << sizeof(vbo_data) << endl
+    //         << "vbo_data->size(): " << vbo_data->size() << endl
+    //         << "sizeof(vbo_data[0]): " << sizeof(vbo_data[0]) << endl
+    //         << "szieof(vbo_data[0] * vbo_data->size(): "
+    //         << sizeof(vbo_data[0]) * vbo_data->size() << endl
+    //         << "sizeof(vertex_8): " << sizeof(v_8) << endl;
 
     glBufferData(GL_ARRAY_BUFFER, sizeof(v_8) * vbo_data->size(),
                  vbo_data->data(), flag);
+    OM_GL_CHECK()
+}
+
+void vbo_v_8::buffer_ebo()
+{
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * ebo_data->size(),
+                 ebo_data->data(), GL_DYNAMIC_DRAW);
     OM_GL_CHECK()
 }
 
@@ -149,6 +192,12 @@ void vbo_v_8::vertex_attrib_pointer()
 void vbo_v_8::bind_vao()
 {
     glBindVertexArray(vao_id);
+    OM_GL_CHECK()
+}
+
+void vbo_v_8::bind_ebo()
+{
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_id);
     OM_GL_CHECK()
 }
 

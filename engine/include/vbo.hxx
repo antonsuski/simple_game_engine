@@ -21,10 +21,15 @@ class ENGINE_DECLSPEC vbo
 
 class ENGINE_DECLSPEC vbo_v_8
 {
-    std::vector<v_8>* vbo_data = nullptr;
-    size_t            vbo_data_size;
-    GLuint            vbo_id;
-    GLuint            vao_id;
+public:
+    std::vector<v_8>*      vbo_data = nullptr;
+    std::vector<uint32_t>* ebo_data = nullptr;
+
+    size_t vbo_data_size;
+    size_t ebo_size;
+    GLuint vbo_id;
+    GLuint vao_id;
+    GLuint ebo_id;
 
 public:
     ~vbo_v_8();
@@ -37,8 +42,10 @@ public:
 
     void bind_buffer();
     void buffer_data(GLenum);
+    void buffer_ebo();
     void vertex_attrib_pointer();
     void bind_vao();
+    void bind_ebo();
     void unbind_vao();
     void print_buffer();
     void morf_color(float&);

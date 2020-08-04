@@ -59,7 +59,8 @@ public:
     virtual bool  load_texture(std::string_view)                           = 0;
     virtual bool  read_event(event&)                                       = 0;
     virtual void  render(vbo_v_3&, shader_es_32&)                          = 0;
-    virtual void  render_(vbo_v_8&, shader_es_32&)                         = 0;
+    virtual void  render_(vbo_v_8&, shader_es_32&, GLuint& texture_id)     = 0;
+    virtual void  render_(vbo_v_8&, shader_es_32&, texture_2d_es_320&)     = 0;
     virtual void  render_(vbo_v_3&, shader_es_32&, const attribute_es_32&) = 0;
     virtual void  render_my_triangle(const triangle&, shader_es_32&)       = 0;
     virtual void  render_grid(shader_es_32&)                               = 0;

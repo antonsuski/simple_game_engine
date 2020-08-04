@@ -36,10 +36,10 @@ public:
     ~texture2d();
     explicit texture2d(std::string_view, size_t, shader_es_32*);
 
-    std::uint32_t get_width() const;
-    std::uint32_t get_height() const;
+    std::uint32_t get_width();
+    std::uint32_t get_height();
     void          bind();
-    int           get_id() const;
+    int           get_id();
 };
 
 class ENGINE_DECLSPEC texture_2d_es_320
@@ -50,13 +50,15 @@ class ENGINE_DECLSPEC texture_2d_es_320
     int height;
     int nr_channels;
 
-public:
-    explicit texture_2d_es_320(std::string_view);
+    GLuint txt_location;
 
-    std::uint32_t get_width() const;
-    std::uint32_t get_height() const;
+public:
+    explicit texture_2d_es_320(std::string_view, shader_es_32&);
+
+    std::uint32_t get_width();
+    std::uint32_t get_height();
     void          bind();
-    int           get_id() const;
+    int           get_id();
 };
 
 } // namespace engine

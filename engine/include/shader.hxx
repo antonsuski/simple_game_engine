@@ -27,6 +27,7 @@ public:
     // explicit shader_es_32(const char*, const char*, );
 
     void use();
-    void set_uniform_4f(std::vector<std::string_view>&, uniform&);
+    void set_uniform_4f(std::string_view&, uniform&);
+    void set_uniform_1i(std::string_view&, GLint&);
 };
 } // namespace engine

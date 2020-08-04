@@ -19,17 +19,17 @@ void texture2d::bind()
     OM_GL_CHECK();
 }
 
-std::uint32_t texture2d::get_width() const
+std::uint32_t texture2d::get_width()
 {
     return width;
 }
 
-std::uint32_t texture2d::get_height() const
+std::uint32_t texture2d::get_height()
 {
     return height;
 }
 
-int texture2d::get_id() const
+int texture2d::get_id()
 {
     return id;
 }
@@ -153,29 +153,47 @@ bool texture2d::load_texture(std::string_view path)
     return true;
 }
 
-texture_2d_es_320::texture_2d_es_320(std::string_view path)
+texture_2d_es_320::texture_2d_es_320(std::string_view path,
+                                     shader_es_32&    shader)
 {
     glGenTextures(1, &texture_id);
     OM_GL_CHECK()
 
+    shader.use();
+
+    txt_location = glGetUniformLocation(shader.id, "v_texture");
+    OM_GL_CHECK()
+
+    std::clog << txt_location << std::endl;
+
+    glActiveTexture(GL_TEXTURE0);
+    OM_GL_CHECK()
     bind();
 
-    std::vector<unsigned char*> image_png;
-    std::ifstream               ifs(path.data(), std::ios_base::binary);
-    if (!ifs)
-    {
-        std::cerr << "Error: can't open file: " << path << std::endl;
-    }
-    ifs.seekg(0, std::ios_base::end);
-    size_t pos_in_file = static_cast<size_t>(ifs.tellg());
-    image_png.resize(pos_in_file);
-    ifs.seekg(0, std::ios_base::beg);
-    if (!ifs)
-    {
-        std::cerr << "Error: can't setup pointer to begin file " << std::endl;
-    }
+    glUniform1i(txt_location, 0);
+    OM_GL_CHECK()
+    glEnable(GL_BLEND);
+    OM_GL_CHECK()
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    OM_GL_CHECK()
 
-    image_png[0] = stbi_load(path.data(), &width, &height, &nr_channels, 0);
+    unsigned char* image_png =
+        stbi_load(path.data(), &width, &height, &nr_channels, 0);
+
+    // clang-format off
+
+    glTexImage2D(GL_TEXTURE_2D,
+                 0,
+                 GL_RGB,
+                 width,
+                 height,
+                 0,
+                 GL_RGB,
+                 GL_UNSIGNED_BYTE,
+                 image_png);
+    OM_GL_CHECK()
+
+    //clang-format on
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     OM_GL_CHECK()
@@ -188,12 +206,19 @@ texture_2d_es_320::texture_2d_es_320(std::string_view path)
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     OM_GL_CHECK()
+
+    stbi_image_free(image_png);
 }
 
 void texture_2d_es_320::bind()
 {
     glBindTexture(GL_TEXTURE_2D, texture_id);
     OM_GL_CHECK()
+}
+
+int texture_2d_es_320::get_id()
+{
+    return texture_id;
 }
 
 } // namespace engine

@@ -157,42 +157,20 @@ void shader_es_32::use()
 
 bool already_reported{ false };
 
-void shader_es_32::set_uniform_4f(std::vector<std::string_view>& uniforms_name,
-                                  uniform&                       uniforms_data)
+void shader_es_32::set_uniform_4f(std::string_view& uniforms_name,
+                                  uniform&          uniforms_data)
 {
-    int current_uniform_location{ 0 };
-
-    for (auto iterator : uniforms_name)
-    {
-        current_uniform_location = glGetUniformLocation(id, iterator.data());
-        OM_GL_CHECK()
-
-        if (current_uniform_location == -1 && !already_reported)
-        {
-            std::cerr << "Uniform (" << iterator
-                      << ") location was not found!\n"
-                      << "location is (" << current_uniform_location << ")\n";
-
-            already_reported = true;
-        }
-        else
-        {
-            uniforms_location.push_back(current_uniform_location);
-        }
-    }
-
     use();
+    glUniform4f(glGetUniformLocation(id, uniforms_name.data()),
+                uniforms_data.u0, uniforms_data.u1, uniforms_data.u2,
+                uniforms_data.u3);
+    OM_GL_CHECK()
+}
 
-    for (auto iterator : uniforms_location)
-    {
-        // clang-format off
-        glUniform4f(iterator,
-                    uniforms_data.u0,
-                    uniforms_data.u1,
-                    uniforms_data.u2,
-                    uniforms_data.u3);
-        // clang-format on
-        OM_GL_CHECK()
-    }
+void shader_es_32::set_uniform_1i(std::string_view& uniform_name, GLint& value)
+{
+    use();
+    glUniform1i(glGetUniformLocation(id, uniform_name.data()), value);
+    OM_GL_CHECK();
 }
 } // namespace engine

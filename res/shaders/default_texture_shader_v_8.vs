@@ -11,7 +11,7 @@ out vec2 v_text_coord;
 
 void main()
 {
- v_text_coord = a_pos.xy; 
+ v_text_coord = a_text_coord;
  v_color = vec3(a_color.r, a_color.g, a_color.b);
  gl_Position = vec4(a_pos.x, a_pos.y, a_pos.z, 1.0);
 }

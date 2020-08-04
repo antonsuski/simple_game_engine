@@ -148,6 +148,11 @@ public:
         glEnable(GL_DEPTH_TEST);
         OM_GL_CHECK()
 
+        glEnable(GL_BLEND);
+        OM_GL_CHECK()
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        OM_GL_CHECK()
+
         return true;
     }
 
@@ -609,14 +614,38 @@ public:
         OM_GL_CHECK()
     }
 
-    void render_(vbo_v_8& buffer, shader_es_32& shader) final override
+    void render_(vbo_v_8& buffer, shader_es_32& shader,
+                 GLuint& texture_id) final override
     {
-        // Check the validate status
         shader.use();
+
         buffer.bind_vao();
         buffer.bind_buffer();
-        buffer.buffer_data(GL_DYNAMIC_DRAW);
-        glDrawArrays(GL_TRIANGLES, 0, buffer.size());
+        glBindTexture(GL_TEXTURE_2D, texture_id);
+        OM_GL_CHECK()
+        buffer.buffer_data(GL_STATIC_DRAW);
+        buffer.bind_ebo();
+        buffer.buffer_ebo();
+        glBindTexture(GL_TEXTURE_2D, texture_id);
+        OM_GL_CHECK()
+        glDrawElements(GL_TRIANGLES, buffer.ebo_size, GL_UNSIGNED_INT, 0);
+        OM_GL_CHECK()
+    }
+
+    void render_(vbo_v_8& buffer, shader_es_32& shader,
+                 texture_2d_es_320& txt) final override
+    {
+        shader.use();
+        glActiveTexture(GL_TEXTURE0);
+        OM_GL_CHECK()
+        glBindTexture(GL_TEXTURE_2D, txt.get_id());
+        OM_GL_CHECK()
+        buffer.bind_vao();
+        //        buffer.bind_buffer();
+        //        buffer.buffer_data(GL_DYNAMIC_DRAW);
+        //        glDrawArrays(GL_TRIANGLES, 0, buffer.size());
+
+        glDrawElements(GL_TRIANGLES, buffer.size(), GL_UNSIGNED_INT, 0);
         OM_GL_CHECK()
     }
 
