@@ -632,6 +632,30 @@ public:
         OM_GL_CHECK()
     }
 
+    void render_(vbo_v_8& buffer, shader_es_32& shader, GLuint& texture_id,
+                 GLuint& texture_) final override
+    {
+        shader.use();
+
+        buffer.bind_vao();
+        buffer.bind_buffer();
+        glActiveTexture(GL_TEXTURE0);
+        OM_GL_CHECK()
+        glBindTexture(GL_TEXTURE_2D, texture_id);
+        OM_GL_CHECK()
+        glActiveTexture(GL_TEXTURE1);
+        OM_GL_CHECK()
+        glBindTexture(GL_TEXTURE_2D, texture_);
+        OM_GL_CHECK()
+        buffer.buffer_data(GL_STATIC_DRAW);
+        buffer.bind_ebo();
+        buffer.buffer_ebo();
+        //        glBindTexture(GL_TEXTURE_2D, texture_id);
+        //        OM_GL_CHECK()
+        glDrawElements(GL_TRIANGLES, buffer.ebo_size, GL_UNSIGNED_INT, 0);
+        OM_GL_CHECK()
+    }
+
     void render_(vbo_v_8& buffer, shader_es_32& shader,
                  texture_2d_es_320& txt) final override
     {

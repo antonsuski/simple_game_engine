@@ -22,7 +22,7 @@ class ENGINE_DECLSPEC vbo
 class ENGINE_DECLSPEC vbo_v_8
 {
 public:
-    std::vector<v_8>*      vbo_data = nullptr;
+    std::vector<v_8>       vbo_data;
     std::vector<uint32_t>* ebo_data = nullptr;
 
     size_t vbo_data_size;

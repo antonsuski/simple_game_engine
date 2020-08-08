@@ -167,7 +167,7 @@ void shader_es_32::set_uniform_4f(std::string_view& uniforms_name,
     OM_GL_CHECK()
 }
 
-void shader_es_32::set_uniform_1i(std::string_view& uniform_name, GLint& value)
+void shader_es_32::set_uniform_1i(std::string_view uniform_name, GLint& value)
 {
     use();
     glUniform1i(glGetUniformLocation(id, uniform_name.data()), value);

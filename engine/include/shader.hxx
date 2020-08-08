@@ -28,6 +28,6 @@ public:
 
     void use();
     void set_uniform_4f(std::string_view&, uniform&);
-    void set_uniform_1i(std::string_view&, GLint&);
+    void set_uniform_1i(std::string_view, GLint&);
 };
 } // namespace engine

@@ -238,4 +238,92 @@ bool operator==(const v_8& left, const v_8 right)
                : false;
 }
 
+trans_mat_4x4::trans_mat_4x4()
+    : col_0(1.f, 0.f, 0.f, 0.f)
+    , col_1(0.f, 1.f, 0.f, 0.f)
+    , col_2(0.f, 0.f, 1.f, 0.f)
+    , delta(0.f, 0.f, 0.f, 1.f)
+{
+}
+
+trans_mat_4x4::trans_mat_4x4(v_4 col_0_, v_4 col_1_, v_4 col_2_, v_4 delta_)
+    : col_0(col_0_)
+    , col_1(col_1_)
+    , col_2(col_2_)
+    , delta(delta_)
+{
+}
+
+trans_mat_4x4 trans_mat_4x4::reset()
+{
+    return trans_mat_4x4{ { 1.f, 0.f, 0.f, 0.f },
+                          { 0.f, 1.f, 0.f, 0.f },
+                          { 0.f, 0.f, 1.f, 0.f },
+                          { 0.f, 0.f, 0.f, 1.f } };
+}
+
+trans_mat_4x4 trans_mat_4x4::move(const float& m_x, const float& m_y,
+                                  const float& m_z)
+{
+    trans_mat_4x4 rezult = trans_mat_4x4::reset();
+    rezult.delta         = { m_x, m_y, m_z, 1.f };
+    return rezult;
+}
+
+trans_mat_4x4 trans_mat_4x4::rotate(const float& angle)
+{
+    trans_mat_4x4 result;
+
+    result.col_0.x = std::cos(angle);
+    result.col_0.y = std::sin(angle);
+
+    result.col_1.x = -std::sin(angle);
+    result.col_1.y = std::cos(angle);
+
+    return result;
+}
+
+trans_mat_4x4 trans_mat_4x4::scale(const float& scale)
+{
+    float final_scale = scale;
+
+    if (!final_scale)
+    {
+        final_scale = 1.f;
+    }
+
+    trans_mat_4x4 rezult;
+
+    rezult.col_0.x = final_scale;
+    rezult.col_1.y = final_scale;
+    rezult.col_2.z = final_scale;
+
+    return rezult;
+}
+
+v_4 operator+(const v_4& left, const v_4 right)
+{
+    v_4 result;
+    result.x = left.x + right.x;
+    result.y = left.y + right.y;
+    result.z = left.z + right.z;
+    result.w = left.w + right.w;
+    return result;
+}
+
+v_4 operator*(const trans_mat_4x4& left, const v_4& right)
+{
+    v_4 rezult;
+    rezult.x = right.x * left.col_0.x + right.y * left.col_1.x +
+               right.z * left.col_2.x + right.w * left.delta.x;
+    rezult.y = right.x * left.col_0.y + right.y * left.col_1.y +
+               right.z * left.col_2.y + right.w * left.delta.y;
+    rezult.z = right.x * left.col_0.z + right.y * left.col_1.z +
+               right.z * left.col_2.z + right.w * left.delta.z;
+    rezult.w = right.x * left.col_0.w + right.y * left.col_1.w +
+               right.z * left.col_2.w + right.w * left.delta.w;
+
+    return rezult;
+}
+
 } // namespace engine

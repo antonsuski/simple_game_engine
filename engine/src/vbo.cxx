@@ -12,12 +12,6 @@ namespace engine
 {
 engine::vbo_v_8::~vbo_v_8()
 {
-    if (vbo_data != nullptr)
-    {
-        delete vbo_data;
-    }
-    vbo_data = nullptr;
-
     if (ebo_data != nullptr)
     {
         delete ebo_data;
@@ -45,18 +39,17 @@ engine::vbo_v_8::vbo_v_8(std::string_view path)
     {
         size_t count = get_line_count(vertex_file) - 1;
         restart_file(vertex_file);
-        vbo_data = new std::vector<v_8>;
         ebo_data = new std::vector<uint32_t>;
         v_8 tr;
 
         for (size_t iterator = 0; iterator < count; iterator++)
         {
             vertex_file >> tr;
-            vbo_data->push_back(tr);
+            vbo_data.push_back(tr);
         }
     }
 
-    vbo_data_size = vbo_data->size();
+    vbo_data_size = vbo_data.size();
 
     for (size_t iterator = 0; iterator < vbo_data_size; iterator++)
     {
@@ -72,7 +65,7 @@ engine::vbo_v_8::vbo_v_8(std::string_view path)
         std::clog << i << std::endl;
     }
     std::clog << "----ebo----" << std::endl;
-    for (auto i : *vbo_data)
+    for (auto i : vbo_data)
     {
         std::clog << i;
     }
@@ -137,8 +130,8 @@ void vbo_v_8::buffer_data(GLenum flag)
     //         << sizeof(vbo_data[0]) * vbo_data->size() << endl
     //         << "sizeof(vertex_8): " << sizeof(v_8) << endl;
 
-    glBufferData(GL_ARRAY_BUFFER, sizeof(v_8) * vbo_data->size(),
-                 vbo_data->data(), flag);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(v_8) * vbo_data.size(),
+                 vbo_data.data(), flag);
     OM_GL_CHECK()
 }
 
@@ -209,7 +202,7 @@ void vbo_v_8::unbind_vao()
 
 void vbo_v_8::print_buffer()
 {
-    for (auto iterator : *vbo_data)
+    for (auto iterator : vbo_data)
     {
         std::cerr << iterator;
     }
@@ -219,26 +212,26 @@ void vbo_v_8::morf_color(float& time)
 {
     for (size_t iterator = 0; iterator < vbo_data_size; ++iterator)
     {
-        if (vbo_data->at(iterator % 3).r || vbo_data->at((iterator + 1) % 3).r)
+        if (vbo_data.at(iterator % 3).r || vbo_data.at((iterator + 1) % 3).r)
         {
-            vbo_data->at(iterator % 3).r =
-                fabs(vbo_data->at(iterator % 3).r - 0.2f);
-            vbo_data->at((iterator + 1) % 3).r =
-                fabs(vbo_data->at((iterator + 1) % 3).r + 0.2f);
+            vbo_data.at(iterator % 3).r =
+                fabs(vbo_data.at(iterator % 3).r - 0.2f);
+            vbo_data.at((iterator + 1) % 3).r =
+                fabs(vbo_data.at((iterator + 1) % 3).r + 0.2f);
         }
-        if (vbo_data->at(iterator % 3).g || vbo_data->at((iterator + 1) % 3).g)
+        if (vbo_data.at(iterator % 3).g || vbo_data.at((iterator + 1) % 3).g)
         {
-            vbo_data->at(iterator % 3).g =
-                fabs(vbo_data->at(iterator % 3).g - 0.2f);
-            vbo_data->at((iterator + 1) % 3).g =
-                fabs(vbo_data->at((iterator + 1) % 3).g + 0.2f);
+            vbo_data.at(iterator % 3).g =
+                fabs(vbo_data.at(iterator % 3).g - 0.2f);
+            vbo_data.at((iterator + 1) % 3).g =
+                fabs(vbo_data.at((iterator + 1) % 3).g + 0.2f);
         }
-        if (vbo_data->at(iterator % 3).b || vbo_data->at((iterator + 1) % 3).b)
+        if (vbo_data.at(iterator % 3).b || vbo_data.at((iterator + 1) % 3).b)
         {
-            vbo_data->at(iterator % 3).b =
-                fabs(vbo_data->at(iterator % 3).b - 0.2f);
-            vbo_data->at((iterator + 1) % 3).b =
-                fabs(vbo_data->at((iterator + 1) % 3).b + 0.2f);
+            vbo_data.at(iterator % 3).b =
+                fabs(vbo_data.at(iterator % 3).b - 0.2f);
+            vbo_data.at((iterator + 1) % 3).b =
+                fabs(vbo_data.at((iterator + 1) % 3).b + 0.2f);
         }
     }
 }
