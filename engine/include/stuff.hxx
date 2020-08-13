@@ -126,6 +126,9 @@ struct ENGINE_DECLSPEC triangle
 
 struct ENGINE_DECLSPEC uniform
 {
+private:
+    std::string_view uniform_name;
+
 public:
     float u0;
     float u1;
@@ -133,19 +136,23 @@ public:
     float u3;
 
     uniform()
-        : u0(0.f)
+        : uniform_name("unknown")
+        , u0(0.f)
         , u1(0.f)
         , u2(0.f)
         , u3(0.f)
     {
     }
-    uniform(float a, float b, float c, float d)
-        : u0(a)
+    uniform(std::string_view uniform_name_, float a, float b, float c, float d)
+        : uniform_name(uniform_name_)
+        , u0(a)
         , u1(b)
         , u2(c)
         , u3(d)
     {
     }
+
+    std::string_view get_name();
 };
 
 struct ENGINE_DECLSPEC m_2x3
@@ -174,11 +181,6 @@ struct ENGINE_DECLSPEC m_3x3
     v_3          delta;
 };
 
-struct ENGINE_DECLSPEC attribute
-{
-    const GLvoid* pointer;
-};
-
 class ENGINE_DECLSPEC trans_mat_4x4
 {
 public:
@@ -187,9 +189,9 @@ public:
     static trans_mat_4x4 reset();
     static trans_mat_4x4 move(const float& m_x, const float& m_y,
                               const float& m_z);
+    static trans_mat_4x4 move(const v_3& vec3);
     static trans_mat_4x4 scale(const float& scale);
-    static trans_mat_4x4 scale(const float& s_x, const float& s_y,
-                               const float& s_z);
+    static trans_mat_4x4 scale(float s_x, float s_y, float s_z);
     static trans_mat_4x4 rotate(const float& angle);
 
     v_4 col_0;
@@ -206,10 +208,17 @@ ENGINE_DECLSPEC std::ostream& operator<<(std::ostream& stream, const v_2&);
 ENGINE_DECLSPEC std::istream& operator>>(std::istream& is, v_3&);
 ENGINE_DECLSPEC std::ostream& operator<<(std::ostream& stream, const v_3&);
 
+ENGINE_DECLSPEC std::istream& operator>>(std::istream& is, v_4&);
+ENGINE_DECLSPEC std::ostream& operator<<(std::ostream& stream, const v_4&);
+
 ENGINE_DECLSPEC std::istream& operator>>(std::istream& is, v_8&);
 ENGINE_DECLSPEC std::istream& operator>>(std::istream& is, triangle&);
 ENGINE_DECLSPEC std::ostream& operator<<(std::ostream& stream, const v_8&);
 ENGINE_DECLSPEC std::ostream& operator<<(std::ostream& stream, const triangle&);
+
+ENGINE_DECLSPEC std::istream& operator>>(std::istream& is, trans_mat_4x4&);
+ENGINE_DECLSPEC std::ostream& operator<<(std::ostream& stream,
+                                         const trans_mat_4x4&);
 
 ENGINE_DECLSPEC v_2 operator+(const v_2& left, const v_2 right);
 ENGINE_DECLSPEC v_3 operator+(const v_3& left, const v_3 right);
@@ -217,6 +226,8 @@ ENGINE_DECLSPEC v_4 operator+(const v_4& left, const v_4 right);
 ENGINE_DECLSPEC v_8 operator+(const v_8& left, const v_8 right);
 
 ENGINE_DECLSPEC v_4 operator*(const trans_mat_4x4& left, const v_4& right);
+ENGINE_DECLSPEC trans_mat_4x4 operator*(const trans_mat_4x4& left,
+                                        const trans_mat_4x4& right);
 
 ENGINE_DECLSPEC bool operator==(const v_2& left, const v_2 right);
 ENGINE_DECLSPEC bool operator==(const v_3& left, const v_3 right);

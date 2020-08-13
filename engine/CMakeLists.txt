@@ -22,6 +22,7 @@ add_library(engine_shared SHARED
     include/vbo.hxx)
 
 find_package(SDL2 REQUIRED)
+find_library(GLM REQUIRED)
 
 target_compile_features(engine_shared PUBLIC cxx_std_20)
 target_include_directories(engine_shared PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)

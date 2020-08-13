@@ -270,6 +270,13 @@ trans_mat_4x4 trans_mat_4x4::move(const float& m_x, const float& m_y,
     return rezult;
 }
 
+trans_mat_4x4 trans_mat_4x4::move(const v_3& vec3)
+{
+    trans_mat_4x4 rezult = trans_mat_4x4::reset();
+    rezult.delta         = { vec3.x, vec3.y, vec3.z, 1.0f };
+    return rezult;
+}
+
 trans_mat_4x4 trans_mat_4x4::rotate(const float& angle)
 {
     trans_mat_4x4 result;
@@ -301,6 +308,32 @@ trans_mat_4x4 trans_mat_4x4::scale(const float& scale)
     return rezult;
 }
 
+trans_mat_4x4 trans_mat_4x4::scale(float s_x, float s_y, float s_z)
+{
+    if (!s_x)
+    {
+        s_x = 1.f;
+    }
+
+    if (!s_y)
+    {
+        s_y = 1.f;
+    }
+
+    if (!s_z)
+    {
+        s_z = 1.f;
+    }
+
+    trans_mat_4x4 rezult;
+
+    rezult.col_0.x = s_x;
+    rezult.col_1.y = s_y;
+    rezult.col_2.z = s_z;
+
+    return rezult;
+}
+
 v_4 operator+(const v_4& left, const v_4 right)
 {
     v_4 result;
@@ -324,6 +357,94 @@ v_4 operator*(const trans_mat_4x4& left, const v_4& right)
                right.z * left.col_2.w + right.w * left.delta.w;
 
     return rezult;
+}
+
+trans_mat_4x4 operator*(const trans_mat_4x4& left, const trans_mat_4x4& right)
+{
+    trans_mat_4x4 rezult;
+
+    rezult.col_0.x =
+        left.col_0.x * right.col_0.x + left.col_1.x * right.col_0.y +
+        left.col_2.x * right.col_0.z + left.delta.x * right.col_0.w;
+    rezult.col_0.y =
+        left.col_0.y * right.col_0.x + left.col_1.y * right.col_0.y +
+        left.col_2.y * right.col_0.z + left.delta.y * right.col_0.w;
+    rezult.col_0.z =
+        left.col_0.z * right.col_0.x + left.col_1.z * right.col_0.y +
+        left.col_2.z * right.col_0.z + left.delta.z * right.col_0.w;
+    rezult.col_0.w =
+        left.col_0.w * right.col_0.x + left.col_1.w * right.col_0.y +
+        left.col_2.w * right.col_0.z + left.delta.w * right.col_0.w;
+
+    rezult.col_1.x =
+        left.col_0.x * right.col_1.x + left.col_1.x * right.col_1.y +
+        left.col_2.x * right.col_1.z + left.delta.x * right.col_1.w;
+    rezult.col_1.y =
+        left.col_0.y * right.col_1.x + left.col_1.y * right.col_1.y +
+        left.col_2.y * right.col_1.z + left.delta.y * right.col_1.w;
+    rezult.col_1.z =
+        left.col_0.z * right.col_1.x + left.col_1.z * right.col_1.y +
+        left.col_2.z * right.col_1.z + left.delta.z * right.col_1.w;
+    rezult.col_1.w =
+        left.col_0.w * right.col_1.x + left.col_1.w * right.col_1.y +
+        left.col_2.w * right.col_1.z + left.delta.w * right.col_1.w;
+
+    rezult.col_2.x =
+        left.col_0.x * right.col_2.x + left.col_1.x * right.col_2.y +
+        left.col_2.x * right.col_2.z + left.delta.x * right.col_2.w;
+    rezult.col_2.y =
+        left.col_0.y * right.col_2.x + left.col_1.y * right.col_2.y +
+        left.col_2.y * right.col_2.z + left.delta.y * right.col_2.w;
+    rezult.col_2.z =
+        left.col_0.z * right.col_2.x + left.col_1.z * right.col_2.y +
+        left.col_2.z * right.col_2.z + left.delta.z * right.col_2.w;
+    rezult.col_2.w =
+        left.col_0.w * right.col_2.x + left.col_1.w * right.col_2.y +
+        left.col_2.w * right.col_2.z + left.delta.w * right.col_2.w;
+
+    rezult.delta.x =
+        left.col_0.x * right.delta.x + left.col_1.x * right.delta.y +
+        left.col_2.x * right.delta.z + left.delta.x * right.delta.w;
+    rezult.delta.y =
+        left.col_0.y * right.delta.x + left.col_1.y * right.delta.y +
+        left.col_2.y * right.delta.z + left.delta.y * right.delta.w;
+    rezult.delta.z =
+        left.col_0.z * right.delta.x + left.col_1.z * right.delta.y +
+        left.col_2.z * right.delta.z + left.delta.z * right.delta.w;
+    rezult.delta.w =
+        left.col_0.w * right.delta.x + left.col_1.w * right.delta.y +
+        left.col_2.w * right.delta.z + left.delta.w * right.delta.w;
+
+    return rezult;
+}
+
+std::istream& operator>>(std::istream& is, v_4& v)
+{
+    is >> v.x >> v.y >> v.z;
+    return is;
+}
+
+std::ostream& operator<<(std::ostream& stream, const v_4& v)
+{
+    stream << v.x << " " << v.y << " " << v.z << " " << v.w << std::endl;
+    return stream;
+}
+
+std::istream& operator>>(std::istream& is, trans_mat_4x4& mat)
+{
+    is >> mat.col_0 >> mat.col_1 >> mat.col_2 >> mat.delta;
+    return is;
+}
+
+std::ostream& operator<<(std::ostream& stream, const trans_mat_4x4& mat)
+{
+    stream << mat.col_0 << mat.col_1 << mat.col_2 << mat.delta << std::endl;
+    return stream;
+}
+
+std::string_view uniform::get_name()
+{
+    return uniform_name;
 }
 
 } // namespace engine

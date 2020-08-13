@@ -467,21 +467,6 @@ public:
         return false;
     }
 
-    void render(vbo_v_3& buffer, shader_es_32& shader) final override
-    {
-        shader.use();
-        buffer.bind_vao();
-
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        OM_GL_CHECK()
-
-        glClearColor(0.3f, 0.3f, 1.f, 0.0f);
-        OM_GL_CHECK()
-
-        glClear(GL_COLOR_BUFFER_BIT);
-        OM_GL_CHECK()
-    }
-
     void swap_buffers() final override
     {
         SDL_GL_SwapWindow(window);
@@ -575,47 +560,8 @@ public:
         return vert_arr;
     }
 
-    void render_my_triangle(const triangle& t,
-                            shader_es_32&   shader_) final override
-    {
-        glBufferData(GL_ARRAY_BUFFER, sizeof(t), &t, GL_STATIC_DRAW);
-        OM_GL_CHECK()
-        glEnableVertexAttribArray(0);
-
-        GLintptr position_attr_offset = 0;
-        OM_GL_CHECK()
-
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(v_3),
-                              reinterpret_cast<void*>(position_attr_offset));
-        OM_GL_CHECK()
-
-        program_id_ = shader_.id;
-
-        glValidateProgram(program_id_);
-        OM_GL_CHECK()
-
-        // Check the validate status
-        GLint validate_status = 0;
-        glGetProgramiv(program_id_, GL_VALIDATE_STATUS, &validate_status);
-        OM_GL_CHECK()
-        if (validate_status == GL_FALSE)
-        {
-            GLint infoLen = 0;
-            glGetProgramiv(program_id_, GL_INFO_LOG_LENGTH, &infoLen);
-            OM_GL_CHECK()
-            std::vector<char> infoLog(static_cast<size_t>(infoLen));
-            glGetProgramInfoLog(program_id_, infoLen, nullptr, infoLog.data());
-            OM_GL_CHECK()
-            std::cerr << "Error linking program:\n" << infoLog.data();
-            throw std::runtime_error("error");
-        }
-        shader_.use();
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        OM_GL_CHECK()
-    }
-
-    void render_(vbo_v_8& buffer, shader_es_32& shader,
-                 GLuint& texture_id) final override
+    void render(vbo_v_8& buffer, shader_es_32& shader,
+                GLuint& texture_id) final override
     {
         shader.use();
 
@@ -632,8 +578,8 @@ public:
         OM_GL_CHECK()
     }
 
-    void render_(vbo_v_8& buffer, shader_es_32& shader, GLuint& texture_id,
-                 GLuint& texture_) final override
+    void render(vbo_v_8& buffer, shader_es_32& shader, GLuint& texture_id,
+                GLuint& texture_) final override
     {
         shader.use();
 
@@ -656,56 +602,22 @@ public:
         OM_GL_CHECK()
     }
 
-    void render_(vbo_v_8& buffer, shader_es_32& shader,
-                 texture_2d_es_320& txt) final override
+    void render(vbo_v_8& buffer, shader_es_32& shader,
+                texture_2d_es_32& txt) final override
     {
         shader.use();
-        glActiveTexture(GL_TEXTURE0);
-        OM_GL_CHECK()
-        glBindTexture(GL_TEXTURE_2D, txt.get_id());
-        OM_GL_CHECK()
-        buffer.bind_vao();
-        //        buffer.bind_buffer();
-        //        buffer.buffer_data(GL_DYNAMIC_DRAW);
-        //        glDrawArrays(GL_TRIANGLES, 0, buffer.size());
 
-        glDrawElements(GL_TRIANGLES, buffer.size(), GL_UNSIGNED_INT, 0);
+        buffer.bind_vao();
+        buffer.bind_buffer();
+        buffer.buffer_data(GL_STATIC_DRAW);
+        buffer.bind_ebo();
+        buffer.buffer_ebo();
+
+        txt.bind();
+
+        glDrawElements(GL_TRIANGLES, buffer.ebo_size, GL_UNSIGNED_INT, 0);
         OM_GL_CHECK()
     }
-
-    void render_(vbo_v_3& buffer, shader_es_32& shader,
-                 const attribute_es_32& att) final override
-    {
-        shader.use();
-        buffer.bind_vao();
-        shd_proc              = shader.id;
-        GLuint shd_proc_value = shd_proc;
-        glValidateProgram(shd_proc_value);
-        OM_GL_CHECK()
-
-        // Check the validate status
-
-        GLint validate_status = 0;
-        glGetProgramiv(shd_proc_value, GL_VALIDATE_STATUS, &validate_status);
-        OM_GL_CHECK()
-
-        if (validate_status == GL_FALSE)
-        {
-            GLint infoLen = 0;
-            glGetProgramiv(shd_proc_value, GL_INFO_LOG_LENGTH, &infoLen);
-            OM_GL_CHECK()
-            std::vector<char> infoLog(static_cast<size_t>(infoLen));
-            glGetProgramInfoLog(shd_proc_value, infoLen, nullptr,
-                                infoLog.data());
-            OM_GL_CHECK()
-            std::cerr << "Error linking program:\n" << infoLog.data();
-            throw std::runtime_error("error");
-        }
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        OM_GL_CHECK()
-    }
-
-    // bool my_shd_is_exist = false;
 
     void render_grid(shader_es_32& shader_) final override
     {
@@ -784,71 +696,6 @@ public:
         std::uint32_t ms_from_library_initialization = SDL_GetTicks();
         float         seconds = ms_from_library_initialization * 0.001f;
         return seconds;
-    }
-
-    bool load_texture(std::string_view path) final override
-    {
-        std::vector<std::byte> png_file_in_memory;
-        std::ifstream          ifs(path.data(), std::ios_base::binary);
-        if (!ifs)
-        {
-            return false;
-        }
-        ifs.seekg(0, std::ios_base::end);
-        size_t pos_in_file = static_cast<size_t>(ifs.tellg());
-        png_file_in_memory.resize(pos_in_file);
-        ifs.seekg(0, std::ios_base::beg);
-        if (!ifs)
-        {
-            return false;
-        }
-
-        ifs.read(reinterpret_cast<char*>(png_file_in_memory.data()),
-                 static_cast<std::streamsize>(png_file_in_memory.size()));
-        if (!ifs.good())
-        {
-            return false;
-        }
-
-        std::vector<std::byte> image;
-        unsigned long          w = 0;
-        unsigned long          h = 0;
-        int error = 0; /*decodePNG(image, w, h, &png_file_in_memory[0],
-                                png_file_in_memory.size(), false);*/
-
-        // if there's an error, display it
-        if (error != 0)
-        {
-            std::cerr << "error: " << error << std::endl;
-            return false;
-        }
-
-        GLuint tex_handl = 0;
-        glGenTextures(1, &tex_handl);
-        OM_GL_CHECK()
-        glBindTexture(GL_TEXTURE_2D, tex_handl);
-        OM_GL_CHECK()
-
-        GLint mipmap_level = 0;
-        GLint border       = 0;
-        // clang-format off
-        glTexImage2D(GL_TEXTURE_2D, // Specifies the target texture of the active texture unit
-                     mipmap_level,  // Specifies the level-of-detail number. Level 0 is the base image level
-                     GL_RGBA,       // Specifies the internal format of the texture
-                     static_cast<GLsizei>(w),
-                     static_cast<GLsizei>(h),
-                     border,        // Specifies the width of the border. Must be 0. For GLES 2.0
-                     GL_RGBA,       // Specifies the format of the texel data. Must match internalformat
-                     GL_UNSIGNED_BYTE, // Specifies the data type of the texel data
-                     &image[0]);    // Specifies a pointer to the image data in memory
-        // clang-format on
-        OM_GL_CHECK()
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        OM_GL_CHECK()
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        OM_GL_CHECK()
-        return true;
     }
 };
 

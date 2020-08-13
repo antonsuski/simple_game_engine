@@ -153,70 +153,45 @@ bool texture2d::load_texture(std::string_view path)
     return true;
 }
 
-texture_2d_es_320::texture_2d_es_320(std::string_view path,
-                                     shader_es_32&    shader)
+texture_2d_es_32::texture_2d_es_32(std::string_view path)
 {
     glGenTextures(1, &texture_id);
-    OM_GL_CHECK()
-
-    shader.use();
-
-    txt_location = glGetUniformLocation(shader.id, "v_texture");
-    OM_GL_CHECK()
-
-    std::clog << txt_location << std::endl;
-
-    glActiveTexture(GL_TEXTURE0);
-    OM_GL_CHECK()
-    bind();
-
-    glUniform1i(txt_location, 0);
-    OM_GL_CHECK()
-    glEnable(GL_BLEND);
-    OM_GL_CHECK()
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    OM_GL_CHECK()
-
-    unsigned char* image_png =
-        stbi_load(path.data(), &width, &height, &nr_channels, 0);
-
-    // clang-format off
-
-    glTexImage2D(GL_TEXTURE_2D,
-                 0,
-                 GL_RGB,
-                 width,
-                 height,
-                 0,
-                 GL_RGB,
-                 GL_UNSIGNED_BYTE,
-                 image_png);
-    OM_GL_CHECK()
-
-    //clang-format on
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    OM_GL_CHECK()
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    OM_GL_CHECK()
-
+    glBindTexture(GL_TEXTURE_2D,
+                  texture_id); // все последующие GL_TEXTURE_2D-операции теперь
+    // будут влиять на данный текстурный объект
+    // установка параметров наложения текстуры
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
+                    GL_CLAMP_TO_BORDER); // установка метода наложения текстуры
+    // GL_REPEAT (стандартный метод наложения)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+    // установка параметров фильтрации текстуры
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    OM_GL_CHECK()
-
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    OM_GL_CHECK()
-
-    stbi_image_free(image_png);
+    // загрузка изображения, создание текстуры и генерирование
+    // mipmap-уровней
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char* data =
+        stbi_load(path.data(), &width, &height, &nr_channels, 0);
+    if (data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
+                     GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+    stbi_image_free(data);
 }
 
-void texture_2d_es_320::bind()
+void texture_2d_es_32::bind()
 {
     glBindTexture(GL_TEXTURE_2D, texture_id);
     OM_GL_CHECK()
 }
 
-int texture_2d_es_320::get_id()
+int texture_2d_es_32::get_id()
 {
     return texture_id;
 }

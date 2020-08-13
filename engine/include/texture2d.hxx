@@ -42,7 +42,7 @@ public:
     int           get_id();
 };
 
-class ENGINE_DECLSPEC texture_2d_es_320
+class ENGINE_DECLSPEC texture_2d_es_32
 {
     GLuint texture_id;
 
@@ -53,7 +53,7 @@ class ENGINE_DECLSPEC texture_2d_es_320
     GLuint txt_location;
 
 public:
-    explicit texture_2d_es_320(std::string_view, shader_es_32&);
+    explicit texture_2d_es_32(std::string_view);
 
     std::uint32_t get_width();
     std::uint32_t get_height();

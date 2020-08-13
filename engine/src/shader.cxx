@@ -155,6 +155,42 @@ void shader_es_32::use()
     OM_GL_CHECK()
 }
 
+void shader_es_32::set_uniform_4mat(std::string_view uniform_name,
+                                    glm::mat4&       mat)
+{
+    use();
+    const int uniform_location = glGetUniformLocation(id, uniform_name.data());
+    OM_GL_CHECK()
+    if (uniform_location == -1)
+    {
+        std::cerr << "can't get uniform location from shader\n";
+        throw std::runtime_error("can't get uniform location");
+    }
+
+    glUniformMatrix4fv(uniform_location, 1, GL_FALSE, glm::value_ptr(mat));
+    OM_GL_CHECK()
+}
+
+void shader_es_32::set_uniform_4mat(std::string_view uniform_name,
+                                    trans_mat_4x4&   mat)
+{
+    use();
+    const int uniform_location = glGetUniformLocation(id, uniform_name.data());
+    OM_GL_CHECK()
+    if (uniform_location == -1)
+    {
+        std::cerr << "can't get uniform location from shader\n";
+        throw std::runtime_error("can't get uniform location");
+    }
+
+    float matrix[16] = { mat.col_0.x, mat.col_1.x, mat.col_2.x, mat.delta.x,
+                         mat.col_0.y, mat.col_1.y, mat.col_2.y, mat.delta.y,
+                         mat.col_0.z, mat.col_1.z, mat.col_2.z, mat.delta.z,
+                         mat.col_0.w, mat.col_1.w, mat.col_2.w, mat.delta.w };
+    glUniformMatrix4fv(uniform_location, 1, GL_FALSE, &matrix[0]);
+    OM_GL_CHECK()
+}
+
 bool already_reported{ false };
 
 void shader_es_32::set_uniform_4f(std::string_view& uniforms_name,
@@ -162,6 +198,15 @@ void shader_es_32::set_uniform_4f(std::string_view& uniforms_name,
 {
     use();
     glUniform4f(glGetUniformLocation(id, uniforms_name.data()),
+                uniforms_data.u0, uniforms_data.u1, uniforms_data.u2,
+                uniforms_data.u3);
+    OM_GL_CHECK()
+}
+
+void shader_es_32::set_uniform_4f(uniform& uniforms_data)
+{
+    use();
+    glUniform4f(glGetUniformLocation(id, uniforms_data.get_name().data()),
                 uniforms_data.u0, uniforms_data.u1, uniforms_data.u2,
                 uniforms_data.u3);
     OM_GL_CHECK()

@@ -1,8 +1,12 @@
 ﻿#include <cassert>
 #include <cmath>
 #include <fstream>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <memory>
+#include <numbers>
 #include <vector>
 
 #include "engine.hxx"
@@ -38,27 +42,50 @@ int main(int /*argc*/, char* /*argv*/[])
         "../../../res/shaders/default_texture_shader_v_8.fs");
     engine::shader_es_32 r_txt_sh("../../../res/shaders/r_txt.vs",
                                   "../../../res/shaders/r_txt.fs");
-    r_txt_sh.use();
-    GLint lol = 0;
-    r_txt_sh.set_uniform_1i("texture1", lol);
-    lol++;
-    r_txt_sh.set_uniform_1i("texture2", lol);
+    engine::shader_es_32 glm_txt_sh("../../../res/shaders/glm_txt_sh.vs",
+                                    "../../../res/shaders/glm_txt_sh.fs");
+
     // buffers
     engine::vbo_v_8 triangle("../../../res/rgb_triangle.txt");
     engine::vbo_v_8 triangle_2("../../../res/rgb_triangle_1.txt");
+    engine::vbo_v_8 tank_0("../../../res/tank_1_0.txt");
+    engine::vbo_v_8 tank_1("../../../res/tank_1_1.txt");
 
-    engine::trans_mat_4x4 mat;
-    mat.scale(4);
     // uniforms
-    engine::uniform  u{ 0, 0, 0, 0 };
-    std::string_view u_name{ "my_color" };
-    GLuint           txt{ 0 };
-    GLuint           txt1{ 0 };
-    load_txt("../../../res/images/tank.png", txt);
-    load_txt("../../../res/images/tank_1.png", txt1);
+    engine::uniform u{ "my_color", 0, 0, 0, 0 };
+    // load_txt("../../../res/images/tank.png", txt);
+    // load_txt("../../../res/images/tank_1.png", txt1);
     r_txt_sh.use();
     // engine
-    bool continue_loop = true;
+
+    // expirements
+    engine::texture_2d_es_32 tank_txt("../../../res/images/tank.png");
+    engine::texture_2d_es_32 tank_1_txt("../../../res/images/tank_1.png");
+    engine::trans_mat_4x4    mat1{
+        { 4, 0, 0, 0 }, { 2, 8, 1, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 }
+    };
+    engine::trans_mat_4x4 mat2{
+        { 4, 2, 9, 0 }, { 2, 0, 4, 0 }, { 1, 4, 2, 0 }, { 0, 0, 0, 0 }
+    };
+    engine::v_4 vec = { -0.5f, 0.5f, 0.f, 0.f };
+
+    engine::trans_mat_4x4 scale_m_ =
+        engine::trans_mat_4x4::scale(0.9, 0.9, 1.f);
+    engine::trans_mat_4x4 move_m_ = engine::trans_mat_4x4::move(0.5, 0.5, 0.0);
+    engine::trans_mat_4x4 mat_    = move_m_ * scale_m_;
+
+    std::cout << scale_m_ << move_m_ << mat_ << std::endl;
+    std::cout << scale_m_ * vec << std::endl;
+    std::cout << move_m_ * vec << std::endl;
+    std::cout << mat_ * vec << std::endl;
+
+    // end of expirements
+    engine::v_3 current_pos(0.f, 0.f, 0.f);
+    engine::v_2 current_scale(1.f, 1.f);
+    float       current_direction(0.f);
+    float       glm_direction(0.f);
+    const float pi            = std::numbers::pi_v<float>;
+    bool        continue_loop = true;
     while (continue_loop)
     {
         engine::event event;
@@ -73,317 +100,117 @@ int main(int /*argc*/, char* /*argv*/[])
                     break;
                 case engine::event::button_1:
                 {
-                    engine::v_4 vec_4;
                     if (event.is_running)
                     {
-                        for (size_t iterator{ 0 };
-                             iterator < triangle.vbo_data.size(); iterator++)
-                        {
-                            vec_4.x = triangle.vbo_data[iterator].x;
-                            vec_4.y = triangle.vbo_data[iterator].y;
-                            vec_4.z = triangle.vbo_data[iterator].z;
-                            vec_4.w = 1;
-
-                            std::cout << "x:" << vec_4.x << " y:" << vec_4.y
-                                      << " z:" << vec_4.z << " w:" << vec_4.w
-                                      << std::endl;
-                            scale_up(vec_4);
-
-                            triangle.vbo_data[iterator].x = vec_4.x;
-                            triangle.vbo_data[iterator].y = vec_4.y;
-                            triangle.vbo_data[iterator].z = vec_4.z;
-
-                            vec_4.x = triangle_2.vbo_data[iterator].x;
-                            vec_4.y = triangle_2.vbo_data[iterator].y;
-                            vec_4.z = triangle_2.vbo_data[iterator].z;
-                            vec_4.w = 1;
-
-                            std::cout << "x:" << vec_4.x << " y:" << vec_4.y
-                                      << " z:" << vec_4.z << " w:" << vec_4.w
-                                      << std::endl;
-                            scale_up(vec_4);
-                            triangle_2.vbo_data[iterator].x = vec_4.x;
-                            triangle_2.vbo_data[iterator].y = vec_4.y;
-                            triangle_2.vbo_data[iterator].z = vec_4.z;
-                        }
+                        current_scale.x += 0.1;
+                        current_scale.y += 0.1;
                     }
                 }
                 break;
                 case engine::event::button_2:
                 {
-                    engine::v_4 vec_4;
                     if (event.is_running)
                     {
-                        for (size_t iterator{ 0 };
-                             iterator < triangle.vbo_data.size(); iterator++)
-                        {
-                            vec_4.x = triangle.vbo_data[iterator].x;
-                            vec_4.y = triangle.vbo_data[iterator].y;
-                            vec_4.z = triangle.vbo_data[iterator].z;
-                            vec_4.w = 1;
-
-                            std::cout << "x:" << vec_4.x << " y:" << vec_4.y
-                                      << " z:" << vec_4.z << " w:" << vec_4.w
-                                      << std::endl;
-                            scale_down(vec_4);
-
-                            triangle.vbo_data[iterator].x = vec_4.x;
-                            triangle.vbo_data[iterator].y = vec_4.y;
-                            triangle.vbo_data[iterator].z = vec_4.z;
-
-                            vec_4.x = triangle_2.vbo_data[iterator].x;
-                            vec_4.y = triangle_2.vbo_data[iterator].y;
-                            vec_4.z = triangle_2.vbo_data[iterator].z;
-                            vec_4.w = 1;
-
-                            std::cout << "x:" << vec_4.x << " y:" << vec_4.y
-                                      << " z:" << vec_4.z << " w:" << vec_4.w
-                                      << std::endl;
-                            scale_down(vec_4);
-                            triangle_2.vbo_data[iterator].x = vec_4.x;
-                            triangle_2.vbo_data[iterator].y = vec_4.y;
-                            triangle_2.vbo_data[iterator].z = vec_4.z;
-                        }
+                        current_scale.x -= 0.1;
+                        current_scale.y -= 0.1;
                     }
                 }
                 break;
                 case engine::event::up:
                 {
-                    engine::v_4 vec_4;
                     if (event.is_running)
                     {
-                        for (size_t iterator{ 0 };
-                             iterator < triangle.vbo_data.size(); iterator++)
-                        {
-                            vec_4.x = triangle.vbo_data[iterator].x;
-                            vec_4.y = triangle.vbo_data[iterator].y;
-                            vec_4.z = triangle.vbo_data[iterator].z;
-                            vec_4.w = 1;
-
-                            std::cout << "x:" << vec_4.x << " y:" << vec_4.y
-                                      << " z:" << vec_4.z << " w:" << vec_4.w
-                                      << std::endl;
-                            move_horizontal(vec_4, true);
-
-                            triangle.vbo_data[iterator].x = vec_4.x;
-                            triangle.vbo_data[iterator].y = vec_4.y;
-                            triangle.vbo_data[iterator].z = vec_4.z;
-
-                            vec_4.x = triangle_2.vbo_data[iterator].x;
-                            vec_4.y = triangle_2.vbo_data[iterator].y;
-                            vec_4.z = triangle_2.vbo_data[iterator].z;
-                            vec_4.w = 1;
-
-                            std::cout << "x:" << vec_4.x << " y:" << vec_4.y
-                                      << " z:" << vec_4.z << " w:" << vec_4.w
-                                      << std::endl;
-                            move_horizontal(vec_4, true);
-                            triangle_2.vbo_data[iterator].x = vec_4.x;
-                            triangle_2.vbo_data[iterator].y = vec_4.y;
-                            triangle_2.vbo_data[iterator].z = vec_4.z;
-                        }
+                        current_pos.y += 0.05f;
+                        current_direction = 0.f;
+                        glm_direction     = 0.f;
                     }
                 }
                 break;
                 case engine::event::down:
                 {
-                    engine::v_4 vec_4;
                     if (event.is_running)
                     {
-                        for (size_t iterator{ 0 };
-                             iterator < triangle.vbo_data.size(); iterator++)
-                        {
-                            vec_4.x = triangle.vbo_data[iterator].x;
-                            vec_4.y = triangle.vbo_data[iterator].y;
-                            vec_4.z = triangle.vbo_data[iterator].z;
-                            vec_4.w = 1;
-
-                            std::cout << "x:" << vec_4.x << " y:" << vec_4.y
-                                      << " z:" << vec_4.z << " w:" << vec_4.w
-                                      << std::endl;
-                            move_horizontal(vec_4, false);
-
-                            triangle.vbo_data[iterator].x = vec_4.x;
-                            triangle.vbo_data[iterator].y = vec_4.y;
-                            triangle.vbo_data[iterator].z = vec_4.z;
-
-                            vec_4.x = triangle_2.vbo_data[iterator].x;
-                            vec_4.y = triangle_2.vbo_data[iterator].y;
-                            vec_4.z = triangle_2.vbo_data[iterator].z;
-                            vec_4.w = 1;
-
-                            std::cout << "x:" << vec_4.x << " y:" << vec_4.y
-                                      << " z:" << vec_4.z << " w:" << vec_4.w
-                                      << std::endl;
-                            move_horizontal(vec_4, false);
-                            triangle_2.vbo_data[iterator].x = vec_4.x;
-                            triangle_2.vbo_data[iterator].y = vec_4.y;
-                            triangle_2.vbo_data[iterator].z = vec_4.z;
-                        }
+                        current_pos.y -= 0.05f;
+                        current_direction = -pi;
+                        glm_direction     = 180.f;
                     }
                 }
                 break;
                 case engine::event::left:
                 {
-                    engine::v_4 vec_4;
                     if (event.is_running)
                     {
-                        for (size_t iterator{ 0 };
-                             iterator < triangle.vbo_data.size(); iterator++)
-                        {
-                            vec_4.x = triangle.vbo_data[iterator].x;
-                            vec_4.y = triangle.vbo_data[iterator].y;
-                            vec_4.z = triangle.vbo_data[iterator].z;
-                            vec_4.w = 1;
-
-                            std::cout << "x:" << vec_4.x << " y:" << vec_4.y
-                                      << " z:" << vec_4.z << " w:" << vec_4.w
-                                      << std::endl;
-                            move_vertical(vec_4, false);
-
-                            triangle.vbo_data[iterator].x = vec_4.x;
-                            triangle.vbo_data[iterator].y = vec_4.y;
-                            triangle.vbo_data[iterator].z = vec_4.z;
-
-                            vec_4.x = triangle_2.vbo_data[iterator].x;
-                            vec_4.y = triangle_2.vbo_data[iterator].y;
-                            vec_4.z = triangle_2.vbo_data[iterator].z;
-                            vec_4.w = 1;
-
-                            std::cout << "x:" << vec_4.x << " y:" << vec_4.y
-                                      << " z:" << vec_4.z << " w:" << vec_4.w
-                                      << std::endl;
-                            move_vertical(vec_4, false);
-                            triangle_2.vbo_data[iterator].x = vec_4.x;
-                            triangle_2.vbo_data[iterator].y = vec_4.y;
-                            triangle_2.vbo_data[iterator].z = vec_4.z;
-                        }
+                        current_direction = pi / 2.f;
+                        current_pos.x -= 0.05f;
+                        glm_direction = 90.f;
                     }
                 }
                 break;
                 case engine::event::right:
                 {
-                    engine::v_4 vec_4;
                     if (event.is_running)
                     {
-                        for (size_t iterator{ 0 };
-                             iterator < triangle.vbo_data.size(); iterator++)
-                        {
-                            vec_4.x = triangle.vbo_data[iterator].x;
-                            vec_4.y = triangle.vbo_data[iterator].y;
-                            vec_4.z = triangle.vbo_data[iterator].z;
-                            vec_4.w = 1;
-
-                            std::cout << "x:" << vec_4.x << " y:" << vec_4.y
-                                      << " z:" << vec_4.z << " w:" << vec_4.w
-                                      << std::endl;
-                            move_vertical(vec_4, true);
-
-                            triangle.vbo_data[iterator].x = vec_4.x;
-                            triangle.vbo_data[iterator].y = vec_4.y;
-                            triangle.vbo_data[iterator].z = vec_4.z;
-
-                            vec_4.x = triangle_2.vbo_data[iterator].x;
-                            vec_4.y = triangle_2.vbo_data[iterator].y;
-                            vec_4.z = triangle_2.vbo_data[iterator].z;
-                            vec_4.w = 1;
-
-                            std::cout << "x:" << vec_4.x << " y:" << vec_4.y
-                                      << " z:" << vec_4.z << " w:" << vec_4.w
-                                      << std::endl;
-                            move_vertical(vec_4, true);
-                            triangle_2.vbo_data[iterator].x = vec_4.x;
-                            triangle_2.vbo_data[iterator].y = vec_4.y;
-                            triangle_2.vbo_data[iterator].z = vec_4.z;
-                        }
+                        current_pos.x += 0.05f;
+                        current_direction = -pi / 2.f;
+                        glm_direction     = -90.f;
                     }
                 }
                 break;
                 case engine::event::start:
                 {
-                    engine::v_4 vec_4;
-                    if (event.is_running)
-                    {
-                        for (size_t iterator{ 0 };
-                             iterator < triangle.vbo_data.size(); iterator++)
-                        {
-                            vec_4.x = triangle.vbo_data[iterator].x;
-                            vec_4.y = triangle.vbo_data[iterator].y;
-                            vec_4.z = triangle.vbo_data[iterator].z;
-                            vec_4.w = 1;
-
-                            std::cout << "x:" << vec_4.x << " y:" << vec_4.y
-                                      << " z:" << vec_4.z << " w:" << vec_4.w
-                                      << std::endl;
-                            rotation(vec_4, true);
-
-                            triangle.vbo_data[iterator].x = vec_4.x;
-                            triangle.vbo_data[iterator].y = vec_4.y;
-                            triangle.vbo_data[iterator].z = vec_4.z;
-
-                            vec_4.x = triangle_2.vbo_data[iterator].x;
-                            vec_4.y = triangle_2.vbo_data[iterator].y;
-                            vec_4.z = triangle_2.vbo_data[iterator].z;
-                            vec_4.w = 1;
-
-                            std::cout << "x:" << vec_4.x << " y:" << vec_4.y
-                                      << " z:" << vec_4.z << " w:" << vec_4.w
-                                      << std::endl;
-                            rotation(vec_4, true);
-                            triangle_2.vbo_data[iterator].x = vec_4.x;
-                            triangle_2.vbo_data[iterator].y = vec_4.y;
-                            triangle_2.vbo_data[iterator].z = vec_4.z;
-                        }
-                    }
                 }
                 break;
                 case engine::event::select:
                 {
-                    engine::v_4 vec_4;
-                    if (event.is_running)
-                    {
-                        for (size_t iterator{ 0 };
-                             iterator < triangle.vbo_data.size(); iterator++)
-                        {
-                            vec_4.x = triangle.vbo_data[iterator].x;
-                            vec_4.y = triangle.vbo_data[iterator].y;
-                            vec_4.z = triangle.vbo_data[iterator].z;
-                            vec_4.w = 1;
-
-                            std::cout << "x:" << vec_4.x << " y:" << vec_4.y
-                                      << " z:" << vec_4.z << " w:" << vec_4.w
-                                      << std::endl;
-                            rotation(vec_4, false);
-
-                            triangle.vbo_data[iterator].x = vec_4.x;
-                            triangle.vbo_data[iterator].y = vec_4.y;
-                            triangle.vbo_data[iterator].z = vec_4.z;
-
-                            vec_4.x = triangle_2.vbo_data[iterator].x;
-                            vec_4.y = triangle_2.vbo_data[iterator].y;
-                            vec_4.z = triangle_2.vbo_data[iterator].z;
-                            vec_4.w = 1;
-
-                            std::cout << "x:" << vec_4.x << " y:" << vec_4.y
-                                      << " z:" << vec_4.z << " w:" << vec_4.w
-                                      << std::endl;
-                            rotation(vec_4, false);
-                            triangle_2.vbo_data[iterator].x = vec_4.x;
-                            triangle_2.vbo_data[iterator].y = vec_4.y;
-                            triangle_2.vbo_data[iterator].z = vec_4.z;
-                        }
-                    }
                 }
                 break;
                 default:
                     break;
             }
         }
-        u.u0 = sin(engine->get_time_for_init());
-        // r_txt_sh.set_uniform_4f(u_name, u);
-        engine->render_(triangle, r_txt_sh, txt, txt1);
-        engine->render_(triangle_2, r_txt_sh, txt, txt1);
+        // engine matrix
+        engine::trans_mat_4x4 scale_m =
+            engine::trans_mat_4x4::scale(current_scale.x, current_scale.y,
+                                         1.f) *
+            engine::trans_mat_4x4::scale((766.f / 1364.f), 766.f / 1364.f, 1.f);
+        engine::trans_mat_4x4 move_m = engine::trans_mat_4x4::move(current_pos);
+        engine::trans_mat_4x4 rot_m =
+            engine::trans_mat_4x4::rotate(current_direction);
+        engine::trans_mat_4x4 mat = move_m * rot_m * scale_m;
 
+        // glm matrix
+        glm::mat4 trans = glm::mat4(1.0f);
+        trans           = glm::scale(trans,
+                           glm::vec3(current_scale.x, current_scale.y, 1.0f));
+        trans           = glm::rotate(trans, glm::radians(glm_direction),
+                            glm::vec3(0.0f, 0.0f, 1.0f));
+        trans           = glm::translate(trans,
+                               glm::vec3(current_pos.x, current_pos.y, 0.0f));
+
+        glm::mat4 model = glm::mat4(1.0f);
+        model           = glm::rotate(model, glm::radians(-55.0f),
+                            glm::vec3(1.0f, 0.0f, 0.0f));
+        glm::mat4 view  = glm::mat4(1.0f);
+        view            = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+
+        glm::mat4 projection;
+        projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f,
+                                      0.1f, 100.0f);
+
+        // render
+        u.u0 = sin(engine->get_time_for_init());
+
+        r_txt_sh.set_uniform_4mat("u_matrix", mat);
+
+        glm_txt_sh.set_uniform_4mat("u_matrix", trans);
+        glm_txt_sh.set_uniform_4mat("u_matrix_model", model);
+        glm_txt_sh.set_uniform_4mat("u_matrix_view", view);
+        glm_txt_sh.set_uniform_4mat("u_matrix_projection", projection);
+
+        engine->render(triangle, r_txt_sh, tank_txt);
+        engine->render(triangle_2, r_txt_sh, tank_txt);
+        engine->render(tank_0, glm_txt_sh, tank_1_txt);
+        engine->render(tank_1, glm_txt_sh, tank_1_txt);
         engine->swap_buffers();
     }
     return EXIT_SUCCESS;
