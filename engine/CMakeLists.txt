@@ -26,7 +26,7 @@ find_library(GLM REQUIRED)
 
 target_compile_features(engine_shared PUBLIC cxx_std_20)
 target_include_directories(engine_shared PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_link_libraries(engine_shared PRIVATE
+target_link_libraries(engine_shared PUBLIC
     SDL2::SDL2
     SDL2::SDL2main
     GL)

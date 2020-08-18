@@ -9,18 +9,12 @@
 #include <numbers>
 #include <vector>
 
+#include "SDL.h"
 #include "engine.hxx"
 #include "shader.hxx"
 #include "stuff.hxx"
 #include "texture2d.hxx"
 #include "vbo.hxx"
-
-void load_txt(std::string_view path, GLuint& texture_id);
-void scale_up(engine::v_4& vect);
-void scale_down(engine::v_4& vect);
-void move_vertical(engine::v_4& vect, const bool& direction);
-void move_horizontal(engine::v_4& vect, const bool& direction);
-void rotation(engine::v_4& vect, const bool& direction);
 
 int main(int /*argc*/, char* /*argv*/[])
 {
@@ -46,50 +40,53 @@ int main(int /*argc*/, char* /*argv*/[])
                                     "../../../res/shaders/glm_txt_sh.fs");
 
     // buffers
-    engine::vbo_v_8 triangle("../../../res/rgb_triangle.txt");
-    engine::vbo_v_8 triangle_2("../../../res/rgb_triangle_1.txt");
-    engine::vbo_v_8 tank_0("../../../res/tank_1_0.txt");
-    engine::vbo_v_8 tank_1("../../../res/tank_1_1.txt");
+    engine::vbo_v_8 tank_0("../../../res/rgb_triangle.txt");
+    engine::vbo_v_8 tank_1("../../../res/rgb_triangle_1.txt");
 
     // uniforms
     engine::uniform u{ "my_color", 0, 0, 0, 0 };
-    // load_txt("../../../res/images/tank.png", txt);
-    // load_txt("../../../res/images/tank_1.png", txt1);
-    r_txt_sh.use();
     // engine
 
     // expirements
-    engine::texture_2d_es_32 tank_txt("../../../res/images/tank.png");
     engine::texture_2d_es_32 tank_1_txt("../../../res/images/tank_1.png");
-    engine::trans_mat_4x4    mat1{
-        { 4, 0, 0, 0 }, { 2, 8, 1, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 }
-    };
-    engine::trans_mat_4x4 mat2{
-        { 4, 2, 9, 0 }, { 2, 0, 4, 0 }, { 1, 4, 2, 0 }, { 0, 0, 0, 0 }
-    };
-    engine::v_4 vec = { -0.5f, 0.5f, 0.f, 0.f };
 
-    engine::trans_mat_4x4 scale_m_ =
-        engine::trans_mat_4x4::scale(0.9, 0.9, 1.f);
-    engine::trans_mat_4x4 move_m_ = engine::trans_mat_4x4::move(0.5, 0.5, 0.0);
-    engine::trans_mat_4x4 mat_    = move_m_ * scale_m_;
+    engine::vbo_v_8          cube("../../../res/3d_cube.txt");
+    engine::texture_2d_es_32 cube_txt("../../../res/images/wood.png");
 
-    std::cout << scale_m_ << move_m_ << mat_ << std::endl;
-    std::cout << scale_m_ * vec << std::endl;
-    std::cout << move_m_ * vec << std::endl;
-    std::cout << mat_ * vec << std::endl;
+    glm::vec3 cubePositions[] = {
+        glm::vec3(0.0f, 0.0f, 0.0f),    glm::vec3(2.0f, 5.0f, -15.0f),
+        glm::vec3(-1.5f, -2.2f, -2.5f), glm::vec3(-3.8f, -2.0f, -12.3f),
+        glm::vec3(2.4f, -0.4f, -3.5f),  glm::vec3(-1.7f, 3.0f, -7.5f),
+        glm::vec3(1.3f, -2.0f, -2.5f),  glm::vec3(1.5f, 2.0f, -2.5f),
+        glm::vec3(1.5f, 0.2f, -1.5f),   glm::vec3(-1.3f, 1.0f, -1.5f)
+    };
 
     // end of expirements
     engine::v_3 current_pos(0.f, 0.f, 0.f);
     engine::v_2 current_scale(1.f, 1.f);
     float       current_direction(0.f);
     float       glm_direction(0.f);
-    const float pi            = std::numbers::pi_v<float>;
-    bool        continue_loop = true;
+    float       perspective_fov(45.f);
+
+    glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+    glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f, 3.0f);
+    glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec3 direction;
+
+    float yaw   = -90.f;
+    float pitch = -45.f;
+
+    direction.x = cos(glm::radians(yaw));
+    direction.z = sin(glm::radians(yaw));
+    direction.y = sin(glm::radians(pitch));
+
+    const float pi = std::numbers::pi_v<float>;
+
+    bool continue_loop = true;
     while (continue_loop)
     {
         engine::event event;
-
+        SDL_CaptureMouse(SDL_TRUE);
         while (engine->read_event(event))
         {
             std::cout << event << std::endl;
@@ -98,228 +95,137 @@ int main(int /*argc*/, char* /*argv*/[])
                 case engine::event::turn_off:
                     continue_loop = false;
                     break;
-                case engine::event::button_1:
-                {
-                    if (event.is_running)
-                    {
-                        current_scale.x += 0.1;
-                        current_scale.y += 0.1;
-                    }
-                }
-                break;
-                case engine::event::button_2:
-                {
-                    if (event.is_running)
-                    {
-                        current_scale.x -= 0.1;
-                        current_scale.y -= 0.1;
-                    }
-                }
-                break;
-                case engine::event::up:
-                {
-                    if (event.is_running)
-                    {
-                        current_pos.y += 0.05f;
-                        current_direction = 0.f;
-                        glm_direction     = 0.f;
-                    }
-                }
-                break;
-                case engine::event::down:
-                {
-                    if (event.is_running)
-                    {
-                        current_pos.y -= 0.05f;
-                        current_direction = -pi;
-                        glm_direction     = 180.f;
-                    }
-                }
-                break;
-                case engine::event::left:
-                {
-                    if (event.is_running)
-                    {
-                        current_direction = pi / 2.f;
-                        current_pos.x -= 0.05f;
-                        glm_direction = 90.f;
-                    }
-                }
-                break;
-                case engine::event::right:
-                {
-                    if (event.is_running)
-                    {
-                        current_pos.x += 0.05f;
-                        current_direction = -pi / 2.f;
-                        glm_direction     = -90.f;
-                    }
-                }
-                break;
-                case engine::event::start:
-                {
-                }
-                break;
-                case engine::event::select:
-                {
-                }
-                break;
                 default:
                     break;
             }
         }
+
+        engine->mouse_capture(true);
+        const float cam_speed{ 0.05f };
+
+        if (event.is_running && event.key == engine::event::up)
+        {
+            //            current_pos.y += 0.05f;
+            //            current_direction = 0.f;
+            //            glm_direction     = 0.f;
+
+            cameraPos += (cam_speed * cameraFront);
+        }
+        else if (event.is_running && event.key == engine::event::down)
+        {
+            //            current_pos.y -= 0.05f;
+            //            current_direction = -pi;
+            //            glm_direction     = 180.f;
+
+            cameraPos -= cam_speed * cameraFront;
+        }
+        else if (event.is_running && event.key == engine::event::left)
+        {
+            //            current_direction = pi / 2.f;
+            //            current_pos.x -= 0.05f;
+            //            glm_direction = 90.f;
+            cameraPos -=
+                glm::normalize(glm::cross(cameraFront, cameraUp)) * cam_speed;
+        }
+        else if (event.is_running && event.key == engine::event::right)
+        {
+            //            current_pos.x += 0.05f;
+            //            current_direction = -pi / 2.f;
+            //            glm_direction     = -90.f;
+            cameraPos +=
+                glm::normalize(glm::cross(cameraFront, cameraUp)) * cam_speed;
+        }
+        else if (event.is_running && event.key == engine::event::button_1)
+        {
+            current_scale.x += 0.1;
+            current_scale.y += 0.1;
+        }
+        else if (event.is_running && event.key == engine::event::button_2)
+        {
+            current_scale.x -= 0.1;
+            current_scale.y -= 0.1;
+        }
+        else if (event.is_running && event.key == engine::event::select)
+        {
+            perspective_fov--;
+        }
+        else if (event.is_running && event.key == engine::event::start)
+        {
+            perspective_fov++;
+        }
+
         // engine matrix
-        engine::trans_mat_4x4 scale_m =
-            engine::trans_mat_4x4::scale(current_scale.x, current_scale.y,
-                                         1.f) *
-            engine::trans_mat_4x4::scale((766.f / 1364.f), 766.f / 1364.f, 1.f);
-        engine::trans_mat_4x4 move_m = engine::trans_mat_4x4::move(current_pos);
-        engine::trans_mat_4x4 rot_m =
-            engine::trans_mat_4x4::rotate(current_direction);
-        engine::trans_mat_4x4 mat = move_m * rot_m * scale_m;
+        //        engine::trans_mat_4x4 scale_m =
+        //            engine::trans_mat_4x4::scale(current_scale.x,
+        //            current_scale.y,
+        //                                         1.f) *
+        //            engine::trans_mat_4x4::scale((766.f / 1364.f), 766.f /
+        //            1364.f, 1.f);
+        //        engine::trans_mat_4x4 move_m =
+        //        engine::trans_mat_4x4::move(current_pos);
+        //        engine::trans_mat_4x4 rot_m =
+        //            engine::trans_mat_4x4::rotate(current_direction);
+        //        engine::trans_mat_4x4 mat = move_m * rot_m * scale_m;
 
         // glm matrix
+
         glm::mat4 trans = glm::mat4(1.0f);
-        trans           = glm::scale(trans,
-                           glm::vec3(current_scale.x, current_scale.y, 1.0f));
-        trans           = glm::rotate(trans, glm::radians(glm_direction),
-                            glm::vec3(0.0f, 0.0f, 1.0f));
         trans           = glm::translate(trans,
                                glm::vec3(current_pos.x, current_pos.y, 0.0f));
+        trans           = glm::rotate(trans, glm::radians(glm_direction),
+                            glm::vec3(0.0f, 0.0f, 1.0f));
+        trans           = glm::scale(trans,
+                           glm::vec3(current_scale.x, current_scale.y, 1.0f));
 
         glm::mat4 model = glm::mat4(1.0f);
-        model           = glm::rotate(model, glm::radians(-55.0f),
-                            glm::vec3(1.0f, 0.0f, 0.0f));
-        glm::mat4 view  = glm::mat4(1.0f);
-        view            = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+        //        model           = glm::rotate(model,
+        //                            engine->get_time_for_init() *
+        //                            glm::radians(50.0f),
+        //                            glm::vec3(0.5f, 1.0f, 0.0f));
+        //        glm::mat4 view = glm::mat4(1.0f);
+        //        view           = glm::translate(view, glm::vec3(0.0f, 0.0f,
+        //        -3.0f));
+
+        const float radius = 10.0f;
+        float       camX   = sin(engine->get_time_for_init()) * radius;
+        float       camZ   = cos(engine->get_time_for_init()) * radius;
+
+        glm::mat4 view =
+            glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
         glm::mat4 projection;
-        projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f,
-                                      0.1f, 100.0f);
+        projection = glm::perspective(glm::radians(perspective_fov),
+                                      800.0f / 600.0f, 0.1f, 100.0f);
 
         // render
-        u.u0 = sin(engine->get_time_for_init());
+        //        u.u0 = sin(engine->get_time_for_init());
 
-        r_txt_sh.set_uniform_4mat("u_matrix", mat);
+        //        r_txt_sh.set_uniform_4mat("u_matrix", mat);
 
         glm_txt_sh.set_uniform_4mat("u_matrix", trans);
-        glm_txt_sh.set_uniform_4mat("u_matrix_model", model);
+        //        glm_txt_sh.set_uniform_4mat("u_matrix_model", model);
         glm_txt_sh.set_uniform_4mat("u_matrix_view", view);
         glm_txt_sh.set_uniform_4mat("u_matrix_projection", projection);
 
-        engine->render(triangle, r_txt_sh, tank_txt);
-        engine->render(triangle_2, r_txt_sh, tank_txt);
-        engine->render(tank_0, glm_txt_sh, tank_1_txt);
-        engine->render(tank_1, glm_txt_sh, tank_1_txt);
+        for (size_t i{ 0 }; i < 10; i++)
+        {
+            model       = glm::mat4(1.0f);
+            float angle = 20.0f * i;
+            if (i % 3 == 1)
+            {
+                angle *= engine->get_time_for_init();
+            }
+            model = glm::translate(model, cubePositions[i]);
+            model = glm::rotate(model, glm::radians(angle),
+                                glm::vec3(1.0f, 0.3f, 0.5f));
+            glm_txt_sh.set_uniform_4mat("u_matrix_model", model);
+            engine->render(cube, glm_txt_sh, cube_txt);
+        }
+        //        engine->render(tank_0, glm_txt_sh,
+        //        tank_1_txt); engine->render(tank_1,
+        //        glm_txt_sh, tank_1_txt);
+
         engine->swap_buffers();
     }
     return EXIT_SUCCESS;
-}
-
-void scale_up(engine::v_4& vect)
-{
-    engine::trans_mat_4x4 met_4x4;
-    met_4x4 = met_4x4.scale(1.1);
-    vect    = met_4x4 * vect;
-    std::cout << "new position is:\nx:" << vect.x << " y:" << vect.y
-              << " z:" << vect.z << " w:" << vect.w << std::endl;
-    std::cout << "--------------------\n";
-}
-
-void scale_down(engine::v_4& vect)
-{
-    engine::trans_mat_4x4 met_4x4;
-    met_4x4 = met_4x4.scale(0.9);
-    vect    = met_4x4 * vect;
-    std::cout << "new position is:\nx:" << vect.x << " y:" << vect.y
-              << " z:" << vect.z << " w:" << vect.w << std::endl;
-    std::cout << "--------------------\n";
-}
-
-void move_vertical(engine::v_4& vect, const bool& direction)
-{
-    engine::trans_mat_4x4 met_4x4;
-    if (direction)
-    {
-        met_4x4 = engine::trans_mat_4x4::move(0.1f, 0.f, 0.f);
-        vect    = met_4x4 * vect;
-    }
-    else
-    {
-        met_4x4 = engine::trans_mat_4x4::move(-0.1f, 0.f, 0.f);
-        vect    = met_4x4 * vect;
-    }
-    std::cout << "new position is:\nx:" << vect.x << " y:" << vect.y
-              << " z:" << vect.z << " w:" << vect.w << std::endl;
-    std::cout << "--------------------\n";
-}
-
-void move_horizontal(engine::v_4& vect, const bool& direction)
-{
-    engine::trans_mat_4x4 met_4x4;
-    if (direction)
-    {
-        met_4x4 = engine::trans_mat_4x4::move(0.f, 0.1f, 0.f);
-        vect    = met_4x4 * vect;
-    }
-    else
-    {
-        met_4x4 = engine::trans_mat_4x4::move(0.f, -0.1f, 0.f);
-        vect    = met_4x4 * vect;
-    }
-    std::cout << "new position is:\nx:" << vect.x << " y:" << vect.y
-              << " z:" << vect.z << " w:" << vect.w << std::endl;
-    std::cout << "--------------------\n";
-}
-
-void rotation(engine::v_4& vect, const bool& direction)
-{
-    engine::trans_mat_4x4 met_4x4;
-    if (direction)
-    {
-        met_4x4 = engine::trans_mat_4x4::rotate(0.1f);
-        vect    = met_4x4 * vect;
-    }
-    else
-    {
-        met_4x4 = engine::trans_mat_4x4::rotate(-0.1f);
-        vect    = met_4x4 * vect;
-    }
-    std::cout << "new position is:\nx:" << vect.x << " y:" << vect.y
-              << " z:" << vect.z << " w:" << vect.w << std::endl;
-    std::cout << "--------------------\n";
-}
-
-void load_txt(std::string_view path, GLuint& texture_id)
-{
-    glGenTextures(1, &texture_id);
-    glBindTexture(GL_TEXTURE_2D,
-                  texture_id); // все последующие GL_TEXTURE_2D-операции теперь
-                               // будут влиять на данный текстурный объект
-    // установка параметров наложения текстуры
-    glTexParameteri(
-        GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
-        GL_CLAMP_TO_BORDER); // установка метода наложения текстуры
-                             // GL_REPEAT (стандартный метод наложения)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    // установка параметров фильтрации текстуры
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // загрузка изображения, создание текстуры и генерирование
-    // mipmap-уровней
-    stbi_set_flip_vertically_on_load(true);
-    int            width, height, nrChannels;
-    unsigned char* data =
-        stbi_load(path.data(), &width, &height, &nrChannels, 0);
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
-                     GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-    stbi_image_free(data);
 }

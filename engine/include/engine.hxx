@@ -64,6 +64,7 @@ public:
     virtual void  render_grid(shader_es_32&)                          = 0;
     virtual void  swap_buffers()                                      = 0;
     virtual void  uninitialize()                                      = 0;
+    virtual void  mouse_capture(bool)                                 = 0;
     virtual float get_time_for_init()                                 = 0;
 };
 

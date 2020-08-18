@@ -99,6 +99,16 @@ private:
 public:
     uniform tmp_uni;
 
+    void mouse_capture(bool flag) override final
+    {
+        // SDL_SetWindowGrab(window, SDL_TRUE);
+        SDL_SetRelativeMouseMode(SDL_TRUE);
+        if (SDL_CaptureMouse(SDL_TRUE))
+        {
+            std::clog << SDL_GetError() << std::endl;
+        }
+    }
+
     void set_uniforms()
     {
         //        glUseProgram(shd_proc);
@@ -251,7 +261,7 @@ public:
                       << vertex_shader_src << "\n"
                       << info_chars.data();
 
-            glEnable(GL_DEPTH_TEST);
+            // glEnable(GL_DEPTH_TEST);
 
             return false;
         }
@@ -299,7 +309,7 @@ public:
         glUseProgram(program_id_);
         OM_GL_CHECK()
 
-        glEnable(GL_DEPTH_TEST);
+        // glEnable(GL_DEPTH_TEST);
         // glDisable(GL_DEPTH_TEST);
         return true;
     }
@@ -339,9 +349,9 @@ public:
         }
         else
         {
-            window = SDL_CreateWindow("title", SDL_WINDOWPOS_CENTERED,
-                                      SDL_WINDOWPOS_CENTERED, width, height,
-                                      SDL_WINDOW_OPENGL);
+            window = SDL_CreateWindow(
+                "title", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width,
+                height, SDL_WINDOW_OPENGL | SDL_WINDOW_MOUSE_CAPTURE);
             if (window == nullptr)
             {
                 std::cerr << "create windoe failed sdl_error: "
@@ -397,6 +407,16 @@ public:
             if (gladLoadGLES2Loader(SDL_GL_GetProcAddress) == 0)
             {
                 std::clog << "error: failed to initialize glad" << std::endl;
+            }
+
+            if (SDL_SetWindowInputFocus(window))
+            {
+                std::clog << SDL_GetError() << std::endl;
+            }
+
+            if (SDL_CaptureMouse(SDL_TRUE))
+            {
+                std::clog << SDL_GetError() << std::endl;
             }
         }
         return init_my_opengl();
