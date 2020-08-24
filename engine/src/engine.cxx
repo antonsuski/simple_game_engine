@@ -103,10 +103,6 @@ public:
     {
         // SDL_SetWindowGrab(window, SDL_TRUE);
         SDL_SetRelativeMouseMode(SDL_TRUE);
-        if (SDL_CaptureMouse(SDL_TRUE))
-        {
-            std::clog << SDL_GetError() << std::endl;
-        }
     }
 
     void set_uniforms()
@@ -473,14 +469,16 @@ public:
                 x = original_x / float(width) * 2.0f - 1.0f;
                 y = original_y / float(height) * 2.0f - 1.0f;
                 y *= -1.0f;
-                tmp_uni.u0 = x;
-                tmp_uni.u1 = y;
-                tmp_uni.u2 = 0.4f;
-                tmp_uni.u3 = 1.0f;
-                std::cout << " m_move_x: " << x << ";"
-                          << "m_move_y: " << y << std::endl;
+                //                tmp_uni.u0 = x;
+                //                tmp_uni.u1 = y;
+                //                tmp_uni.u2 = 0.4f;
+                //                tmp_uni.u3 = 1.0f;
+                std::cout << "m_move_x: " << x << ";\n"
+                          << "m_move_y: \n#############" << y << std::endl;
 
-                e.key = event::mouse_move;
+                e.key           = event::mouse_move;
+                e.mouse_delta.x = sdl_event.motion.xrel;
+                e.mouse_delta.y = sdl_event.motion.yrel;
                 return true;
             }
         }

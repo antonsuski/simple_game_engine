@@ -81,12 +81,14 @@ int main(int /*argc*/, char* /*argv*/[])
     direction.y = sin(glm::radians(pitch));
 
     const float pi = std::numbers::pi_v<float>;
+    const float cam_speed{ 0.05f };
+
+    engine->mouse_capture(true);
 
     bool continue_loop = true;
     while (continue_loop)
     {
         engine::event event;
-        SDL_CaptureMouse(SDL_TRUE);
         while (engine->read_event(event))
         {
             std::cout << event << std::endl;
@@ -98,20 +100,17 @@ int main(int /*argc*/, char* /*argv*/[])
                 default:
                     break;
             }
+            if (event.is_running && event.key == engine::event::up)
+            {
+                //            current_pos.y += 0.05f;
+                //            current_direction = 0.f;
+                //            glm_direction     = 0.f;
+
+                cameraPos += (cam_speed * cameraFront);
+            }
         }
 
-        engine->mouse_capture(true);
-        const float cam_speed{ 0.05f };
-
-        if (event.is_running && event.key == engine::event::up)
-        {
-            //            current_pos.y += 0.05f;
-            //            current_direction = 0.f;
-            //            glm_direction     = 0.f;
-
-            cameraPos += (cam_speed * cameraFront);
-        }
-        else if (event.is_running && event.key == engine::event::down)
+        if (event.is_running && event.key == engine::event::down)
         {
             //            current_pos.y -= 0.05f;
             //            current_direction = -pi;
@@ -119,7 +118,7 @@ int main(int /*argc*/, char* /*argv*/[])
 
             cameraPos -= cam_speed * cameraFront;
         }
-        else if (event.is_running && event.key == engine::event::left)
+        if (event.is_running && event.key == engine::event::left)
         {
             //            current_direction = pi / 2.f;
             //            current_pos.x -= 0.05f;
@@ -127,7 +126,7 @@ int main(int /*argc*/, char* /*argv*/[])
             cameraPos -=
                 glm::normalize(glm::cross(cameraFront, cameraUp)) * cam_speed;
         }
-        else if (event.is_running && event.key == engine::event::right)
+        if (event.is_running && event.key == engine::event::right)
         {
             //            current_pos.x += 0.05f;
             //            current_direction = -pi / 2.f;
@@ -135,21 +134,21 @@ int main(int /*argc*/, char* /*argv*/[])
             cameraPos +=
                 glm::normalize(glm::cross(cameraFront, cameraUp)) * cam_speed;
         }
-        else if (event.is_running && event.key == engine::event::button_1)
+        if (event.is_running && event.key == engine::event::button_1)
         {
             current_scale.x += 0.1;
             current_scale.y += 0.1;
         }
-        else if (event.is_running && event.key == engine::event::button_2)
+        if (event.is_running && event.key == engine::event::button_2)
         {
             current_scale.x -= 0.1;
             current_scale.y -= 0.1;
         }
-        else if (event.is_running && event.key == engine::event::select)
+        if (event.is_running && event.key == engine::event::select)
         {
             perspective_fov--;
         }
-        else if (event.is_running && event.key == engine::event::start)
+        if (event.is_running && event.key == engine::event::start)
         {
             perspective_fov++;
         }

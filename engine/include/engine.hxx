@@ -37,7 +37,7 @@ public:
     } key;
     std::string_view name;
     bool             is_running;
-
+    v_2              mouse_delta;
     event(enum key event_key, std::string_view event_name,
           bool is_event_running)
         : key(event_key)
