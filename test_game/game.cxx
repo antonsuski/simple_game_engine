@@ -88,7 +88,8 @@ int main(int /*argc*/, char* /*argv*/[])
     bool continue_loop = true;
     while (continue_loop)
     {
-        engine::event event;
+        engine::event              event;
+        std::vector<engine::event> events;
         while (engine->read_event(event))
         {
             std::cout << event << std::endl;
@@ -100,16 +101,21 @@ int main(int /*argc*/, char* /*argv*/[])
                 default:
                     break;
             }
-            if (event.is_running && event.key == engine::event::up)
-            {
-                //            current_pos.y += 0.05f;
-                //            current_direction = 0.f;
-                //            glm_direction     = 0.f;
-
-                cameraPos += (cam_speed * cameraFront);
-            }
+            events.push_back(event);
         }
+        for (auto i : events)
+        {
+            std::clog << i.name << std::endl;
+            std::clog << "%%%%%%%%%%%%%%%%%\n";
+        }
+        if (event.is_running && event.key == engine::event::up)
+        {
+            //            current_pos.y += 0.05f;
+            //            current_direction = 0.f;
+            //            glm_direction     = 0.f;
 
+            cameraPos += (cam_speed * cameraFront);
+        }
         if (event.is_running && event.key == engine::event::down)
         {
             //            current_pos.y -= 0.05f;
