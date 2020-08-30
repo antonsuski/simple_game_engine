@@ -1,5 +1,8 @@
 ﻿#include "engine.hxx"
 #include "glad/glad.h"
+#include "imgui.h"
+#include "imgui_impl_opengl3.h"
+#include "imgui_impl_sdl.h"
 #include "om_gl_check.hxx"
 #include "stuff.hxx"
 
@@ -11,6 +14,11 @@
 #include <iostream>
 #include <shader.hxx>
 
+bool init_imgui(SDL_Window* window, SDL_GLContext gl_context,
+                uint8_t glsl_version);
+void create_imgui_tool_window();
+void render_imgui();
+
 static std::ostream& operator<<(std::ostream& out, const SDL_version& v)
 {
     out << static_cast<int>(v.major) << ".";
@@ -21,6 +29,11 @@ static std::ostream& operator<<(std::ostream& out, const SDL_version& v)
 
 namespace engine
 {
+bool init_imgui(SDL_Window* window, SDL_GLContext gl_context,
+                uint8_t glsl_version);
+void create_imgui_tool_window();
+void render_imgui();
+
 std::ostream& operator<<(std::ostream& stream, const event& e)
 {
     std::uint32_t value   = static_cast<std::uint32_t>(e.key);
@@ -88,6 +101,8 @@ class core_one final : public core
 private:
     SDL_Window*   window      = nullptr;
     SDL_GLContext gl_context  = nullptr;
+    SDL_version   compiled    = { 0, 0, 0 };
+    SDL_version   linked      = { 0, 0, 0 };
     GLuint        program_id_ = 0;
     GLuint        VBO         = 0;
     GLuint        VAO         = 0;
@@ -312,8 +327,8 @@ public:
 
     bool init(size_t width, size_t height) final override
     {
-        SDL_version compiled = { 0, 0, 0 };
-        SDL_version linked   = { 0, 0, 0 };
+        //        SDL_version compiled = { 0, 0, 0 };
+        //        SDL_version linked   = { 0, 0, 0 };
 
         SDL_VERSION(&compiled)
         SDL_GetVersion(&linked);
@@ -415,9 +430,18 @@ public:
                 std::clog << SDL_GetError() << std::endl;
             }
         }
+
+        engine::init_imgui(window, gl_context, static_cast<uint8_t>(300));
         return init_my_opengl();
     }
-
+    bool read_events(events& es) override
+    {
+        SDL_Event sdl_event;
+        if (SDL_PollEvent(&sdl_event))
+        {
+            es = SDL_GetKeyboardState(nullptr);
+        }
+    }
     bool read_event(event& e) final override
     {
         SDL_Event sdl_event;
@@ -473,12 +497,11 @@ public:
                 //                tmp_uni.u1 = y;
                 //                tmp_uni.u2 = 0.4f;
                 //                tmp_uni.u3 = 1.0f;
-                std::cout << "m_move_x: " << x << ";\n"
-                          << "m_move_y: \n#############" << y << std::endl;
 
                 e.key           = event::mouse_move;
                 e.mouse_delta.x = sdl_event.motion.xrel;
                 e.mouse_delta.y = sdl_event.motion.yrel;
+                e.is_running    = true;
                 return true;
             }
         }
@@ -623,6 +646,9 @@ public:
     void render(vbo_v_8& buffer, shader_es_32& shader,
                 texture_2d_es_32& txt) final override
     {
+        create_imgui_tool_window();
+        ImGui::Render();
+
         shader.use();
 
         buffer.bind_vao();
@@ -635,6 +661,8 @@ public:
 
         glDrawElements(GL_TRIANGLES, buffer.ebo_size, GL_UNSIGNED_INT, 0);
         OM_GL_CHECK()
+
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     }
 
     void render_grid(shader_es_32& shader_) final override
@@ -746,5 +774,54 @@ void destroy_engine(core* e)
 }
 
 core::~core(){};
+
+bool   show_demo_window    = true;
+bool   show_another_window = false;
+ImVec4 clear_color         = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+bool init_imgui(SDL_Window* window, SDL_GLContext gl_context,
+                uint8_t glsl_version)
+{
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    const ImGuiIO& io = ImGui::GetIO();
+    (void)io;
+
+    ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
+    ImGui_ImplOpenGL3_Init(reinterpret_cast<char*>(glsl_version));
+    return true;
+}
+
+void create_imgui_tool_window()
+{
+    static float f       = 0.0f;
+    static int   counter = 0;
+
+    ImGui::Begin("Hello, world!"); // Create a window called "Hello, world!" and
+                                   // append into it.
+
+    ImGui::Text("This is some useful text."); // Display some text (you can use
+                                              // a format strings too)
+    ImGui::Checkbox(
+        "Demo Window",
+        &show_demo_window); // Edit bools storing our window open/close state
+    ImGui::Checkbox("Another Window", &show_another_window);
+
+    ImGui::SliderFloat("float", &f, 0.0f,
+                       1.0f); // Edit 1 float using a slider from 0.0f to 1.0f
+    ImGui::ColorEdit3(
+        "clear color",
+        (float*)&clear_color); // Edit 3 floats representing a color
+
+    if (ImGui::Button("Button")) // Buttons return true when clicked (most
+                                 // widgets return true when edited/activated)
+        counter++;
+    ImGui::SameLine();
+    ImGui::Text("counter = %d", counter);
+
+    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
+                1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    ImGui::End();
+}
 
 } // namespace engine

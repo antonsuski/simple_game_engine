@@ -4,6 +4,9 @@
 
 #include <algorithm>
 #include <fstream>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
 #ifndef ENGINE_DECLSPEC
@@ -198,6 +201,25 @@ public:
     v_4 col_1;
     v_4 col_2;
     v_4 delta;
+};
+
+class ENGINE_DECLSPEC cam
+{
+    v_3   current_pos{ 0.f, 0.f, 0.f };
+    v_2   current_scale{ 1.f, 1.f };
+    float current_direction{ 0.f };
+    float glm_direction{ 0.f };
+    float perspective_fov{ 45.f };
+
+    glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+    glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f, 3.0f);
+    glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::vec3 direction;
+
+    float yaw   = -90.f;
+    float pitch = 0.f;
+
+public:
 };
 
 ENGINE_DECLSPEC void multiply(v_4& vector, trans_mat_4x4& mat);

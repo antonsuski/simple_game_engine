@@ -74,22 +74,22 @@ int main(int /*argc*/, char* /*argv*/[])
     glm::vec3 direction;
 
     float yaw   = -90.f;
-    float pitch = -45.f;
+    float pitch = 0.f;
 
-    direction.x = cos(glm::radians(yaw));
-    direction.z = sin(glm::radians(yaw));
-    direction.y = sin(glm::radians(pitch));
+    //    direction.x = cos(glm::radians(yaw));
+    //    direction.z = sin(glm::radians(yaw));
+    //    direction.y = sin(glm::radians(pitch));
 
     const float pi = std::numbers::pi_v<float>;
     const float cam_speed{ 0.05f };
-
+    const float cam_sens{ 0.05f };
     engine->mouse_capture(true);
 
     bool continue_loop = true;
     while (continue_loop)
     {
-        engine::event              event;
-        std::vector<engine::event> events;
+        engine::event event;
+
         while (engine->read_event(event))
         {
             std::cout << event << std::endl;
@@ -101,13 +101,8 @@ int main(int /*argc*/, char* /*argv*/[])
                 default:
                     break;
             }
-            events.push_back(event);
         }
-        for (auto i : events)
-        {
-            std::clog << i.name << std::endl;
-            std::clog << "%%%%%%%%%%%%%%%%%\n";
-        }
+
         if (event.is_running && event.key == engine::event::up)
         {
             //            current_pos.y += 0.05f;
@@ -158,7 +153,16 @@ int main(int /*argc*/, char* /*argv*/[])
         {
             perspective_fov++;
         }
+        if (event.is_running && event.key == engine::event::mouse_move)
+        {
+            yaw += event.mouse_delta.x * cam_sens;
+            pitch -= event.mouse_delta.y * cam_sens;
 
+            if (pitch > 89.0f)
+                pitch = 89.0f;
+            if (pitch < -89.0f)
+                pitch = -89.0f;
+        }
         // engine matrix
         //        engine::trans_mat_4x4 scale_m =
         //            engine::trans_mat_4x4::scale(current_scale.x,
@@ -194,6 +198,11 @@ int main(int /*argc*/, char* /*argv*/[])
         const float radius = 10.0f;
         float       camX   = sin(engine->get_time_for_init()) * radius;
         float       camZ   = cos(engine->get_time_for_init()) * radius;
+
+        direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        direction.y = sin(glm::radians(pitch));
+        direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+        cameraFront = glm::normalize(direction);
 
         glm::mat4 view =
             glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);

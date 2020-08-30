@@ -48,6 +48,8 @@ public:
     event() {}
 };
 
+using events = const uint8_t*;
+
 ENGINE_DECLSPEC std::ostream& operator<<(std::ostream& stream, const event& e);
 
 class ENGINE_DECLSPEC core
@@ -57,6 +59,7 @@ public:
     virtual bool  init(size_t, size_t)                                = 0;
     virtual bool  init_my_opengl()                                    = 0;
     virtual bool  read_event(event&)                                  = 0;
+    virtual bool  read_events(events&)                                = 0;
     virtual void  render(vbo_v_8&, shader_es_32&, GLuint& texture_id) = 0;
     virtual void  render(vbo_v_8&, shader_es_32&, GLuint& texture_id,
                          GLuint& texture_)                            = 0;
