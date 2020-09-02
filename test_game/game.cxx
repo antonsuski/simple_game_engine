@@ -9,19 +9,22 @@
 #include <numbers>
 #include <vector>
 
-#include "SDL.h"
 #include "engine.hxx"
+#include "imgui.h"
+#include "imgui_impl_opengl3.h"
+#include "imgui_impl_sdl.h"
 #include "shader.hxx"
 #include "stuff.hxx"
 #include "texture2d.hxx"
 #include "vbo.hxx"
+#include <SDL2/SDL.h>
 
 int main(int /*argc*/, char* /*argv*/[])
 {
     std::unique_ptr<engine::core, void (*)(engine::core*)> engine(
         engine::create_engine(), engine::destroy_engine);
-
-    if (!engine->init(1364, 766))
+    int width{ 1364 }, height{ 766 };
+    if (!engine->init(width, height))
     {
         std::cerr << "init failed" << std::endl;
         return EXIT_FAILURE;
@@ -83,7 +86,22 @@ int main(int /*argc*/, char* /*argv*/[])
     const float pi = std::numbers::pi_v<float>;
     const float cam_speed{ 0.05f };
     const float cam_sens{ 0.05f };
-    engine->mouse_capture(true);
+    bool        mouse_capture{ false };
+    // engine->mouse_capture(true);
+
+    // this is impletation of imgui
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    (void)io;
+
+    ImGui_ImplSDL2_InitForOpenGL(engine->window, engine->gl_context);
+    ImGui_ImplOpenGL3_Init("#version 100");
+    ImGui::StyleColorsDark();
+
+    bool   show_demo_window    = true;
+    bool   show_another_window = false;
+    ImVec4 clear_color         = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     bool continue_loop = true;
     while (continue_loop)
@@ -102,6 +120,9 @@ int main(int /*argc*/, char* /*argv*/[])
                     break;
             }
         }
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplSDL2_NewFrame(engine->window);
+        ImGui::NewFrame();
 
         if (event.is_running && event.key == engine::event::up)
         {
@@ -147,13 +168,16 @@ int main(int /*argc*/, char* /*argv*/[])
         }
         if (event.is_running && event.key == engine::event::select)
         {
-            perspective_fov--;
+            mouse_capture = true;
+            engine->mouse_capture(mouse_capture);
         }
         if (event.is_running && event.key == engine::event::start)
         {
-            perspective_fov++;
+            mouse_capture = false;
+            engine->mouse_capture(mouse_capture);
         }
-        if (event.is_running && event.key == engine::event::mouse_move)
+        if (event.is_running && event.key == engine::event::mouse_move &&
+            mouse_capture)
         {
             yaw += event.mouse_delta.x * cam_sens;
             pitch -= event.mouse_delta.y * cam_sens;
@@ -163,6 +187,7 @@ int main(int /*argc*/, char* /*argv*/[])
             if (pitch < -89.0f)
                 pitch = -89.0f;
         }
+
         // engine matrix
         //        engine::trans_mat_4x4 scale_m =
         //            engine::trans_mat_4x4::scale(current_scale.x,
@@ -221,14 +246,49 @@ int main(int /*argc*/, char* /*argv*/[])
         glm_txt_sh.set_uniform_4mat("u_matrix_view", view);
         glm_txt_sh.set_uniform_4mat("u_matrix_projection", projection);
 
+        {
+            static float f       = 0.0f;
+            static int   counter = 0;
+
+            ImGui::Begin("Hello, world!"); // Create a window called "Hello,
+                                           // world!" and append into it.
+
+            ImGui::Text(
+                "This is some useful text."); // Display some text (you can use
+                                              // a format strings too)
+            ImGui::Checkbox("Demo Window",
+                            &show_demo_window); // Edit bools storing our window
+                                                // open/close state
+            ImGui::Checkbox("Another Window", &show_another_window);
+
+            ImGui::SliderFloat(
+                "float", &f, 0.0f,
+                1.0f); // Edit 1 float using a slider from 0.0f to 1.0f
+            ImGui::ColorEdit3(
+                "clear color",
+                (float*)&clear_color); // Edit 3 floats representing a color
+
+            if (ImGui::Button(
+                    "Button")) // Buttons return true when clicked (most widgets
+                               // return true when edited/activated)
+                counter++;
+            ImGui::SameLine();
+            ImGui::Text("counter = %d", counter);
+
+            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
+                        1000.0f / ImGui::GetIO().Framerate,
+                        ImGui::GetIO().Framerate);
+            ImGui::End();
+        }
+        glViewport(0, 0, width, height);
         for (size_t i{ 0 }; i < 10; i++)
         {
             model       = glm::mat4(1.0f);
             float angle = 20.0f * i;
-            if (i % 3 == 1)
-            {
-                angle *= engine->get_time_for_init();
-            }
+            //            if (i % 3 == 1)
+            //            {
+            //                angle *= engine->get_time_for_init();
+            //            }
             model = glm::translate(model, cubePositions[i]);
             model = glm::rotate(model, glm::radians(angle),
                                 glm::vec3(1.0f, 0.3f, 0.5f));
@@ -238,8 +298,12 @@ int main(int /*argc*/, char* /*argv*/[])
         //        engine->render(tank_0, glm_txt_sh,
         //        tank_1_txt); engine->render(tank_1,
         //        glm_txt_sh, tank_1_txt);
-
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         engine->swap_buffers();
     }
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplSDL2_Shutdown();
+    ImGui::DestroyContext();
     return EXIT_SUCCESS;
 }

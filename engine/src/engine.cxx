@@ -14,11 +14,6 @@
 #include <iostream>
 #include <shader.hxx>
 
-bool init_imgui(SDL_Window* window, SDL_GLContext gl_context,
-                uint8_t glsl_version);
-void create_imgui_tool_window();
-void render_imgui();
-
 static std::ostream& operator<<(std::ostream& out, const SDL_version& v)
 {
     out << static_cast<int>(v.major) << ".";
@@ -98,18 +93,17 @@ static bool check_event(const SDL_Event& sdl_event, const bind*& key)
 
 class core_one final : public core
 {
+public:
 private:
-    SDL_Window*   window      = nullptr;
-    SDL_GLContext gl_context  = nullptr;
-    SDL_version   compiled    = { 0, 0, 0 };
-    SDL_version   linked      = { 0, 0, 0 };
-    GLuint        program_id_ = 0;
-    GLuint        VBO         = 0;
-    GLuint        VAO         = 0;
-    GLuint        EBO         = 0;
-    GLuint        shd_proc    = 0;
-    int           width_      = 0;
-    int           height_     = 0;
+    SDL_version compiled    = { 0, 0, 0 };
+    SDL_version linked      = { 0, 0, 0 };
+    GLuint      program_id_ = 0;
+    GLuint      VBO         = 0;
+    GLuint      VAO         = 0;
+    GLuint      EBO         = 0;
+    GLuint      shd_proc    = 0;
+    int         width_      = 0;
+    int         height_     = 0;
 
 public:
     uniform tmp_uni;
@@ -117,7 +111,7 @@ public:
     void mouse_capture(bool flag) override final
     {
         // SDL_SetWindowGrab(window, SDL_TRUE);
-        SDL_SetRelativeMouseMode(SDL_TRUE);
+        SDL_SetRelativeMouseMode(static_cast<SDL_bool>(flag));
     }
 
     void set_uniforms()
@@ -362,7 +356,9 @@ public:
         {
             window = SDL_CreateWindow(
                 "title", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width,
-                height, SDL_WINDOW_OPENGL | SDL_WINDOW_MOUSE_CAPTURE);
+                height,
+                SDL_WINDOW_OPENGL | SDL_WINDOW_MOUSE_CAPTURE |
+                    SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
             if (window == nullptr)
             {
                 std::cerr << "create windoe failed sdl_error: "
@@ -371,7 +367,7 @@ public:
             }
             int gl_major_ver       = 3;
             int gl_minor_ver       = 2;
-            int gl_context_profile = SDL_GL_CONTEXT_PROFILE_ES;
+            int gl_context_profile = SDL_GL_CONTEXT_PROFILE_CORE;
 
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
                                 SDL_GL_CONTEXT_PROFILE_ES);
@@ -410,7 +406,7 @@ public:
                 }
                 else
                 {
-                    std::clog << "OpenGL " << gl_major_ver << '.'
+                    std::clog << "OpenGL Core " << gl_major_ver << '.'
                               << gl_minor_ver << '\n';
                 }
             }
@@ -431,7 +427,7 @@ public:
             }
         }
 
-        engine::init_imgui(window, gl_context, static_cast<uint8_t>(300));
+        // engine::init_imgui(window, gl_context, static_cast<uint8_t>(150));
         return init_my_opengl();
     }
     bool read_events(events& es) override
@@ -511,7 +507,7 @@ public:
     void swap_buffers() final override
     {
         SDL_GL_SwapWindow(window);
-
+        glViewport(0, 0, width_, height_);
         glClearColor(0.3f, 0.3f, 0.8f, 0.0f);
         OM_GL_CHECK()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -646,8 +642,8 @@ public:
     void render(vbo_v_8& buffer, shader_es_32& shader,
                 texture_2d_es_32& txt) final override
     {
-        create_imgui_tool_window();
-        ImGui::Render();
+        // create_imgui_tool_window();
+        // ImGui::Render();
 
         shader.use();
 
@@ -662,7 +658,7 @@ public:
         glDrawElements(GL_TRIANGLES, buffer.ebo_size, GL_UNSIGNED_INT, 0);
         OM_GL_CHECK()
 
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        // ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     }
 
     void render_grid(shader_es_32& shader_) final override
@@ -774,54 +770,5 @@ void destroy_engine(core* e)
 }
 
 core::~core(){};
-
-bool   show_demo_window    = true;
-bool   show_another_window = false;
-ImVec4 clear_color         = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
-bool init_imgui(SDL_Window* window, SDL_GLContext gl_context,
-                uint8_t glsl_version)
-{
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    const ImGuiIO& io = ImGui::GetIO();
-    (void)io;
-
-    ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
-    ImGui_ImplOpenGL3_Init(reinterpret_cast<char*>(glsl_version));
-    return true;
-}
-
-void create_imgui_tool_window()
-{
-    static float f       = 0.0f;
-    static int   counter = 0;
-
-    ImGui::Begin("Hello, world!"); // Create a window called "Hello, world!" and
-                                   // append into it.
-
-    ImGui::Text("This is some useful text."); // Display some text (you can use
-                                              // a format strings too)
-    ImGui::Checkbox(
-        "Demo Window",
-        &show_demo_window); // Edit bools storing our window open/close state
-    ImGui::Checkbox("Another Window", &show_another_window);
-
-    ImGui::SliderFloat("float", &f, 0.0f,
-                       1.0f); // Edit 1 float using a slider from 0.0f to 1.0f
-    ImGui::ColorEdit3(
-        "clear color",
-        (float*)&clear_color); // Edit 3 floats representing a color
-
-    if (ImGui::Button("Button")) // Buttons return true when clicked (most
-                                 // widgets return true when edited/activated)
-        counter++;
-    ImGui::SameLine();
-    ImGui::Text("counter = %d", counter);
-
-    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
-                1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-    ImGui::End();
-}
 
 } // namespace engine

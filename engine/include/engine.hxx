@@ -12,6 +12,8 @@
 #include "texture2d.hxx"
 #include "vbo.hxx"
 
+#include "SDL2/SDL.h"
+
 #ifndef ENGINE_DECLSPEC
 #define ENGINE_DECLSPEC
 #endif
@@ -55,6 +57,9 @@ ENGINE_DECLSPEC std::ostream& operator<<(std::ostream& stream, const event& e);
 class ENGINE_DECLSPEC core
 {
 public:
+    SDL_Window*   window     = nullptr;
+    SDL_GLContext gl_context = nullptr;
+
     virtual ~core()                                                   = 0;
     virtual bool  init(size_t, size_t)                                = 0;
     virtual bool  init_my_opengl()                                    = 0;
