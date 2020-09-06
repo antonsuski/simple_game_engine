@@ -1,5 +1,4 @@
 ﻿#include "engine.hxx"
-#include "glad/glad.h"
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_sdl.h"
@@ -11,6 +10,7 @@
 #include <array>
 #include <cassert>
 #include <fstream>
+#include <glad/glad.h>
 #include <iostream>
 #include <shader.hxx>
 
@@ -160,13 +160,13 @@ public:
 
         genBuffers();
 
-        glEnable(GL_DEPTH_TEST);
-        OM_GL_CHECK()
+        // glEnable(GL_DEPTH_TEST);
+        // OM_GL_CHECK()
 
-        glEnable(GL_BLEND);
-        OM_GL_CHECK()
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        OM_GL_CHECK()
+        // glEnable(GL_BLEND);
+        // OM_GL_CHECK()
+        // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        // OM_GL_CHECK()
 
         return true;
     }
@@ -346,7 +346,7 @@ public:
                       << compiled << " " << linked << std::endl;
         }
 
-        if (SDL_Init(SDL_INIT_EVERYTHING))
+        if (SDL_Init(SDL_INIT_EVERYTHING | SDL_INIT_VIDEO))
         {
             std::cerr << "init failed sdl_error: " << SDL_GetError()
                       << std::endl;
@@ -367,19 +367,22 @@ public:
             }
             int gl_major_ver       = 3;
             int gl_minor_ver       = 2;
-            int gl_context_profile = SDL_GL_CONTEXT_PROFILE_CORE;
+            int gl_context_profile = SDL_GL_CONTEXT_PROFILE_ES;
 
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
                                 SDL_GL_CONTEXT_PROFILE_ES);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, gl_major_ver);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, gl_minor_ver);
 
             gl_context = SDL_GL_CreateContext(window);
+            SDL_GL_MakeCurrent(window, gl_context);
+            SDL_GL_SetSwapInterval(1);
 
             if (gl_context == nullptr)
             {
                 SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
-                                    SDL_GL_CONTEXT_PROFILE_CORE);
+                                    SDL_GL_CONTEXT_PROFILE_ES);
                 gl_context = SDL_GL_CreateContext(window);
             }
             int result = SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,

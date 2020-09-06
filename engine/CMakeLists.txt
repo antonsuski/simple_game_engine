@@ -27,7 +27,8 @@ add_library(engine_shared SHARED
     include/vbo.hxx
     include/input_handler.hxx
     include/imgui_impl_opengl3.h
-    include/imgui_impl_sdl.h)
+    include/imgui_impl_sdl.h
+)
 
 find_package(SDL2 REQUIRED)
 find_library(GLM REQUIRED)

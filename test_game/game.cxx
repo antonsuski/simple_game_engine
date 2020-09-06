@@ -1,6 +1,7 @@
 ﻿#include <cassert>
 #include <cmath>
 #include <fstream>
+//#include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -17,6 +18,7 @@
 #include "stuff.hxx"
 #include "texture2d.hxx"
 #include "vbo.hxx"
+
 #include <SDL2/SDL.h>
 
 int main(int /*argc*/, char* /*argv*/[])
@@ -96,8 +98,8 @@ int main(int /*argc*/, char* /*argv*/[])
     (void)io;
 
     ImGui_ImplSDL2_InitForOpenGL(engine->window, engine->gl_context);
-    ImGui_ImplOpenGL3_Init("#version 100");
-    ImGui::StyleColorsDark();
+    ImGui_ImplOpenGL3_Init("#version 300 es");
+    //    ImGui::StyleColorsDark();
 
     bool   show_demo_window    = true;
     bool   show_another_window = false;
@@ -107,7 +109,8 @@ int main(int /*argc*/, char* /*argv*/[])
     while (continue_loop)
     {
         engine::event event;
-
+        SDL_Event     sdl_event;
+        ImGui_ImplSDL2_ProcessEvent(&sdl_event);
         while (engine->read_event(event))
         {
             std::cout << event << std::endl;
@@ -280,7 +283,7 @@ int main(int /*argc*/, char* /*argv*/[])
                         ImGui::GetIO().Framerate);
             ImGui::End();
         }
-        glViewport(0, 0, width, height);
+        // glViewport(0, 0, width, height);
         for (size_t i{ 0 }; i < 10; i++)
         {
             model       = glm::mat4(1.0f);
@@ -294,12 +297,14 @@ int main(int /*argc*/, char* /*argv*/[])
                                 glm::vec3(1.0f, 0.3f, 0.5f));
             glm_txt_sh.set_uniform_4mat("u_matrix_model", model);
             engine->render(cube, glm_txt_sh, cube_txt);
+            ImGui::Render();
         }
         //        engine->render(tank_0, glm_txt_sh,
         //        tank_1_txt); engine->render(tank_1,
         //        glm_txt_sh, tank_1_txt);
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
         engine->swap_buffers();
     }
     ImGui_ImplOpenGL3_Shutdown();
