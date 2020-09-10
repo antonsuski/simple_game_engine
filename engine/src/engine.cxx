@@ -64,16 +64,17 @@ struct bind
     event       e;
 };
 
-const std::array<bind, 8> keys{ {
-    { SDLK_w, { event::up, "up", false } },
-    { SDLK_a, { event::left, "left", false } },
-    { SDLK_s, { event::down, "down", false } },
-    { SDLK_d, { event::right, "right", false } },
-    { SDLK_q, { event::button_1, "button_1", false } },
-    { SDLK_e, { event::button_2, "button_2", false } },
-    { SDLK_ESCAPE, { event::select, "select", false } },
-    { SDLK_RETURN, { event::start, "start", false } },
-} };
+const std::array<bind, 9> keys{
+    { { SDLK_w, { event::up, "up", false } },
+      { SDLK_a, { event::left, "left", false } },
+      { SDLK_s, { event::down, "down", false } },
+      { SDLK_d, { event::right, "right", false } },
+      { SDLK_q, { event::button_1, "button_1", false } },
+      { SDLK_e, { event::button_2, "button_2", false } },
+      { SDLK_ESCAPE, { event::select, "select", false } },
+      { SDLK_RETURN, { event::start, "start", false } },
+      { SDL_MOUSEMOTION, { event::mouse_move, "mouse_move", false } } }
+};
 
 static bool check_event(const SDL_Event& sdl_event, const bind*& key)
 {
@@ -501,6 +502,7 @@ public:
                 e.mouse_delta.x = sdl_event.motion.xrel;
                 e.mouse_delta.y = sdl_event.motion.yrel;
                 e.is_running    = true;
+                e.name          = "mouse_move";
                 return true;
             }
         }
@@ -512,6 +514,16 @@ public:
         SDL_GL_SwapWindow(window);
         glViewport(0, 0, width_, height_);
         glClearColor(0.3f, 0.3f, 0.8f, 0.0f);
+        OM_GL_CHECK()
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        OM_GL_CHECK()
+    }
+
+    void swap_buffers(v_3& color) final override
+    {
+        SDL_GL_SwapWindow(window);
+        glViewport(0, 0, width_, height_);
+        glClearColor(color.x, color.y, color.z, 0.0f);
         OM_GL_CHECK()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         OM_GL_CHECK()

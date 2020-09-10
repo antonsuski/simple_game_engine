@@ -1,7 +1,6 @@
 ﻿#include <cassert>
 #include <cmath>
 #include <fstream>
-//#include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -68,7 +67,7 @@ int main(int /*argc*/, char* /*argv*/[])
 
     // end of expirements
     engine::v_3 current_pos(0.f, 0.f, 0.f);
-    engine::v_2 current_scale(1.f, 1.f);
+    engine::v_3 current_scale(1.f, 1.f, 1.f);
     float       current_direction(0.f);
     float       glm_direction(0.f);
     float       perspective_fov(45.f);
@@ -95,7 +94,6 @@ int main(int /*argc*/, char* /*argv*/[])
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
-    (void)io;
 
     ImGui_ImplSDL2_InitForOpenGL(engine->window, engine->gl_context);
     ImGui_ImplOpenGL3_Init("#version 300 es");
@@ -191,6 +189,44 @@ int main(int /*argc*/, char* /*argv*/[])
                 pitch = -89.0f;
         }
 
+        static float x_scale = 0.0f;
+        static float y_scale = 0.0f;
+        static float z_scale = 0.0f;
+        {
+
+            ImGuiWindowFlags window_flags = 0;
+            window_flags |= ImGuiWindowFlags_NoTitleBar;
+            window_flags |= ImGuiWindowFlags_NoMove;
+            window_flags |= ImGuiWindowFlags_NoResize;
+
+            ImGui::Begin("Context menu", nullptr,
+                         window_flags); // Create a window called "Hello,
+            // world!" and append into it.
+            ImGui::SetWindowPos({ 0, 0 });
+
+            ImGui::Text("Scale tuning."); // Display some text (you can use
+                                          // a format strings too)
+            if (ImGui::SliderFloat("x_scale", &x_scale, -1.0f, 1.0f))
+            {
+                current_scale.x += (x_scale / 100);
+            }
+            if (ImGui::SliderFloat("y_scale", &y_scale, -1.0f, 1.0f))
+            {
+                current_scale.y += (y_scale / 100);
+            }
+            if (ImGui::SliderFloat("z_scale", &z_scale, -1.0f, 1.0f))
+            {
+                current_scale.z += (z_scale / 100);
+            }
+            ImGui::ColorEdit3(
+                "clear color",
+                (float*)&clear_color); // Edit 3 floats representing a color
+
+            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
+                        1000.0f / ImGui::GetIO().Framerate,
+                        ImGui::GetIO().Framerate);
+            ImGui::End();
+        }
         // engine matrix
         //        engine::trans_mat_4x4 scale_m =
         //            engine::trans_mat_4x4::scale(current_scale.x,
@@ -211,8 +247,8 @@ int main(int /*argc*/, char* /*argv*/[])
                                glm::vec3(current_pos.x, current_pos.y, 0.0f));
         trans           = glm::rotate(trans, glm::radians(glm_direction),
                             glm::vec3(0.0f, 0.0f, 1.0f));
-        trans           = glm::scale(trans,
-                           glm::vec3(current_scale.x, current_scale.y, 1.0f));
+        trans = glm::scale(trans, glm::vec3(current_scale.x, current_scale.y,
+                                            current_scale.z));
 
         glm::mat4 model = glm::mat4(1.0f);
         //        model           = glm::rotate(model,
@@ -230,82 +266,44 @@ int main(int /*argc*/, char* /*argv*/[])
         direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
         direction.y = sin(glm::radians(pitch));
         direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+
         cameraFront = glm::normalize(direction);
 
         glm::mat4 view =
             glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-
-        glm::mat4 projection;
-        projection = glm::perspective(glm::radians(perspective_fov),
-                                      800.0f / 600.0f, 0.1f, 100.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(perspective_fov),
+                                                800.0f / 600.0f, 0.1f, 100.0f);
 
         // render
-        //        u.u0 = sin(engine->get_time_for_init());
-
-        //        r_txt_sh.set_uniform_4mat("u_matrix", mat);
 
         glm_txt_sh.set_uniform_4mat("u_matrix", trans);
-        //        glm_txt_sh.set_uniform_4mat("u_matrix_model", model);
+        glm_txt_sh.set_uniform_4mat("u_matrix_model", model);
         glm_txt_sh.set_uniform_4mat("u_matrix_view", view);
         glm_txt_sh.set_uniform_4mat("u_matrix_projection", projection);
 
-        {
-            static float f       = 0.0f;
-            static int   counter = 0;
-
-            ImGui::Begin("Hello, world!"); // Create a window called "Hello,
-                                           // world!" and append into it.
-
-            ImGui::Text(
-                "This is some useful text."); // Display some text (you can use
-                                              // a format strings too)
-            ImGui::Checkbox("Demo Window",
-                            &show_demo_window); // Edit bools storing our window
-                                                // open/close state
-            ImGui::Checkbox("Another Window", &show_another_window);
-
-            ImGui::SliderFloat(
-                "float", &f, 0.0f,
-                1.0f); // Edit 1 float using a slider from 0.0f to 1.0f
-            ImGui::ColorEdit3(
-                "clear color",
-                (float*)&clear_color); // Edit 3 floats representing a color
-
-            if (ImGui::Button(
-                    "Button")) // Buttons return true when clicked (most widgets
-                               // return true when edited/activated)
-                counter++;
-            ImGui::SameLine();
-            ImGui::Text("counter = %d", counter);
-
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
-                        1000.0f / ImGui::GetIO().Framerate,
-                        ImGui::GetIO().Framerate);
-            ImGui::End();
-        }
-        // glViewport(0, 0, width, height);
-        for (size_t i{ 0 }; i < 10; i++)
-        {
-            model       = glm::mat4(1.0f);
-            float angle = 20.0f * i;
-            //            if (i % 3 == 1)
-            //            {
-            //                angle *= engine->get_time_for_init();
-            //            }
-            model = glm::translate(model, cubePositions[i]);
-            model = glm::rotate(model, glm::radians(angle),
-                                glm::vec3(1.0f, 0.3f, 0.5f));
-            glm_txt_sh.set_uniform_4mat("u_matrix_model", model);
-            engine->render(cube, glm_txt_sh, cube_txt);
-            ImGui::Render();
-        }
+        engine->render(cube, glm_txt_sh, cube_txt);
+        //        for (int i{ 0 }; i < 10; i++)
+        //        {
+        //            model       = glm::mat4(1.0f);
+        //            float angle = 20.0f * i;
+        //            if (i % 3 == 1)
+        //            {
+        //                angle *= engine->get_time_for_init();
+        //            }
+        //            model = glm::translate(model, cubePositions[i]);
+        //            model = glm::rotate(model, glm::radians(angle),
+        //                                glm::vec3(1.0f, 0.3f, 0.5f));
+        //            glm_txt_sh.set_uniform_4mat("u_matrix_model", model);
+        //            engine->render(cube, glm_txt_sh, cube_txt);
+        //        }
         //        engine->render(tank_0, glm_txt_sh,
         //        tank_1_txt); engine->render(tank_1,
         //        glm_txt_sh, tank_1_txt);
+        ImGui::EndFrame();
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-        engine->swap_buffers();
+        engine::v_3 color{ clear_color.x, clear_color.y, clear_color.z };
+        engine->swap_buffers(color);
     }
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL2_Shutdown();
