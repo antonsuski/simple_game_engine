@@ -176,6 +176,7 @@ texture_2d_es_32::texture_2d_es_32(std::string_view path)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
                      GL_UNSIGNED_BYTE, data);
+        OM_GL_CHECK()
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else
@@ -194,6 +195,14 @@ void texture_2d_es_32::bind()
 int texture_2d_es_32::get_id()
 {
     return texture_id;
+}
+
+animation_2d_es_32::animation_2d_es_32(std::string_view path, size_t col,
+                                       size_t row)
+    : texture_2d_es_32(path)
+    , col(col)
+    , row(row)
+{
 }
 
 } // namespace engine

@@ -161,13 +161,13 @@ public:
 
         genBuffers();
 
-        // glEnable(GL_DEPTH_TEST);
-        // OM_GL_CHECK()
+        glEnable(GL_DEPTH_TEST);
+        OM_GL_CHECK()
 
-        // glEnable(GL_BLEND);
-        // OM_GL_CHECK()
-        // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        // OM_GL_CHECK()
+        glEnable(GL_BLEND);
+        OM_GL_CHECK()
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        OM_GL_CHECK()
 
         return true;
     }

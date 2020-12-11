@@ -33,29 +33,30 @@ int main(int /*argc*/, char* /*argv*/[])
 
     // shaders
     engine::shader_es_32 default_shader(
-        "../../../res/shaders/default_shader_v_8.vs",
-        "../../../res/shaders/default_shader_v_8.fs");
+        "../../res/shaders/default_shader_v_8.vs",
+        "../../res/shaders/default_shader_v_8.fs");
     engine::shader_es_32 def_txt_sh(
-        "../../../res/shaders/default_texture_shader_v_8.vs",
-        "../../../res/shaders/default_texture_shader_v_8.fs");
-    engine::shader_es_32 r_txt_sh("../../../res/shaders/r_txt.vs",
-                                  "../../../res/shaders/r_txt.fs");
-    engine::shader_es_32 glm_txt_sh("../../../res/shaders/glm_txt_sh.vs",
-                                    "../../../res/shaders/glm_txt_sh.fs");
+        "../../res/shaders/default_texture_shader_v_8.vs",
+        "../../res/shaders/default_texture_shader_v_8.fs");
+    engine::shader_es_32 r_txt_sh("../../res/shaders/r_txt.vs",
+                                  "../../res/shaders/r_txt.fs");
+    engine::shader_es_32 glm_txt_sh("../../res/shaders/glm_txt_sh.vs",
+                                    "../../res/shaders/glm_txt_sh.fs");
 
     // buffers
-    engine::vbo_v_8 tank_0("../../../res/rgb_triangle.txt");
-    engine::vbo_v_8 tank_1("../../../res/rgb_triangle_1.txt");
+    engine::vbo_v_8 tank_0("../../res/rgb_triangle.txt");
+    engine::vbo_v_8 tank_1("../../res/rgb_triangle_1.txt");
 
     // uniforms
     engine::uniform u{ "my_color", 0, 0, 0, 0 };
     // engine
 
     // expirements
-    engine::texture_2d_es_32 tank_1_txt("../../../res/images/tank_1.png");
-
-    engine::vbo_v_8          cube("../../../res/3d_cube.txt");
-    engine::texture_2d_es_32 cube_txt("../../../res/images/wood.png");
+    engine::texture_2d_es_32   tank_1_txt("../../res/images/tank.png");
+    engine::animation_2d_es_32 explosion(
+        "../../res/animation/explosion/boom.png", 1, 1);
+    engine::vbo_v_8          cube("../../res/3d_cube.txt");
+    engine::texture_2d_es_32 cube_txt("../../res/images/wood.png");
 
     glm::vec3 cubePositions[] = {
         glm::vec3(0.0f, 0.0f, 0.0f),    glm::vec3(2.0f, 5.0f, -15.0f),
@@ -281,7 +282,7 @@ int main(int /*argc*/, char* /*argv*/[])
         glm_txt_sh.set_uniform_4mat("u_matrix_view", view);
         glm_txt_sh.set_uniform_4mat("u_matrix_projection", projection);
 
-        engine->render(cube, glm_txt_sh, cube_txt);
+        engine->render(cube, glm_txt_sh, explosion);
         //        for (int i{ 0 }; i < 10; i++)
         //        {
         //            model       = glm::mat4(1.0f);

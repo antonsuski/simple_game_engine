@@ -61,4 +61,13 @@ public:
     int           get_id();
 };
 
+class ENGINE_DECLSPEC animation_2d_es_32 : public texture_2d_es_32
+{
+    size_t col;
+    size_t row;
+
+public:
+    animation_2d_es_32(std::string_view, size_t, size_t);
+};
+
 } // namespace engine
