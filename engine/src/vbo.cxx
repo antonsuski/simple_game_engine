@@ -49,9 +49,9 @@ engine::vbo_v_8::vbo_v_8(std::string_view path)
         }
     }
 
-    vbo_data_size = vbo_data.size();
+    vbo_size = vbo_data.size();
 
-    for (size_t iterator = 0; iterator < vbo_data_size; iterator++)
+    for (size_t iterator = 0; iterator < vbo_size; iterator++)
     {
         ebo_data->push_back(iterator);
     }
@@ -110,7 +110,7 @@ engine::vbo_v_8::vbo_v_8(std::string_view path)
 
 size_t vbo_v_8::size()
 {
-    return vbo_data_size;
+    return vbo_size;
 }
 
 void vbo_v_8::bind_buffer()
@@ -210,7 +210,7 @@ void vbo_v_8::print_buffer()
 
 void vbo_v_8::morf_color(float& time)
 {
-    for (size_t iterator = 0; iterator < vbo_data_size; ++iterator)
+    for (size_t iterator = 0; iterator < vbo_size; ++iterator)
     {
         if (vbo_data.at(iterator % 3).r || vbo_data.at((iterator + 1) % 3).r)
         {

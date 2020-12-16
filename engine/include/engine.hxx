@@ -60,21 +60,22 @@ public:
     SDL_Window*   window     = nullptr;
     SDL_GLContext gl_context = nullptr;
 
-    virtual ~core()                                                   = 0;
-    virtual bool  init(size_t, size_t)                                = 0;
-    virtual bool  init_my_opengl()                                    = 0;
-    virtual bool  read_event(event&)                                  = 0;
-    virtual bool  read_events(events&)                                = 0;
-    virtual void  render(vbo_v_8&, shader_es_32&, GLuint& texture_id) = 0;
+    virtual ~core()                                                    = 0;
+    virtual bool  init(size_t, size_t)                                 = 0;
+    virtual bool  init_my_opengl()                                     = 0;
+    virtual bool  read_event(event&)                                   = 0;
+    virtual bool  read_events(events&)                                 = 0;
+    virtual void  render(vbo_v_8&, shader_es_32&, GLuint& texture_id)  = 0;
     virtual void  render(vbo_v_8&, shader_es_32&, GLuint& texture_id,
-                         GLuint& texture_)                            = 0;
-    virtual void  render(vbo_v_8&, shader_es_32&, texture_2d_es_32&)  = 0;
-    virtual void  render_grid(shader_es_32&)                          = 0;
-    virtual void  swap_buffers()                                      = 0;
-    virtual void  swap_buffers(v_3&)                                  = 0;
-    virtual void  uninitialize()                                      = 0;
-    virtual void  mouse_capture(bool)                                 = 0;
-    virtual float get_time_for_init()                                 = 0;
+                         GLuint& texture_)                             = 0;
+    virtual void  render(vbo_v_8&, shader_es_32&, texture_2d_es_32&)   = 0;
+    virtual void  render(vbo_v_8&, shader_es_32&, animation_2d_es_32&) = 0;
+    virtual void  render_grid(shader_es_32&)                           = 0;
+    virtual void  swap_buffers()                                       = 0;
+    virtual void  swap_buffers(v_3&)                                   = 0;
+    virtual void  uninitialize()                                       = 0;
+    virtual void  mouse_capture(bool)                                  = 0;
+    virtual float get_time_for_init()                                  = 0;
 };
 
 ENGINE_DECLSPEC engine::core* create_engine();

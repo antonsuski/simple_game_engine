@@ -22,6 +22,9 @@
 
 int main(int /*argc*/, char* /*argv*/[])
 {
+    float trololo = 0 / 100.f;
+    std::clog << trololo;
+
     std::unique_ptr<engine::core, void (*)(engine::core*)> engine(
         engine::create_engine(), engine::destroy_engine);
     int width{ 1364 }, height{ 766 };
@@ -51,22 +54,17 @@ int main(int /*argc*/, char* /*argv*/[])
     engine::uniform u{ "my_color", 0, 0, 0, 0 };
     // engine
 
-    // expirements
-    engine::texture_2d_es_32   tank_1_txt("../../res/images/tank.png");
+    /// expirements
+
+    engine::texture_2d_es_32   tank_1_txt("../../res/images/tank_1.png");
     engine::animation_2d_es_32 explosion(
-        "../../res/animation/explosion/boom.png", 1, 1);
-    engine::vbo_v_8          cube("../../res/3d_cube.txt");
+        "../../res/animation/explosion/explosion_atlas4.png", 8, 8);
     engine::texture_2d_es_32 cube_txt("../../res/images/wood.png");
 
-    glm::vec3 cubePositions[] = {
-        glm::vec3(0.0f, 0.0f, 0.0f),    glm::vec3(2.0f, 5.0f, -15.0f),
-        glm::vec3(-1.5f, -2.2f, -2.5f), glm::vec3(-3.8f, -2.0f, -12.3f),
-        glm::vec3(2.4f, -0.4f, -3.5f),  glm::vec3(-1.7f, 3.0f, -7.5f),
-        glm::vec3(1.3f, -2.0f, -2.5f),  glm::vec3(1.5f, 2.0f, -2.5f),
-        glm::vec3(1.5f, 0.2f, -1.5f),   glm::vec3(-1.3f, 1.0f, -1.5f)
-    };
+    engine::vbo_v_8 cube("../../res/3d_cube.txt");
+    engine::vbo_v_8 square("../../res/square.txt");
+    /// end of expirements
 
-    // end of expirements
     engine::v_3 current_pos(0.f, 0.f, 0.f);
     engine::v_3 current_scale(1.f, 1.f, 1.f);
     float       current_direction(0.f);
@@ -109,7 +107,6 @@ int main(int /*argc*/, char* /*argv*/[])
     {
         engine::event event;
         SDL_Event     sdl_event;
-        ImGui_ImplSDL2_ProcessEvent(&sdl_event);
         while (engine->read_event(event))
         {
             std::cout << event << std::endl;
@@ -122,6 +119,7 @@ int main(int /*argc*/, char* /*argv*/[])
                     break;
             }
         }
+        ImGui_ImplSDL2_ProcessEvent(&sdl_event);
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL2_NewFrame(engine->window);
         ImGui::NewFrame();
@@ -282,7 +280,7 @@ int main(int /*argc*/, char* /*argv*/[])
         glm_txt_sh.set_uniform_4mat("u_matrix_view", view);
         glm_txt_sh.set_uniform_4mat("u_matrix_projection", projection);
 
-        engine->render(cube, glm_txt_sh, explosion);
+        engine->render(square, glm_txt_sh, explosion);
         //        for (int i{ 0 }; i < 10; i++)
         //        {
         //            model       = glm::mat4(1.0f);
