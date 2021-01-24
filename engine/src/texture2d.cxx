@@ -176,12 +176,18 @@ texture_2d_es_32::texture_2d_es_32(std::string_view path)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
                      GL_UNSIGNED_BYTE, data);
+        OM_GL_CHECK()
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else
     {
-        std::cout << "Failed to load texture" << std::endl;
+        std::clog << "ERROR::Failed to load texture: " << stbi_failure_reason();
+        std::clog << std::endl;
     }
+
+    std::clog << "texture_resolution: " << width << "x" << height << std::endl;
+    std::clog << "nr_channels: " << nr_channels << std::endl << std::endl;
+
     stbi_image_free(data);
 }
 
@@ -194,6 +200,71 @@ void texture_2d_es_32::bind()
 int texture_2d_es_32::get_id()
 {
     return texture_id;
+}
+
+void animation_2d_es_32::make_atlas_map()
+{
+    for (int row_counter(row - 1); row_counter >= 0; --row_counter)
+    {
+        for (size_t col_counter{ 0 }; col_counter < col; ++col_counter)
+        {
+            std::clog << col_counter << "_" << row_counter << " ";
+            // clang-format off
+            atlas.push_back(v_8( col_counter * offset_x, (row_counter + 1) * offset_y,
+                                 col_counter * offset_x, row_counter * offset_y,
+                                 (col_counter + 1) * offset_x, (row_counter + 1) * offset_y,
+                                 (col_counter + 1) * offset_x, row_counter * offset_y));
+            // clang-format on
+        }
+        std::clog << std::endl;
+    }
+
+    for (size_t i{ 0 }; i < col * row; i++)
+    {
+        std::clog << atlas[i];
+    }
+
+    std::clog << std::endl;
+}
+
+animation_2d_es_32::animation_2d_es_32(std::string_view path, size_t col,
+                                       size_t row)
+    : texture_2d_es_32(path)
+    , col(col)
+    , row(row)
+    , current_frame(0)
+    , animation_speed(0.015f)
+{
+    offset_x = 1.f / row;
+    offset_y = 1.f / col;
+
+    std::clog << "animation_info:\ncol: " << col << " row: " << row
+              << " offset_x: " << offset_x << " offset_y: " << offset_y
+              << std::endl
+              << "current_frame: " << current_frame << std::endl
+              << std::endl;
+
+    make_atlas_map();
+}
+
+void animation_2d_es_32::switch_frame()
+{
+    current_frame = ++current_frame % ((col * row) + 1);
+}
+
+void animation_2d_es_32::switch_frame(size_t frame)
+{
+    current_frame = frame % ((col * row) + 1);
+}
+
+void animation_2d_es_32::set_animation_speed(float speed)
+{
+    animation_speed = speed;
+}
+
+v_8 animation_2d_es_32::get_current_frame()
+{
+    return atlas[current_frame];
 }
 
 } // namespace engine

@@ -161,13 +161,13 @@ public:
 
         genBuffers();
 
-        // glEnable(GL_DEPTH_TEST);
-        // OM_GL_CHECK()
+        glEnable(GL_DEPTH_TEST);
+        OM_GL_CHECK()
 
-        // glEnable(GL_BLEND);
-        // OM_GL_CHECK()
-        // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        // OM_GL_CHECK()
+        glEnable(GL_BLEND);
+        OM_GL_CHECK()
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        OM_GL_CHECK()
 
         return true;
     }
@@ -672,8 +672,42 @@ public:
 
         glDrawElements(GL_TRIANGLES, buffer.ebo_size, GL_UNSIGNED_INT, 0);
         OM_GL_CHECK()
+    }
 
-        // ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    virtual void render(vbo_v_8& buffer, shader_es_32& shader,
+                        animation_2d_es_32& anim) final override
+    {
+        shader.use();
+
+        buffer.vbo_data[0].s = anim.get_current_frame().x;
+        buffer.vbo_data[0].t = anim.get_current_frame().y;
+
+        buffer.vbo_data[1].s = anim.get_current_frame().z;
+        buffer.vbo_data[1].t = anim.get_current_frame().r;
+
+        buffer.vbo_data[2].s = anim.get_current_frame().g;
+        buffer.vbo_data[2].t = anim.get_current_frame().b;
+
+        buffer.vbo_data[3].s = anim.get_current_frame().z;
+        buffer.vbo_data[3].t = anim.get_current_frame().r;
+
+        buffer.vbo_data[4].s = anim.get_current_frame().g;
+        buffer.vbo_data[4].t = anim.get_current_frame().b;
+
+        buffer.vbo_data[5].s = anim.get_current_frame().s;
+        buffer.vbo_data[5].t = anim.get_current_frame().t;
+
+        buffer.bind_vao();
+        buffer.bind_buffer();
+        buffer.buffer_data(GL_STATIC_DRAW);
+        buffer.bind_ebo();
+        buffer.buffer_ebo();
+
+        anim.bind();
+        anim.switch_frame();
+
+        glDrawElements(GL_TRIANGLES, buffer.ebo_size, GL_UNSIGNED_INT, 0);
+        OM_GL_CHECK()
     }
 
     void render_grid(shader_es_32& shader_) final override

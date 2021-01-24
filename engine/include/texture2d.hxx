@@ -4,7 +4,9 @@
 #define ENGINE_DECLSPEC
 #endif
 
+#include <array>
 #include <string_view>
+#include <vector>
 
 #include "shader.hxx"
 #include "stb_image.h"
@@ -44,6 +46,7 @@ public:
 
 class ENGINE_DECLSPEC texture_2d_es_32
 {
+protected:
     GLuint texture_id;
 
     int width;
@@ -59,6 +62,34 @@ public:
     std::uint32_t get_height();
     void          bind();
     int           get_id();
+};
+
+class ENGINE_DECLSPEC animation_2d_es_32 : public texture_2d_es_32
+{
+    size_t col;
+    size_t row;
+    size_t current_frame;
+
+    float offset_x;
+    float offset_y;
+
+    float animation_speed;
+
+    // the best way it is make with v_2[4],
+    // but now i need to go
+
+    std::vector<v_8> atlas;
+
+    void make_atlas_map();
+
+public:
+    animation_2d_es_32(std::string_view, size_t, size_t);
+
+    void switch_frame();
+    void switch_frame(size_t);
+    void set_animation_speed(float);
+
+    v_8 get_current_frame();
 };
 
 } // namespace engine
