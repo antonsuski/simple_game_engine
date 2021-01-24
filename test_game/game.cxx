@@ -56,9 +56,15 @@ int main(int /*argc*/, char* /*argv*/[])
 
     /// expirements
 
-    engine::texture_2d_es_32   tank_1_txt("../../res/images/tank_1.png");
+    engine::texture_2d_es_32 tank_1_txt("../../res/images/tank_1.png");
+
     engine::animation_2d_es_32 explosion(
-        "../../res/animation/explosion/explosion_atlas4.png", 8, 8);
+        "../../res/animation/explosion/explosion_atlas3.png", 8, 8);
+    engine::animation_2d_es_32 boom("../../res/animation/explosion/boom.png", 8,
+                                    8);
+    engine::animation_2d_es_32 weapon(
+        "../../res/animation/WEAPON_longsword.png", 8, 6);
+
     engine::texture_2d_es_32 cube_txt("../../res/images/wood.png");
 
     engine::vbo_v_8 cube("../../res/3d_cube.txt");
