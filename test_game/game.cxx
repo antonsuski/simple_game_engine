@@ -73,9 +73,9 @@ int main(int /*argc*/, char* /*argv*/[])
 
     engine::v_3 current_pos(0.f, 0.f, 0.f);
     engine::v_3 current_scale(1.f, 1.f, 1.f);
-    float       current_direction(0.f);
-    float       glm_direction(0.f);
-    float       perspective_fov(45.f);
+    //    float       current_direction(0.f);
+    float glm_direction(0.f);
+    float perspective_fov(45.f);
 
     glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
     glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f, 3.0f);
@@ -89,7 +89,7 @@ int main(int /*argc*/, char* /*argv*/[])
     //    direction.z = sin(glm::radians(yaw));
     //    direction.y = sin(glm::radians(pitch));
 
-    const float pi = std::numbers::pi_v<float>;
+    //    const float pi = std::numbers::pi_v<float>;
     const float cam_speed{ 0.05f };
     const float cam_sens{ 0.05f };
     bool        mouse_capture{ false };
@@ -98,15 +98,15 @@ int main(int /*argc*/, char* /*argv*/[])
     // this is impletation of imgui
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
+    //    ImGuiIO& io = ImGui::GetIO();
 
     ImGui_ImplSDL2_InitForOpenGL(engine->window, engine->gl_context);
     ImGui_ImplOpenGL3_Init("#version 300 es");
     //    ImGui::StyleColorsDark();
 
-    bool   show_demo_window    = true;
-    bool   show_another_window = false;
-    ImVec4 clear_color         = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    //    bool   show_demo_window    = true;
+    //    bool   show_another_window = false;
+    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     bool continue_loop = true;
     while (continue_loop)
@@ -264,9 +264,10 @@ int main(int /*argc*/, char* /*argv*/[])
         //        view           = glm::translate(view, glm::vec3(0.0f, 0.0f,
         //        -3.0f));
 
-        const float radius = 10.0f;
-        float       camX   = sin(engine->get_time_for_init()) * radius;
-        float       camZ   = cos(engine->get_time_for_init()) * radius;
+        //        const float radius = 10.0f;
+        //        float       camX   = sin(engine->get_time_for_init()) *
+        //        radius; float       camZ   = cos(engine->get_time_for_init())
+        //        * radius;
 
         direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
         direction.y = sin(glm::radians(pitch));
