@@ -2,8 +2,6 @@
 
 project(engine LANGUAGES CXX C)
 
-
-
 add_library(engine_shared SHARED
     src/engine.cxx
     src/shader.cxx
@@ -36,6 +34,7 @@ else()
 endif()
 
 find_package(SDL2 REQUIRED)
+
 #find_library(GLM REQUIRED)
 
 
