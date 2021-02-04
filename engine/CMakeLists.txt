@@ -2,13 +2,9 @@
 
 project(engine LANGUAGES CXX C)
 
-<<<<<<< HEAD
-add_library(engine_shared SHARED
-=======
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
 add_library(engine
->>>>>>> 767ca13bbb95df08e165ae437468b2ee6eaeea02
     src/engine.cxx
     src/shader.cxx
     src/texture2d.cxx
