@@ -32,11 +32,14 @@ add_library(engine
 
 find_package(SDL2 CONFIG REQUIRED)
 
+set(SDL2 "C:/Program Files/SDL2/lib")
+
 target_compile_features(engine PUBLIC cxx_std_20)
 target_include_directories(engine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(engine PUBLIC imgui)
 target_link_libraries(engine PRIVATE
-    SDL2::SDL2
-    SDL2::SDL2main
+    SDL2
+#    SDL2::SDL2
+#    SDL2::SDL2main
     GL
     )
