@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <array>
 #include <string_view>
 #include <vector>
@@ -7,27 +8,27 @@
 
 struct bind
 {
-    engine::event    e;
+    engine::event    event;
     std::string_view name;
 
-    bind(engine::event e_, std::string_view name_)
-        : e{ e_ }
-        , name{ name_ }
+    bind(engine::event event_, std::string_view name_)
+        : event{ event_ }
+        , name(name_)
     {
     }
 };
 
-// std::array<engine::event, 9> key_map{
-//    { engine::event::key_w, "w_" },          { engine::event::key_a, "a_" },
-//    { engine::event::key_s, "s_" },          { engine::event::key_d, "d_" },
-//    { engine::event::key_q, "q_" },          { engine::event::key_e, "e_" },
-//    { engine::event::key_enter, "enter_" },  { engine::event::key_esc, "w_" },
-//    { engine::event::turn_off, "turn_off_" }
-//};
-
+std::array<bind, 5> key_map{ { { engine::event::left, "left" },
+                               { engine::event::right, "right" },
+                               { engine::event::up, "up" },
+                               { engine::event::down, "down" },
+                               { engine::event::turn_off, "turn_off" } } };
+static bool         cheack_event{};
 namespace engine
 {
-// std::istream& operator>>(std::istream& in, event& e) {}
+// std::ostream& operator<<(std::ostream& out, const event& e)
+//{
+//    return out;
+//}
 
-std::ostream& operator<<(std::ostream& out, const event& e) {}
 } // namespace engine
