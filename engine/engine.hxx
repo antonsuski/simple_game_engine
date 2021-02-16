@@ -24,10 +24,6 @@ public:
     bool        event_state;
 
     event(event::event_type e_type, std::string e_name);
-
-private:
-    void release_event();
-    void push_event();
 };
 
 std::ostream& operator<<(std::ostream& out, const event& e);
@@ -35,8 +31,14 @@ std::ostream& operator<<(std::ostream& out, const event& e);
 class engine
 {
 public:
-    virtual void handl_imput() = 0;
-    virtual void update()      = 0;
-    virtual void render()      = 0;
+    virtual void handl_imput(event&) = 0;
+    virtual void update()            = 0;
+    virtual void render()            = 0;
+
+    virtual bool init() = 0;
 };
+
+engine* create_engine();
+void    destroy_engine(engine*);
+
 } // namespace engine

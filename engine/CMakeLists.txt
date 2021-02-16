@@ -6,6 +6,10 @@ option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
 add_library(engine
             engine.hxx
+            om_gl_check.hxx
+            glad/glad.h
+
+            glad/glad.c
             engine.cxx)
 
 target_compile_features(engine PUBLIC cxx_std_20)
