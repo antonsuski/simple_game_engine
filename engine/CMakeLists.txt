@@ -6,10 +6,20 @@ option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
 add_library(engine
             engine.hxx
-            om_gl_check.hxx
+            gl_assist.hxx
+            shader.hxx
+            stuff.hxx
+            vbo.hxx
+            texture2d.hxx
+            stb_image.h
             glad/glad.h
 
             glad/glad.c
+            shader.cxx
+            stuff.cxx
+            vbo.hxx
+            texture2d.cxx
+            stb_image.cxx
             engine.cxx)
 
 target_compile_features(engine PUBLIC cxx_std_20)

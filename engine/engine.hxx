@@ -35,7 +35,7 @@ public:
     virtual void update()            = 0;
     virtual void render()            = 0;
 
-    virtual bool init() = 0;
+    virtual bool init(int32_t, int32_t) = 0;
 };
 
 engine* create_engine();

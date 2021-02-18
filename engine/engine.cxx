@@ -5,30 +5,10 @@
 #include <vector>
 
 #include <SDL.h>
-#include <SDL_opengl.h>
-#include <SDL_opengl_glext.h>
 
 #include "engine.hxx"
-#include "om_gl_check.hxx"
-
-PFNGLCREATESHADERPROC            glCreateShader            = nullptr;
-PFNGLSHADERSOURCEPROC            glShaderSource            = nullptr;
-PFNGLCOMPILESHADERPROC           glCompileShader           = nullptr;
-PFNGLGETSHADERIVPROC             glGetShaderiv             = nullptr;
-PFNGLGETSHADERINFOLOGPROC        glGetShaderInfoLog        = nullptr;
-PFNGLDELETESHADERPROC            glDeleteShader            = nullptr;
-PFNGLCREATEPROGRAMPROC           glCreateProgram           = nullptr;
-PFNGLATTACHSHADERPROC            glAttachShader            = nullptr;
-PFNGLBINDATTRIBLOCATIONPROC      glBindAttribLocation      = nullptr;
-PFNGLLINKPROGRAMPROC             glLinkProgram             = nullptr;
-PFNGLGETPROGRAMIVPROC            glGetProgramiv            = nullptr;
-PFNGLGETPROGRAMINFOLOGPROC       glGetProgramInfoLog       = nullptr;
-PFNGLDELETEPROGRAMPROC           glDeleteProgram           = nullptr;
-PFNGLUSEPROGRAMPROC              glUseProgram              = nullptr;
-PFNGLVERTEXATTRIBPOINTERPROC     glVertexAttribPointer     = nullptr;
-PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray = nullptr;
-PFNGLVALIDATEPROGRAMPROC         glValidateProgram         = nullptr;
-// PFNGLDEBUGMESSAGECALLBACKPROC    glDebugMessageCallback    = nullptr;
+#include "gl_assist.hxx"
+#include "glad/glad.h"
 
 template <typename T>
 static void load_gl_func(const char* func_name, T& result)
@@ -101,12 +81,18 @@ std::ostream& operator<<(std::ostream& out, const event& e)
         SDL_Window*   window{ nullptr };
         SDL_GLContext gl_context{};
 
+        int32_t main_window_height{};
+        int32_t main_window_width{};
+
     public:
         void handl_imput(event& e) override final {}
         void update() override final {}
         void render() override final {}
-        bool init() override final
+        bool init(int32_t h, int32_t w) override final
         {
+            main_window_height = h;
+            main_window_width  = w;
+
             SDL_version compiled{ 0, 0, 0 };
             SDL_version linked{ 0, 0, 0 };
 
@@ -176,30 +162,9 @@ std::ostream& operator<<(std::ostream& out, const event& e)
                               << gl_minor_ver << '\n';
                 }
             }
-            try
+            if (gladLoadGLES2Loader(SDL_GL_GetProcAddress) == 0)
             {
-                load_gl_func("glCreateShader", glCreateShader);
-                load_gl_func("glShaderSource", glShaderSource);
-                load_gl_func("glCompileShader", glCompileShader);
-                load_gl_func("glGetShaderiv", glGetShaderiv);
-                load_gl_func("glGetShaderInfoLog", glGetShaderInfoLog);
-                load_gl_func("glDeleteShader", glDeleteShader);
-                load_gl_func("glCreateProgram", glCreateProgram);
-                load_gl_func("glAttachShader", glAttachShader);
-                load_gl_func("glBindAttribLocation", glBindAttribLocation);
-                load_gl_func("glLinkProgram", glLinkProgram);
-                load_gl_func("glGetProgramiv", glGetProgramiv);
-                load_gl_func("glGetProgramInfoLog", glGetProgramInfoLog);
-                load_gl_func("glDeleteProgram", glDeleteProgram);
-                load_gl_func("glUseProgram", glUseProgram);
-                load_gl_func("glVertexAttribPointer", glVertexAttribPointer);
-                load_gl_func("glEnableVertexAttribArray",
-                             glEnableVertexAttribArray);
-                load_gl_func("glValidateProgram", glValidateProgram);
-            }
-            catch (std::exception& ex)
-            {
-                return ex.what();
+                std::clog << "error: failed to initialize glad" << std::endl;
             }
 
             return init_opengl();
@@ -213,21 +178,18 @@ std::ostream& operator<<(std::ostream& out, const event& e)
             glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0,
                                   nullptr, GL_TRUE);
 
-            glViewport(0, 0, width_, height_);
-            OM_GL_CHECK()
+            glViewport(0, 0, main_window_width, main_window_height);
+            GL_CHECK()
 
-            std::clog << "Resolution: " << width_ << "x" << height_
-                      << std::endl;
-
-            genBuffers();
+            std::clog << "Resolution: " << main_window_width << "x"
+                      << main_window_height << std::endl;
 
             glEnable(GL_DEPTH_TEST);
-            OM_GL_CHECK()
-
+            GL_CHECK()
             glEnable(GL_BLEND);
-            OM_GL_CHECK()
+            GL_CHECK()
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            OM_GL_CHECK()
+            GL_CHECK()
 
             return true;
         }

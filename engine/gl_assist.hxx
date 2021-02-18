@@ -1,15 +1,12 @@
 ﻿#pragma once
 
-#include "glad/glad.h"
-
 #include <array>
 #include <cassert>
 #include <iostream>
 
-//#include <SDL_opengl.h>
-//#include <SDL_opengl_glext.h>
+#include "glad/glad.h"
 
-#define OM_GL_CHECK()                                                          \
+#define GL_CHECK()                                                             \
     {                                                                          \
         const int err = static_cast<int>(glGetError());                        \
         if (err != GL_NO_ERROR)                                                \
