@@ -23,6 +23,7 @@ public:
     std::string name;
     bool        event_state;
 
+    event();
     event(event::event_type e_type, std::string e_name);
 };
 
@@ -31,10 +32,12 @@ std::ostream& operator<<(std::ostream& out, const event& e);
 class engine
 {
 public:
-    virtual void handl_imput(event&) = 0;
-    virtual void update()            = 0;
-    virtual void render()            = 0;
+    virtual ~engine() = 0;
 
+    virtual void update() = 0;
+    virtual void render() = 0;
+
+    virtual bool handl_imput(event&)    = 0;
     virtual bool init(int32_t, int32_t) = 0;
 };
 
