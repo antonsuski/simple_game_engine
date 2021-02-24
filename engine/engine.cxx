@@ -114,6 +114,7 @@ std::ostream& operator<<(std::ostream& out, const event& e)
         throw std::runtime_error("too big event value");
     }
 }
+
 class engine_core final : public engine
 {
     SDL_Window*   window{ nullptr };
@@ -174,7 +175,14 @@ public:
         std::clog << "comiled version: " << compiled << std::endl;
         std::clog << "comiled version: " << linked << std::endl;
 
-        if (SDL_Init(SDL_INIT_EVERYTHING | SDL_INIT_VIDEO))
+        if (SDL_COMPILEDVERSION !=
+            SDL_VERSIONNUM(linked.major, linked.minor, linked.patch))
+        {
+            std::cerr << "warning: SDL2 compiled and linked version mismatch: "
+                      << compiled << " " << linked << std::endl;
+        }
+
+        if (SDL_Init(SDL_INIT_EVERYTHING))
         {
             std::cerr << "init failed sdl_error:" << SDL_GetError()
                       << std::endl;
@@ -185,7 +193,9 @@ public:
             window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED,
                                       SDL_WINDOWPOS_UNDEFINED, 600, 400,
                                       SDL_WINDOW_SHOWN);
+            std::clog << "sdl_init success" << std::endl;
         }
+
         int gl_major_ver       = 3;
         int gl_minor_ver       = 2;
         int gl_context_profile = SDL_GL_CONTEXT_PROFILE_ES;
@@ -206,6 +216,7 @@ public:
                                 SDL_GL_CONTEXT_PROFILE_ES);
             gl_context = SDL_GL_CreateContext(window);
         }
+
         int result =
             SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &gl_major_ver);
         assert(result == 0);
@@ -234,6 +245,7 @@ public:
                           << gl_minor_ver << '\n';
             }
         }
+
         if (gladLoadGLES2Loader(SDL_GL_GetProcAddress) == 0)
         {
             std::clog << "error: failed to initialize glad" << std::endl;
