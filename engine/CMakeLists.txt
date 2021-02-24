@@ -12,9 +12,9 @@ add_library(engine
             vbo.hxx
             texture2d.hxx
             stb_image.h
-            glad/glad.h
+            glad.h
 
-            glad/glad.c
+            glad.c
             shader.cxx
             stuff.cxx
             vbo.hxx
@@ -23,7 +23,7 @@ add_library(engine
             engine.cxx)
 
 target_compile_features(engine PUBLIC cxx_std_20)
-target_link_libraries(engine INTERFACE project_compiler_flags)
+#target_link_libraries(engine INTERFACE project_compiler_flags)
 target_include_directories(engine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 if(WIN32)
@@ -33,7 +33,7 @@ endif()
 find_package(SDL2 REQUIRED)
 find_package(glm REQUIRED)
 
-set(SDL2_LIB_D "/usr/local/lib/libSDL2-2.0d.so.0.14.0")
+set(SDL2_LIB_D "/home/antonsyski/devel/repos/simple_game_engine/build/SDL2-2.0.14/libSDL2-2.0d.so.0.14.0")
 
 target_include_directories(engine PRIVATE ${SDL2_INCLUDE_DIRS})
 
@@ -45,11 +45,11 @@ if(MINGW)
         )
 elseif(UNIX)
     target_link_libraries(engine PRIVATE
-        #SDL2::SDL2
-        #SDL2::SDL2main
+        SDL2::SDL2
+        SDL2::SDL2main
         #glm::glm
-        SDL2
-        SDL2main
+
+        ${SDL2_LIB_D}
         GL
         )
 endif()

@@ -8,7 +8,7 @@
 
 #include "engine.hxx"
 #include "gl_assist.hxx"
-#include "glad/glad.h"
+#include "glad.h"
 
 static std::ostream& operator<<(std::ostream& out, const SDL_version& v)
 {
@@ -192,7 +192,7 @@ public:
         {
             window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED,
                                       SDL_WINDOWPOS_UNDEFINED, 600, 400,
-                                      SDL_WINDOW_SHOWN);
+                                      SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
             std::clog << "sdl_init success" << std::endl;
         }
 
@@ -246,7 +246,8 @@ public:
             }
         }
 
-        if (gladLoadGLES2Loader(SDL_GL_GetProcAddress) == 0)
+        if (gladLoadGLES2Loader(
+                static_cast<GLADloadproc>(SDL_GL_GetProcAddress)) == 0)
         {
             std::clog << "error: failed to initialize glad" << std::endl;
         }

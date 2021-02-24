@@ -4,7 +4,7 @@
 #include <cassert>
 #include <iostream>
 
-#include "glad/glad.h"
+#include "glad.h"
 
 #define GL_CHECK()                                                             \
     {                                                                          \
