@@ -417,9 +417,13 @@ public:
 
             if (gladLoadGLES2Loader(SDL_GL_GetProcAddress) == 0)
             {
-                std::clog << "error: failed to initialize glad" << std::endl;
+                std::cerr << "error: failed to initialize glad" << std::endl;
             }
-
+            else
+            {
+                std::clog << "glad_load normaly" << SDL_GL_GetProcAddress
+                          << std::endl;
+            }
             if (SDL_SetWindowInputFocus(window))
             {
                 std::clog << SDL_GetError() << std::endl;
