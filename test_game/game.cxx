@@ -28,28 +28,27 @@ int main(int /*argc*/, char* /*argv*/[])
         {
             case event::turn_off:
             {
-                std::clog << game_event;
                 continue_loop = false;
             }
             break;
             case event::left:
             {
-                std::clog << game_event;
+                std::clog << game_event << std::endl;
             }
             break;
             case event::right:
             {
-                std::clog << game_event;
+                std::clog << game_event << std::endl;
             }
             break;
             case event::up:
             {
-                std::clog << game_event;
+                std::clog << game_event << std::endl;
             }
             break;
             case event::down:
             {
-                std::clog << game_event;
+                std::clog << game_event << std::endl;
             }
             break;
         }

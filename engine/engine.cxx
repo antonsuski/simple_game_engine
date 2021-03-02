@@ -81,6 +81,7 @@ namespace engine
 {
 event::event()
     : name("uknown")
+    , type(event::unknown)
     , event_state(false)
 {
 }
@@ -95,7 +96,7 @@ event::event(event::event_type e_type, std::string e_name)
 std::ostream& operator<<(std::ostream& out, const event& e)
 {
     std::uint32_t value   = static_cast<std::uint32_t>(e.type);
-    std::uint32_t minimal = static_cast<std::uint32_t>(event::up);
+    std::uint32_t minimal = static_cast<std::uint32_t>(event::left);
     std::uint32_t maximal = static_cast<std::uint32_t>(event::turn_off);
     if (value >= minimal && value <= maximal)
     {
@@ -127,7 +128,7 @@ public:
     bool handl_imput(event& e) override final
     {
         SDL_Event sdl_e;
-        while (SDL_PollEvent(&sdl_e))
+        if (SDL_PollEvent(&sdl_e))
         {
             const bind* key_bind = nullptr;
             switch (sdl_e.type)

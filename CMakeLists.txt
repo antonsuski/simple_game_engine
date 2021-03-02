@@ -4,7 +4,7 @@ project(simple_game_engine LANGUAGES CXX C)
 
 add_subdirectory(engine)
 add_subdirectory(test_game)
-add_subdirectory(SDL2-2.0.14)
+
 
 add_library(project_compiler_flags INTERFACE)
 target_compile_features(project_compiler_flags INTERFACE cxx_std_20)

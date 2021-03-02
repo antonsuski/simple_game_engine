@@ -16,7 +16,8 @@ public:
         right,
         up,
         down,
-        turn_off
+        turn_off,
+        unknown
     };
 
     event_type  type;
