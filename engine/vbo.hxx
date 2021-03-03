@@ -3,7 +3,7 @@
 #include <string_view>
 #include <vector>
 
-#include <glad/glad.h>
+#include "glad.h"
 
 #include "stuff.hxx"
 

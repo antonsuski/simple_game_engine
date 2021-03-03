@@ -162,6 +162,17 @@ public:
     }
     void update() override final {}
     void render() override final {}
+
+    void swap_buffers() final override
+    {
+        SDL_GL_SwapWindow(window);
+        glViewport(0, 0, main_window_width, main_window_height);
+        glClearColor(0.3f, 0.3f, 0.8f, 0.0f);
+        GL_CHECK()
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        GL_CHECK()
+    }
+
     bool init(int32_t w, int32_t h) override final
     {
         main_window_width  = w;
@@ -192,7 +203,8 @@ public:
         else
         {
             window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED,
-                                      SDL_WINDOWPOS_UNDEFINED, 600, 400,
+                                      SDL_WINDOWPOS_UNDEFINED,
+                                      main_window_width, main_window_height,
                                       SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
             std::clog << "sdl_init success" << std::endl;
         }

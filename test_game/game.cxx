@@ -15,7 +15,7 @@ int main(int /*argc*/, char* /*argv*/[])
     uint32_t h = 480;
     uint32_t w = 640;
 
-    engine->init(h, w);
+    engine->init(w, h);
 
     bool continue_loop = true;
     while (continue_loop)
@@ -52,6 +52,7 @@ int main(int /*argc*/, char* /*argv*/[])
             }
             break;
         }
+        engine->swap_buffers();
     }
 
     return 0;

@@ -4,6 +4,11 @@
 #include <string>
 #include <vector>
 
+#include "shader.hxx"
+#include "stuff.hxx"
+#include "texture2d.hxx"
+#include "vbo.hxx"
+
 namespace engine
 {
 
@@ -35,8 +40,9 @@ class engine
 public:
     virtual ~engine() = 0;
 
-    virtual void update() = 0;
-    virtual void render() = 0;
+    virtual void update()       = 0;
+    virtual void render()       = 0;
+    virtual void swap_buffers() = 0;
 
     virtual bool handl_imput(event&)    = 0;
     virtual bool init(int32_t, int32_t) = 0;
