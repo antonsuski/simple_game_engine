@@ -22,6 +22,10 @@ public:
         up,
         down,
         turn_off,
+        button_1,
+        button_2,
+        select,
+        start,
         unknown
     };
 

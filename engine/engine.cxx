@@ -18,29 +18,6 @@ static std::ostream& operator<<(std::ostream& out, const SDL_version& v)
     return out;
 }
 
-std::ostream& operator<<(std::ostream& out, const engine::event& e)
-{
-    std::uint32_t value   = static_cast<std::uint32_t>(e.type);
-    std::uint32_t minimal = static_cast<std::uint32_t>(engine::event::up);
-    std::uint32_t maximal = static_cast<std::uint32_t>(engine::event::turn_off);
-    if (value >= minimal && value <= maximal)
-    {
-        if (e.event_state)
-        {
-            out << e.name;
-            out << "_running";
-            return out;
-        }
-        out << e.name;
-        out << "_is_finished";
-        return out;
-    }
-    else
-    {
-        throw std::runtime_error("too big event value");
-    }
-}
-
 struct bind
 {
     engine::event event;
@@ -54,12 +31,17 @@ struct bind
     }
 };
 
-std::array<bind, 5> key_map{ { { SDLK_a, engine::event::left, "left" },
-                               { SDLK_d, engine::event::right, "right" },
-                               { SDLK_w, engine::event::up, "up" },
-                               { SDLK_s, engine::event::down, "down" },
-                               { SDLK_ESCAPE, engine::event::turn_off,
-                                 "turn_off" } } };
+std::array<bind, 9> key_map{
+    { { SDLK_a, engine::event::left, "left" },
+      { SDLK_d, engine::event::right, "right" },
+      { SDLK_w, engine::event::up, "up" },
+      { SDLK_s, engine::event::down, "down" },
+      { SDLK_ESCAPE, engine::event::button_1, "button_1" },
+      { SDLK_ESCAPE, engine::event::button_2, "button_2" },
+      { SDLK_ESCAPE, engine::event::turn_off, "select" },
+      { SDLK_ESCAPE, engine::event::turn_off, "start" },
+      { SDLK_ESCAPE, engine::event::turn_off, "turn_off" } }
+};
 
 static bool check_event(const SDL_Event& sdl_event, const bind*& engine_bind)
 {
@@ -79,19 +61,6 @@ static bool check_event(const SDL_Event& sdl_event, const bind*& engine_bind)
 
 namespace engine
 {
-event::event()
-    : name("uknown")
-    , type(event::unknown)
-    , event_state(false)
-{
-}
-
-event::event(event::event_type e_type, std::string e_name)
-    : type(e_type)
-    , name(e_name)
-    , event_state(false)
-{
-}
 
 std::ostream& operator<<(std::ostream& out, const event& e)
 {
@@ -114,6 +83,20 @@ std::ostream& operator<<(std::ostream& out, const event& e)
     {
         throw std::runtime_error("too big event value");
     }
+}
+
+event::event()
+    : name("uknown")
+    , type(event::unknown)
+    , event_state(false)
+{
+}
+
+event::event(event::event_type e_type, std::string e_name)
+    : type(e_type)
+    , name(e_name)
+    , event_state(false)
+{
 }
 
 class engine_core final : public engine
