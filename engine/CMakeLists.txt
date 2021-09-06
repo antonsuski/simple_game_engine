@@ -1,8 +1,8 @@
-﻿cmake_minimum_required(VERSION 3.18)
+﻿cmake_minimum_required(VERSION 3.16)
 
 project(engine VERSION 1.1 LANGUAGES CXX C)
 
-option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
+# option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
 add_library(engine
             engine.hxx
@@ -23,7 +23,7 @@ add_library(engine
             engine.cxx)
 
 target_compile_features(engine PUBLIC cxx_std_20)
-#target_link_libraries(engine INTERFACE project_compiler_flags)
+target_link_libraries(engine INTERFACE project_compiler_flags)
 target_include_directories(engine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 if(WIN32)
@@ -33,7 +33,8 @@ endif()
 find_package(SDL2 REQUIRED)
 find_package(glm REQUIRED)
 
-set(SDL2_LIB_D "/home/antonsyski/devel/repos/simple_game_engine/build/SDL2-2.0.14/libSDL2-2.0d.so.0.14.0")
+# set path file for linking with debug SDL2
+#set(SDL2_LIB_D "/home/antonsyski/devel/repos/simple_game_engine/build/SDL2-2.0.14/libSDL2-2.0d.so.0.14.0")
 
 target_include_directories(engine PRIVATE ${SDL2_INCLUDE_DIRS})
 
@@ -47,9 +48,9 @@ elseif(UNIX)
     target_link_libraries(engine PRIVATE
         SDL2::SDL2
         SDL2::SDL2main
-        #glm::glm
+        glm::glm
 
-        ${SDL2_LIB_D}
-        GL
+        #${SDL2_LIB_D}
+        #GL
         )
 endif()
