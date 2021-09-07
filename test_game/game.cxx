@@ -22,9 +22,9 @@ int main(int /*argc*/, char* /*argv*/[])
     {
         using namespace engine;
 
-        event game_event;
-        engine->handl_imput(game_event);
-        switch (game_event.type)
+        event system_event;
+        engine->handl_imput(system_event);
+        switch (system_event.type)
         {
             case event::turn_off:
             {
@@ -33,22 +33,26 @@ int main(int /*argc*/, char* /*argv*/[])
             break;
             case event::left:
             {
-                std::clog << game_event << std::endl;
+                std::clog << system_event << std::endl;
             }
             break;
             case event::right:
             {
-                std::clog << game_event << std::endl;
+                std::clog << system_event << std::endl;
             }
             break;
             case event::up:
             {
-                std::clog << game_event << std::endl;
+                std::clog << system_event << std::endl;
             }
             break;
             case event::down:
             {
-                std::clog << game_event << std::endl;
+                std::clog << system_event << std::endl;
+            }
+            break;
+            default:
+            {
             }
             break;
         }

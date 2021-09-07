@@ -45,10 +45,9 @@ std::array<bind, 9> key_map{
 
 static bool check_event(const SDL_Event& sdl_event, const bind*& engine_bind)
 {
-    const auto it =
-        std::find_if(key_map.begin(), key_map.end(), [&](const bind& b) {
-            return b.key_code == sdl_event.key.keysym.sym;
-        });
+    const auto it = std::find_if(
+        key_map.begin(), key_map.end(),
+        [&](const bind& b) { return b.key_code == sdl_event.key.keysym.sym; });
 
     if (it != end(key_map))
     {
