@@ -27,10 +27,10 @@ int main (int /*argc*/, char* /*argv*/[])
         engine::create_engine(), engine::destroy_engine);
 
     // resolution
-    int width{ 1364 }, height{ 766 };
+    int width{ 640 }, height{ 480 };
 
     // buffer
-    engine::vbo_v_8 square("../res/square.txt");
+//    engine::vbo_v_8 square("../../res/square.txt");
 
 //    // shaders
 //    engine::shader_es_32 default_shader(
@@ -51,6 +51,7 @@ int main (int /*argc*/, char* /*argv*/[])
     }
 
     engine::v_3 clear_color = {0.45f, 0.55f, 0.60f};
+    engine::vbo_v_8 square("../../res/square.txt");
 
     //main proc loop
     bool continue_loop = true;
