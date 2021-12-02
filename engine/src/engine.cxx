@@ -628,8 +628,8 @@ public:
         buffer.buffer_data(GL_STATIC_DRAW);
         buffer.bind_ebo();
         buffer.buffer_ebo();
-        glBindTexture(GL_TEXTURE_2D, texture_id);
-        OM_GL_CHECK()
+//        glBindTexture(GL_TEXTURE_2D, texture_id);
+//        OM_GL_CHECK()
         glDrawElements(GL_TRIANGLES, buffer.ebo_size, GL_UNSIGNED_INT, 0);
         OM_GL_CHECK()
     }
