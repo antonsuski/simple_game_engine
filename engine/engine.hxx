@@ -48,9 +48,12 @@ public:
     virtual void render()       = 0;
     virtual void swap_buffers() = 0;
 
-    virtual void tmp_test_method()      = 0;
-    virtual bool handl_imput(event&)    = 0;
-    virtual bool init(int32_t, int32_t) = 0;
+    virtual void tmp_test_method(unsigned int& sh_prog,
+                                 unsigned int& vao_id)        = 0;
+    virtual void tmp_test_method2(const unsigned int& sh_prog,
+                                  const unsigned int& vao_id) = 0;
+    virtual bool handl_imput(event&)                          = 0;
+    virtual bool init(int32_t, int32_t)                       = 0;
 };
 
 engine* create_engine();

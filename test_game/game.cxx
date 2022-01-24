@@ -15,7 +15,10 @@ int main(int /*argc*/, char* /*argv*/[])
     uint32_t h = 480;
     uint32_t w = 640;
 
+    uint32_t sh_prog{ 0 }, vao_id{ 0 };
+
     engine->init(w, h);
+    engine->tmp_test_method(sh_prog, vao_id);
 
     bool continue_loop = true;
     while (continue_loop)
@@ -36,7 +39,6 @@ int main(int /*argc*/, char* /*argv*/[])
             case event::left:
             {
                 std::clog << system_event << std::endl;
-                engine->tmp_test_method();
             }
             break;
             case event::right:
@@ -54,11 +56,9 @@ int main(int /*argc*/, char* /*argv*/[])
                 std::clog << system_event << std::endl;
             }
             break;
-            default:
-            {
-            }
-            break;
         }
+
+        engine->tmp_test_method2(sh_prog, vao_id);
         engine->swap_buffers();
     }
 

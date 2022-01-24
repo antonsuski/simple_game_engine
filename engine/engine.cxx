@@ -278,17 +278,110 @@ public:
     }
     ~engine_core() final override {}
 
-    void tmp_test_method() override final
+    void tmp_test_method(unsigned int& sh_prog,
+                         unsigned int& vao_id) override final
     {
-        std::clog << "OpenGL learn code\n";
-
         unsigned int vbo_id;
-        float        vertices[] = { -0.5f, -0.5f, 0.0f, 0.5f, -0.5f,
+        unsigned int ebo_id;
+        unsigned int vert_sh;
+        unsigned int frag_sh;
+
+        int  success;
+        char infoLog[512];
+
+        float vertices[]   = { -0.5f, -0.5f, 0.0f, 0.5f, -0.5f,
                              0.0f,  0.0f,  0.5f, 0.0f };
+        float verts_cube[] = {
+            0.5f,  0.5f,  0.0f, // top right
+            0.5f,  -0.5f, 0.0f, // bottom right
+            -0.5f, -0.5f, 0.0f, // bottom left
+            -0.5f, 0.5f,  0.0f  // top left
+        };
+
+        unsigned int indices[] = {
+            // note that we start from 0!
+            0, 1, 3, // first triangle
+            1, 2, 3  // second triangle
+        };
+
+        glGenVertexArrays(1, &vao_id);
+
         glGenBuffers(1, &vbo_id);
+        glGenBuffers(1, &ebo_id);
+        glBindVertexArray(vao_id);
         glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices,
+        glBufferData(GL_ARRAY_BUFFER, sizeof(verts_cube), verts_cube,
                      GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_id);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
+                     GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
+                              (void*)0);
+        glEnableVertexAttribArray(0);
+
+        const char* vertex_sh_src =
+            "#version 320 es                                      \n"
+            "precision mediump float;                             \n"
+            "layout(location = 0) in vec3 a_pos;                  \n"
+            "void main(void)                                      \n"
+            "{                                                    \n"
+            "   gl_Position = vec4(a_pos.x, a_pos.y, a_pos.z, 1.0);\n"
+            "}                                                    \0";
+
+        vert_sh = glCreateShader(GL_VERTEX_SHADER);
+        glShaderSource(vert_sh, 1, &vertex_sh_src, NULL);
+        glCompileShader(vert_sh);
+        glGetShaderiv(vert_sh, GL_COMPILE_STATUS, &success);
+        if (!success)
+        {
+            glGetShaderInfoLog(vert_sh, 512, NULL, infoLog);
+            std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
+                      << infoLog << std::endl;
+        }
+
+        const char* fragment_sh_src =
+            "#version 320 es                                       \n"
+            "precision mediump float;                             \n"
+            "out vec4 frag_color;                                  \n"
+            "void main(void)                                       \n"
+            "{                                                     \n"
+            "   frag_color = vec4(1.0f, 0.5f, 0.2f, 1.0f);         \n"
+            "}                                                     \0";
+
+        frag_sh = glCreateShader(GL_FRAGMENT_SHADER);
+        glShaderSource(frag_sh, 1, &fragment_sh_src, NULL);
+        glCompileShader(frag_sh);
+        glGetShaderiv(frag_sh, GL_COMPILE_STATUS, &success);
+        if (!success)
+        {
+            glGetShaderInfoLog(frag_sh, 512, NULL, infoLog);
+            std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
+                      << infoLog << std::endl;
+        }
+
+        sh_prog = glCreateProgram();
+        glAttachShader(sh_prog, vert_sh);
+        glAttachShader(sh_prog, frag_sh);
+        glLinkProgram(sh_prog);
+        glGetProgramiv(sh_prog, GL_LINK_STATUS, &success);
+        if (!success)
+        {
+            glGetProgramInfoLog(sh_prog, 512, NULL, infoLog);
+            std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
+                      << infoLog << std::endl;
+        }
+
+        glDeleteShader(vert_sh);
+        glDeleteShader(frag_sh);
+    }
+    virtual void tmp_test_method2(const unsigned int& sh_prog,
+                                  const unsigned int& vao_id) override final
+    {
+        glUseProgram(sh_prog);
+        glBindVertexArray(vao_id);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
+        //        glDrawArrays(GL_TRIANGLES, 0, 3);
     }
 };
 
