@@ -24,16 +24,19 @@ int main(int /*argc*/, char* /*argv*/[])
 
         event system_event;
         engine->handl_imput(system_event);
+
         switch (system_event.type)
         {
             case event::turn_off:
             {
                 continue_loop = false;
+                std::clog << system_event << std::endl;
             }
             break;
             case event::left:
             {
                 std::clog << system_event << std::endl;
+                engine->tmp_test_method();
             }
             break;
             case event::right:

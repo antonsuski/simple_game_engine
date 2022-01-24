@@ -21,12 +21,12 @@ public:
         right,
         up,
         down,
-        turn_off,
         button_1,
         button_2,
         select,
         start,
-        unknown
+        unknown,
+        turn_off,
     };
 
     event_type  type;
@@ -48,6 +48,7 @@ public:
     virtual void render()       = 0;
     virtual void swap_buffers() = 0;
 
+    virtual void tmp_test_method()      = 0;
     virtual bool handl_imput(event&)    = 0;
     virtual bool init(int32_t, int32_t) = 0;
 };

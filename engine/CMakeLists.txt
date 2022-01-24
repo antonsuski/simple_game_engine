@@ -17,7 +17,7 @@ add_library(engine
             glad.c
             shader.cxx
             stuff.cxx
-            vbo.hxx
+            vbo.cxx
             texture2d.cxx
             stb_image.cxx
             engine.cxx)

@@ -1,5 +1,5 @@
 ﻿#include "vbo.hxx"
-#include "om_gl_check.hxx"
+#include "gl_assist.hxx"
 #include "stuff.hxx"
 
 #include <cmath>
@@ -19,13 +19,13 @@ engine::vbo_v_8::~vbo_v_8()
     ebo_data = nullptr;
 
     glDeleteVertexArrays(1, &vao_id);
-    OM_GL_CHECK()
+    GL_CHECK()
 
     glDeleteBuffers(1, &vbo_id);
-    OM_GL_CHECK()
+    GL_CHECK()
 
     glDeleteBuffers(1, &ebo_id);
-    OM_GL_CHECK()
+    GL_CHECK()
 }
 
 engine::vbo_v_8::vbo_v_8(std::string_view path)
@@ -73,36 +73,36 @@ engine::vbo_v_8::vbo_v_8(std::string_view path)
     std::clog << std::endl;
 
     glGenVertexArrays(1, &vao_id);
-    OM_GL_CHECK()
+    GL_CHECK()
 
     glGenBuffers(1, &vbo_id);
-    OM_GL_CHECK()
+    GL_CHECK()
 
     glGenBuffers(1, &ebo_id);
-    OM_GL_CHECK()
+    GL_CHECK()
 
     glBindVertexArray(vao_id);
-    OM_GL_CHECK();
+    GL_CHECK();
 
     bind_buffer();
     buffer_data(GL_DYNAMIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_id);
-    OM_GL_CHECK();
+    GL_CHECK();
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * ebo_data->size(),
                  ebo_data->data(), GL_DYNAMIC_DRAW);
-    OM_GL_CHECK();
+    GL_CHECK();
 
     vertex_attrib_pointer();
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    OM_GL_CHECK()
+    GL_CHECK()
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    OM_GL_CHECK();
+    GL_CHECK();
 
     glBindVertexArray(0);
-    OM_GL_CHECK()
+    GL_CHECK()
 
     restart_file(vertex_file);
     vertex_file.close();
@@ -116,7 +116,7 @@ size_t vbo_v_8::size()
 void vbo_v_8::bind_buffer()
 {
     glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
-    OM_GL_CHECK()
+    GL_CHECK()
 }
 
 void vbo_v_8::buffer_data(GLenum flag)
@@ -132,14 +132,14 @@ void vbo_v_8::buffer_data(GLenum flag)
 
     glBufferData(GL_ARRAY_BUFFER, sizeof(v_8) * vbo_data.size(),
                  vbo_data.data(), flag);
-    OM_GL_CHECK()
+    GL_CHECK()
 }
 
 void vbo_v_8::buffer_ebo()
 {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * ebo_data->size(),
                  ebo_data->data(), GL_DYNAMIC_DRAW);
-    OM_GL_CHECK()
+    GL_CHECK()
 }
 
 void vbo_v_8::vertex_attrib_pointer()
@@ -152,7 +152,7 @@ void vbo_v_8::vertex_attrib_pointer()
                           GL_FALSE,
                           sizeof(v_8),
                           reinterpret_cast<void*>(0));
-    OM_GL_CHECK()
+    GL_CHECK()
 
     glVertexAttribPointer(1,
                           3,
@@ -160,7 +160,7 @@ void vbo_v_8::vertex_attrib_pointer()
                           GL_FALSE,
                           sizeof(v_8),
                           reinterpret_cast<void*>(3 * sizeof(float)));
-    OM_GL_CHECK()
+    GL_CHECK()
 
     glVertexAttribPointer(2,
                           2,
@@ -170,34 +170,34 @@ void vbo_v_8::vertex_attrib_pointer()
                           reinterpret_cast<void*>(6 * sizeof(float)));
 
     // clang-format on
-    OM_GL_CHECK()
+    GL_CHECK()
 
     glEnableVertexAttribArray(0);
-    OM_GL_CHECK()
+    GL_CHECK()
 
     glEnableVertexAttribArray(1);
-    OM_GL_CHECK()
+    GL_CHECK()
 
     glEnableVertexAttribArray(2);
-    OM_GL_CHECK()
+    GL_CHECK()
 }
 
 void vbo_v_8::bind_vao()
 {
     glBindVertexArray(vao_id);
-    OM_GL_CHECK()
+    GL_CHECK()
 }
 
 void vbo_v_8::bind_ebo()
 {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_id);
-    OM_GL_CHECK()
+    GL_CHECK()
 }
 
 void vbo_v_8::unbind_vao()
 {
     glBindVertexArray(0);
-    OM_GL_CHECK()
+    GL_CHECK()
 }
 
 void vbo_v_8::print_buffer()
@@ -268,19 +268,19 @@ engine::vbo_v_3::vbo_v_3(std::string_view path)
     }
 
     glGenVertexArrays(1, &vao_id);
-    OM_GL_CHECK()
+    GL_CHECK()
 
     glGenBuffers(1, &vbo_id);
-    OM_GL_CHECK()
+    GL_CHECK()
 
     glBindVertexArray(vao_id);
-    OM_GL_CHECK();
+    GL_CHECK();
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
-    OM_GL_CHECK()
+    GL_CHECK()
     glBufferData(GL_ARRAY_BUFFER, sizeof(v_3) * 9 /*vbo_data->size()*/,
                  &vbo_data[0] /*vbo_data->data()*/, GL_STATIC_DRAW);
-    OM_GL_CHECK()
+    GL_CHECK()
 
     // clang-format off
 
@@ -292,16 +292,16 @@ engine::vbo_v_3::vbo_v_3(std::string_view path)
                           nullptr);
 
     // clang-format on
-    OM_GL_CHECK()
+    GL_CHECK()
 
     glEnableVertexAttribArray(0);
-    OM_GL_CHECK()
+    GL_CHECK()
 
     //    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    //    OM_GL_CHECK()
+    //    GL_CHECK()
 
     //    glBindVertexArray(0);
-    //    OM_GL_CHECK()
+    //    GL_CHECK()
 
     restart_file(vertex_file);
     vertex_file.close();
@@ -315,7 +315,7 @@ v_3* vbo_v_3::get_data()
 void vbo_v_3::bind_buffer()
 {
     glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
-    OM_GL_CHECK()
+    GL_CHECK()
 }
 
 void vbo_v_3::buffer_data(GLenum flag)
@@ -330,7 +330,7 @@ void vbo_v_3::buffer_data(GLenum flag)
 
     glBufferData(GL_ARRAY_BUFFER, sizeof(v_3) * vbo_data->size(),
                  vbo_data->data(), flag);
-    OM_GL_CHECK()
+    GL_CHECK()
 }
 
 void vbo_v_3::vertex_attrib_pointer(GLuint attribute_id)
@@ -345,13 +345,13 @@ void vbo_v_3::vertex_attrib_pointer(GLuint attribute_id)
                           nullptr);
 
     // clang-format on
-    OM_GL_CHECK()
+    GL_CHECK()
 
     glEnableVertexAttribArray(attribute_id);
-    OM_GL_CHECK()
+    GL_CHECK()
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    OM_GL_CHECK()
+    GL_CHECK()
 
     glBindVertexArray(0);
 }
@@ -359,7 +359,7 @@ void vbo_v_3::vertex_attrib_pointer(GLuint attribute_id)
 void vbo_v_3::bind_vao()
 {
     glBindVertexArray(vao_id);
-    OM_GL_CHECK()
+    GL_CHECK()
 }
 
 std::istream& operator>>(std::istream& is, vbo_v_8& obj)

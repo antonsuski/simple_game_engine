@@ -31,17 +31,19 @@ struct bind
     }
 };
 
-std::array<bind, 9> key_map{
-    { { SDLK_a, engine::event::left, "left" },
-      { SDLK_d, engine::event::right, "right" },
-      { SDLK_w, engine::event::up, "up" },
-      { SDLK_s, engine::event::down, "down" },
-      { SDLK_ESCAPE, engine::event::button_1, "button_1" },
-      { SDLK_ESCAPE, engine::event::button_2, "button_2" },
-      { SDLK_ESCAPE, engine::event::turn_off, "select" },
-      { SDLK_ESCAPE, engine::event::turn_off, "start" },
-      { SDLK_ESCAPE, engine::event::turn_off, "turn_off" } }
-};
+static const bind unknown_bind{ SDLK_UNKNOWN, engine::event::unknown,
+                                "unknown" };
+
+std::array<bind, 9> key_map{ { { SDLK_a, engine::event::left, "left" },
+                               { SDLK_d, engine::event::right, "right" },
+                               { SDLK_w, engine::event::up, "up" },
+                               { SDLK_s, engine::event::down, "down" },
+                               { SDLK_q, engine::event::button_1, "button_1" },
+                               { SDLK_e, engine::event::button_2, "button_2" },
+                               { SDLK_SPACE, engine::event::select, "select" },
+                               { SDLK_RETURN, engine::event::start, "start" },
+                               { SDLK_ESCAPE, engine::event::turn_off,
+                                 "turn_off" } } };
 
 static bool check_event(const SDL_Event& sdl_event, const bind*& engine_bind)
 {
@@ -54,7 +56,7 @@ static bool check_event(const SDL_Event& sdl_event, const bind*& engine_bind)
         engine_bind = &(*it);
         return true;
     }
-
+    engine_bind = &unknown_bind;
     return false;
 }
 
@@ -142,6 +144,7 @@ public:
         }
         return true;
     }
+
     void update() override final {}
     void render() override final {}
 
@@ -274,6 +277,19 @@ public:
         return true;
     }
     ~engine_core() final override {}
+
+    void tmp_test_method() override final
+    {
+        std::clog << "OpenGL learn code\n";
+
+        unsigned int vbo_id;
+        float        vertices[] = { -0.5f, -0.5f, 0.0f, 0.5f, -0.5f,
+                             0.0f,  0.0f,  0.5f, 0.0f };
+        glGenBuffers(1, &vbo_id);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices,
+                     GL_STATIC_DRAW);
+    }
 };
 
 static bool already_exist = false;
