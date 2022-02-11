@@ -18,6 +18,71 @@ static std::ostream& operator<<(std::ostream& out, const SDL_version& v)
     return out;
 }
 
+static bool init_default_shader(unsigned int& shader_prog_id)
+{
+    unsigned int vert_sh;
+    unsigned int frag_sh;
+    int  success;
+    char infoLog[512];
+
+    const char* vertex_sh_src =
+        "#version 320 es                                      \n"
+        "precision mediump float;                             \n"
+        "layout(location = 0) in vec3 a_pos;                  \n"
+        "void main(void)                                      \n"
+        "{                                                    \n"
+        "   gl_Position = vec4(a_pos.x, a_pos.y, a_pos.z, 1.0);\n"
+        "}                                                    \0";
+
+    vert_sh = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vert_sh, 1, &vertex_sh_src, NULL);
+    glCompileShader(vert_sh);
+    glGetShaderiv(vert_sh, GL_COMPILE_STATUS, &success);
+    if (!success)
+    {
+        glGetShaderInfoLog(vert_sh, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
+                  << infoLog << std::endl;
+    }
+
+    const char* fragment_sh_src =
+        "#version 320 es                                       \n"
+        "precision mediump float;                             \n"
+        "out vec4 frag_color;                                  \n"
+        "void main(void)                                       \n"
+        "{                                                     \n"
+        "   frag_color = vec4(1.0f, 0.5f, 0.2f, 1.0f);         \n"
+        "}                                                     \0";
+
+    frag_sh = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(frag_sh, 1, &fragment_sh_src, NULL);
+    glCompileShader(frag_sh);
+    glGetShaderiv(frag_sh, GL_COMPILE_STATUS, &success);
+    if (!success)
+    {
+        glGetShaderInfoLog(frag_sh, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
+                  << infoLog << std::endl;
+    }
+
+    shader_prog_id = glCreateProgram();
+    glAttachShader(shader_prog_id, vert_sh);
+    glAttachShader(shader_prog_id, frag_sh);
+    glLinkProgram(shader_prog_id);
+    glGetProgramiv(shader_prog_id, GL_LINK_STATUS, &success);
+    if (!success)
+    {
+        glGetProgramInfoLog(shader_prog_id, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
+                  << infoLog << std::endl;
+    }
+
+    glDeleteShader(vert_sh);
+    glDeleteShader(frag_sh);
+
+    return static_cast<bool>(success);
+}
+
 struct bind
 {
     engine::event event;
@@ -147,6 +212,11 @@ public:
 
     void update() override final {}
     void render() override final {}
+
+    virtual void render(const vbo_v_3)
+    {
+
+    }
 
     void swap_buffers() final override
     {
@@ -283,11 +353,6 @@ public:
     {
         unsigned int vbo_id;
         unsigned int ebo_id;
-        unsigned int vert_sh;
-        unsigned int frag_sh;
-
-        int  success;
-        char infoLog[512];
 
         float vertices[]   = { -0.5f, -0.5f, 0.0f, 0.5f, -0.5f,
                              0.0f,  0.0f,  0.5f, 0.0f };
@@ -319,60 +384,7 @@ public:
                               (void*)0);
         glEnableVertexAttribArray(0);
 
-        const char* vertex_sh_src =
-            "#version 320 es                                      \n"
-            "precision mediump float;                             \n"
-            "layout(location = 0) in vec3 a_pos;                  \n"
-            "void main(void)                                      \n"
-            "{                                                    \n"
-            "   gl_Position = vec4(a_pos.x, a_pos.y, a_pos.z, 1.0);\n"
-            "}                                                    \0";
-
-        vert_sh = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vert_sh, 1, &vertex_sh_src, NULL);
-        glCompileShader(vert_sh);
-        glGetShaderiv(vert_sh, GL_COMPILE_STATUS, &success);
-        if (!success)
-        {
-            glGetShaderInfoLog(vert_sh, 512, NULL, infoLog);
-            std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
-                      << infoLog << std::endl;
-        }
-
-        const char* fragment_sh_src =
-            "#version 320 es                                       \n"
-            "precision mediump float;                             \n"
-            "out vec4 frag_color;                                  \n"
-            "void main(void)                                       \n"
-            "{                                                     \n"
-            "   frag_color = vec4(1.0f, 0.5f, 0.2f, 1.0f);         \n"
-            "}                                                     \0";
-
-        frag_sh = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(frag_sh, 1, &fragment_sh_src, NULL);
-        glCompileShader(frag_sh);
-        glGetShaderiv(frag_sh, GL_COMPILE_STATUS, &success);
-        if (!success)
-        {
-            glGetShaderInfoLog(frag_sh, 512, NULL, infoLog);
-            std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
-                      << infoLog << std::endl;
-        }
-
-        sh_prog = glCreateProgram();
-        glAttachShader(sh_prog, vert_sh);
-        glAttachShader(sh_prog, frag_sh);
-        glLinkProgram(sh_prog);
-        glGetProgramiv(sh_prog, GL_LINK_STATUS, &success);
-        if (!success)
-        {
-            glGetProgramInfoLog(sh_prog, 512, NULL, infoLog);
-            std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
-                      << infoLog << std::endl;
-        }
-
-        glDeleteShader(vert_sh);
-        glDeleteShader(frag_sh);
+        init_default_shader(sh_prog);
     }
     virtual void tmp_test_method2(const unsigned int& sh_prog,
                                   const unsigned int& vao_id) override final

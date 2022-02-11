@@ -6,7 +6,7 @@
 
 int main(int /*argc*/, char* /*argv*/[])
 {
-    std::string_view lol{ "lol" };
+    std::string_view lol{ "lol? Hello world" };
     std::cout << lol << std::endl;
 
     std::unique_ptr<engine::engine, void (*)(engine::engine*)> engine(

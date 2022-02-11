@@ -46,6 +46,7 @@ public:
 
     virtual void update()       = 0;
     virtual void render()       = 0;
+    virtual void render(const vbo_v_3)       = 0;
     virtual void swap_buffers() = 0;
 
     virtual void tmp_test_method(unsigned int& sh_prog,
