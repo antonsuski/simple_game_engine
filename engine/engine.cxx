@@ -219,8 +219,7 @@ public:
     {
         glUseProgram(shader_prog_id);
         vbo_buffer.bind_vao();
-        glDrawElements(GL_TRIANGLES, vbo_buffer.get_vertex_conut(),
-                       GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_TRIANGLES, 0, vbo_buffer.get_vertex_conut());
         glBindVertexArray(0);
     }
 

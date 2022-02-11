@@ -18,7 +18,9 @@ int main(int /*argc*/, char* /*argv*/[])
     uint32_t sh_prog{ 0 }, vao_id{ 0 };
 
     engine->init(w, h);
-    engine->tmp_test_method(sh_prog, vao_id);
+    // engine->tmp_test_method(sh_prog, vao_id);
+
+    engine::vbo_v_3 v_buffer("../../res/vertexes_v_3.txt");
 
     bool continue_loop = true;
     while (continue_loop)
@@ -57,8 +59,8 @@ int main(int /*argc*/, char* /*argv*/[])
             }
             break;
         }
-
-        engine->tmp_test_method2(sh_prog, vao_id);
+        engine->render(v_buffer);
+        // engine->tmp_test_method2(sh_prog, vao_id);
         engine->swap_buffers();
     }
 
