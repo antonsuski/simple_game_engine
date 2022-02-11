@@ -318,6 +318,11 @@ const uint64_t& vbo_v_3::get_vertex_conut()
     return vertex_count;
 }
 
+const uint64_t& vbo_v_3::get_vertex_conut() const
+{
+    return vertex_count;
+}
+
 void vbo_v_3::bind_buffer()
 {
     glBindBuffer(GL_ARRAY_BUFFER, vbo_id);

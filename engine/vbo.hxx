@@ -67,6 +67,7 @@ public:
     v_3* get_data();
 
     const uint64_t& get_vertex_conut();
+    const uint64_t& get_vertex_conut() const;
 
     void bind_buffer();
     void buffer_data(GLenum);
