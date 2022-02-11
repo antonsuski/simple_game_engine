@@ -22,8 +22,8 @@ static bool init_default_shader(unsigned int& shader_prog_id)
 {
     unsigned int vert_sh;
     unsigned int frag_sh;
-    int  success;
-    char infoLog[512];
+    int          success;
+    char         infoLog[512];
 
     const char* vertex_sh_src =
         "#version 320 es                                      \n"
@@ -173,6 +173,8 @@ class engine_core final : public engine
     int32_t main_window_height{};
     int32_t main_window_width{};
 
+    uint32_t shader_prog_id;
+
 public:
     bool handl_imput(event& e) override final
     {
@@ -213,9 +215,13 @@ public:
     void update() override final {}
     void render() override final {}
 
-    virtual void render(const vbo_v_3)
+    void render(const vbo_v_3& vbo_buffer) final override
     {
-
+        glUseProgram(shader_prog_id);
+        vbo_buffer.bind_vao();
+        glDrawElements(GL_TRIANGLES, vbo_buffer.get_vertex_conut(),
+                       GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
     }
 
     void swap_buffers() final override
@@ -343,6 +349,12 @@ public:
         GL_CHECK()
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         GL_CHECK()
+
+        if (!init_default_shader(shader_prog_id))
+        {
+            std::cerr << "Can't initializate default shader programm\n";
+            return false;
+        }
 
         return true;
     }
