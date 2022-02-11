@@ -58,14 +58,21 @@ class ENGINE_DECLSPEC vbo_v_3
     GLuint            vbo_id;
     GLuint            vao_id;
 
+    uint64_t vertex_count;
+
 public:
     ~vbo_v_3();
     vbo_v_3(std::string_view);
 
     v_3* get_data();
+
+    const uint64_t& get_vertex_conut();
+
     void bind_buffer();
     void buffer_data(GLenum);
     void vertex_attrib_pointer(GLuint);
     void bind_vao();
+
+    void bind_vao() const;
 };
 } // namespace engine

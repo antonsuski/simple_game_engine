@@ -257,7 +257,6 @@ engine::vbo_v_3::vbo_v_3(std::string_view path)
         size_t count = get_line_count(vertex_file) - 1;
         restart_file(vertex_file);
         vbo_data = new std::vector<v_3>;
-
         v_3 tr;
 
         for (size_t iterator = 0; iterator < count; iterator++)
@@ -266,6 +265,8 @@ engine::vbo_v_3::vbo_v_3(std::string_view path)
             vbo_data->push_back(tr);
         }
     }
+
+    vertex_count = vbo_data->size();
 
     glGenVertexArrays(1, &vao_id);
     GL_CHECK()
@@ -278,8 +279,8 @@ engine::vbo_v_3::vbo_v_3(std::string_view path)
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
     GL_CHECK()
-    glBufferData(GL_ARRAY_BUFFER, sizeof(v_3) * 9 /*vbo_data->size()*/,
-                 &vbo_data[0] /*vbo_data->data()*/, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(v_3) * vbo_data->size(),
+                 vbo_data->data(), GL_STATIC_DRAW);
     GL_CHECK()
 
     // clang-format off
@@ -310,6 +311,11 @@ engine::vbo_v_3::vbo_v_3(std::string_view path)
 v_3* vbo_v_3::get_data()
 {
     return vbo_data->data();
+}
+
+const uint64_t& vbo_v_3::get_vertex_conut()
+{
+    return vertex_count;
 }
 
 void vbo_v_3::bind_buffer()
@@ -357,6 +363,12 @@ void vbo_v_3::vertex_attrib_pointer(GLuint attribute_id)
 }
 
 void vbo_v_3::bind_vao()
+{
+    glBindVertexArray(vao_id);
+    GL_CHECK()
+}
+
+void vbo_v_3::bind_vao() const
 {
     glBindVertexArray(vao_id);
     GL_CHECK()
