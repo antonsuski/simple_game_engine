@@ -49,9 +49,10 @@ static bool init_default_shader(unsigned int& shader_prog_id)
         "#version 320 es                                       \n"
         "precision mediump float;                             \n"
         "out vec4 frag_color;                                  \n"
+        "uniform vec2 mouse_coord;                             \n"
         "void main(void)                                       \n"
         "{                                                     \n"
-        "   frag_color = vec4(1.0f, 0.5f, 0.2f, 1.0f);         \n"
+        "   frag_color = vec4(1.0f, mouse_coord.x, 0.2f, 1.0f);         \n"
         "}                                                     \0";
 
     frag_sh = glCreateShader(GL_FRAGMENT_SHADER);
@@ -170,8 +171,8 @@ class engine_core final : public engine
     SDL_Window*   window{ nullptr };
     SDL_GLContext gl_context{};
 
-    int32_t main_window_height{};
-    int32_t main_window_width{};
+    int32_t main_window_height{}, main_window_width{};
+    int32_t mouse_coords_x, mouse_coords_y;
 
     uint32_t shader_prog_id;
 
@@ -179,8 +180,12 @@ public:
     bool handl_imput(event& e) override final
     {
         SDL_Event sdl_e;
+        std::cout << "mcX:" << mouse_coords_x << " "
+                  << "mcY:" << mouse_coords_y << std::endl;
         if (SDL_PollEvent(&sdl_e))
         {
+            SDL_GetMouseState(&mouse_coords_x, &mouse_coords_y);
+
             const bind* key_bind = nullptr;
             switch (sdl_e.type)
             {
@@ -217,7 +222,10 @@ public:
 
     void render(const vbo_v_3& vbo_buffer) final override
     {
+        int uniform;
         glUseProgram(shader_prog_id);
+        uniform = glGetUniformLocation(shader_prog_id, "mouse_coord");
+        glUniform2f(uniform, mouse_coords_x, mouse_coords_y);
         vbo_buffer.bind_vao();
         glDrawArrays(GL_TRIANGLES, 0, vbo_buffer.get_vertex_conut());
         glBindVertexArray(0);
