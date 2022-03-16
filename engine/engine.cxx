@@ -52,7 +52,8 @@ static bool init_default_shader(unsigned int& shader_prog_id)
         "uniform vec2 mouse_coord;                             \n"
         "void main(void)                                       \n"
         "{                                                     \n"
-        "   frag_color = vec4(1.0f, mouse_coord.x, 0.2f, 1.0f);         \n"
+        "   frag_color = vec4(mouse_coord.y, mouse_coord.x, 0.2f, \n"
+        "1.0f);         \n"
         "}                                                     \0";
 
     frag_sh = glCreateShader(GL_FRAGMENT_SHADER);
@@ -172,7 +173,8 @@ class engine_core final : public engine
     SDL_GLContext gl_context{};
 
     int32_t main_window_height{}, main_window_width{};
-    int32_t mouse_coords_x, mouse_coords_y;
+
+    float mouse_coords_x, mouse_coords_y;
 
     uint32_t shader_prog_id;
 
@@ -180,12 +182,8 @@ public:
     bool handl_imput(event& e) override final
     {
         SDL_Event sdl_e;
-        std::cout << "mcX:" << mouse_coords_x << " "
-                  << "mcY:" << mouse_coords_y << std::endl;
         if (SDL_PollEvent(&sdl_e))
         {
-            SDL_GetMouseState(&mouse_coords_x, &mouse_coords_y);
-
             const bind* key_bind = nullptr;
             switch (sdl_e.type)
             {
@@ -211,7 +209,25 @@ public:
                     e.type        = key_bind->event.type;
                     e.name        = key_bind->event.name;
                 }
-                break;
+                case SDL_MOUSEMOTION:
+                {
+                    float x{ 0.0f }, y{ 0.0f };
+                    int   w{ 0 }, h{ 0 };
+
+                    mouse_coords_x = sdl_e.motion.x;
+                    mouse_coords_y = sdl_e.motion.y;
+
+                    SDL_GetWindowSize(window, &w, &h);
+                    mouse_coords_x =
+                        mouse_coords_x / static_cast<float>(w) * 2.f - 1.f;
+                    mouse_coords_y =
+                        mouse_coords_y / static_cast<float>(h) * 2.f - 1.f;
+                    mouse_coords_y *= -1.f;
+
+                    std::cout << "mcX:" << mouse_coords_x << " "
+                              << "mcY:" << mouse_coords_y << std::endl;
+                    break;
+                }
             }
         }
         return true;

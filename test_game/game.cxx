@@ -15,8 +15,6 @@ int main(int /*argc*/, char* /*argv*/[])
     uint32_t h = 480;
     uint32_t w = 640;
 
-    uint32_t sh_prog{ 0 }, vao_id{ 0 };
-
     engine->init(w, h);
     // engine->tmp_test_method(sh_prog, vao_id);
 
