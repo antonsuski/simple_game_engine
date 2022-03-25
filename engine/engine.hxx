@@ -47,6 +47,8 @@ public:
     virtual void update()                                     = 0;
     virtual void render()                                     = 0;
     virtual void render(const vbo_v_3& vbo_buffer)            = 0;
+    virtual void render(const vbo_v_8&      vbo_buffer,
+                        const shader_es_32& shader)           = 0;
     virtual void swap_buffers()                               = 0;
     virtual void tmp_test_method(unsigned int& sh_prog,
                                  unsigned int& vao_id)        = 0;

@@ -188,6 +188,12 @@ void vbo_v_8::bind_vao()
     GL_CHECK()
 }
 
+void vbo_v_8::bind_vao() const
+{
+    glBindVertexArray(vao_id);
+    GL_CHECK()
+}
+
 void vbo_v_8::bind_ebo()
 {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_id);
