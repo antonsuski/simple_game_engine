@@ -52,6 +52,7 @@ static bool init_default_shader(unsigned int& shader_prog_id)
         "uniform vec2 mouse_coord;                             \n"
         "void main(void)                                       \n"
         "{                                                     \n"
+        "float b_color = abs((mouse_coord.x + mouse_coord.y) / 2.0f);\n"
         "   frag_color = vec4(mouse_coord.y, mouse_coord.x, 0.2f, \n"
         "1.0f);         \n"
         "}                                                     \0";
