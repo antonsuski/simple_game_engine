@@ -26,11 +26,12 @@ public:
     std::vector<v_8>       vbo_data;
     std::vector<uint32_t>* ebo_data = nullptr;
 
-    size_t vbo_size;
-    size_t ebo_size;
-    GLuint vbo_id;
-    GLuint vao_id;
-    GLuint ebo_id;
+    uint64_t vertex_count;
+    size_t   vbo_size;
+    size_t   ebo_size;
+    GLuint   vbo_id;
+    GLuint   vao_id;
+    GLuint   ebo_id;
 
 public:
     ~vbo_v_8();
