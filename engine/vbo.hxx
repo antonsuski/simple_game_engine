@@ -26,11 +26,12 @@ public:
     std::vector<v_8>       vbo_data;
     std::vector<uint32_t>* ebo_data = nullptr;
 
-    size_t vbo_size;
-    size_t ebo_size;
-    GLuint vbo_id;
-    GLuint vao_id;
-    GLuint ebo_id;
+    uint64_t vertex_count;
+    size_t   vbo_size;
+    size_t   ebo_size;
+    GLuint   vbo_id;
+    GLuint   vao_id;
+    GLuint   ebo_id;
 
 public:
     ~vbo_v_8();
@@ -41,15 +42,19 @@ public:
 
     size_t size();
 
-    void bind_buffer();
-    void buffer_data(GLenum);
-    void buffer_ebo();
-    void vertex_attrib_pointer();
-    void bind_vao();
-    void bind_ebo();
-    void unbind_vao();
-    void print_buffer();
-    void morf_color(float&);
+    void            bind_buffer();
+    void            buffer_data(GLenum);
+    void            buffer_ebo();
+    void            vertex_attrib_pointer();
+    void            bind_vao();
+    void            bind_ebo();
+    void            unbind_vao();
+    void            print_buffer();
+    void            morf_color(float&);
+    const uint64_t& get_vertex_conut();
+
+    void            bind_vao() const;
+    const uint64_t& get_vertex_conut() const;
 };
 
 class ENGINE_DECLSPEC vbo_v_3
