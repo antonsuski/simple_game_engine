@@ -34,5 +34,7 @@ public:
     void set_uniform_4f(std::string_view&, uniform&);
     void set_uniform_4f(uniform&);
     void set_uniform_1i(std::string_view, GLint&);
+
+    void use() const;
 };
 } // namespace engine

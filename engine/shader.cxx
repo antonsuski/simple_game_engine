@@ -155,6 +155,12 @@ void shader_es_32::use()
     GL_CHECK()
 }
 
+void shader_es_32::use() const
+{
+    glUseProgram(id);
+    GL_CHECK()
+}
+
 void shader_es_32::set_uniform_4mat(std::string_view uniform_name,
                                     glm::mat4&       mat)
 {

@@ -19,6 +19,9 @@ int main(int /*argc*/, char* /*argv*/[])
     // engine->tmp_test_method(sh_prog, vao_id);
 
     engine::vbo_v_3      v_buffer("../../res/vertexes_v_3.txt");
+    engine::shader_es_32 v_shader("../../res/shaders/shader_v_3.vs",
+                                  "../../res/shaders/shader_v_3.fs");
+
     engine::vbo_v_8      lol_buffer("../../res/rgb_triangle.txt");
     engine::shader_es_32 lol_shader("../../res/shaders/shader_v_8.vs",
                                     "../../res/shaders/shader_v_8.fs");
@@ -61,8 +64,8 @@ int main(int /*argc*/, char* /*argv*/[])
             break;
         }
         engine->render(lol_buffer, lol_shader);
-        // engine->render(v_buffer);
-        //  engine->tmp_test_method2(sh_prog, vao_id);
+        //        engine->render(v_buffer, v_shader);
+        // engine->tmp_test_method2(sh_prog, vao_id);
         engine->swap_buffers();
     }
 

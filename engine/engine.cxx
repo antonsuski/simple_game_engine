@@ -248,11 +248,27 @@ public:
         glBindVertexArray(0);
     }
 
+    void render(const vbo_v_3&      vbo_buffer,
+                const shader_es_32& shader) final override
+    {
+        int uniform;
+
+        vbo_buffer.bind_vao();
+        shader.use();
+
+        uniform = glGetUniformLocation(shader_prog_id, "mouse_coord");
+        glUniform2f(uniform, mouse_coords_x, mouse_coords_y);
+
+        glDrawArrays(GL_TRIANGLES, 0, vbo_buffer.get_vertex_count());
+        glBindVertexArray(0);
+    }
+
     void render(const vbo_v_8&      vbo_buffer,
                 const shader_es_32& shader) final override
     {
         int uniform;
-        glUseProgram(shader_prog_id);
+
+        shader.use();
         //        uniform = glGetUniformLocation(shader_prog_id, "mouse_coord");
         //        glUniform2f(uniform, mouse_coords_x, mouse_coords_y);
         vbo_buffer.bind_vao();

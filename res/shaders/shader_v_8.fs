@@ -1,8 +1,11 @@
 #version 320 es
+
 precision mediump float;
 in vec3 out_color;
-out vec4 FragColor;
+out vec4 fragColor;
+// uniform vec2 mouse_coord;
+
 void main()
 {
-    FragColor = vec4(out_color.r, out_color.g, out_color.b, 1.0);
+    fragColor = vec4(out_color , 1.0f);
 }
