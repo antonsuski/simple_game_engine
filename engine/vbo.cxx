@@ -64,7 +64,7 @@ engine::vbo_v_8::vbo_v_8(std::string_view path)
 
         std::clog << i << std::endl;
     }
-    std::clog << "----ebo----" << std::endl;
+    std::clog << "----vbo----" << std::endl;
     for (auto i : vbo_data)
     {
         std::clog << i;
@@ -82,26 +82,31 @@ engine::vbo_v_8::vbo_v_8(std::string_view path)
     GL_CHECK()
 
     glBindVertexArray(vao_id);
-    GL_CHECK();
+    GL_CHECK()
 
-    bind_buffer();
-    buffer_data(GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
+    GL_CHECK()
+
+    glBufferData(GL_ARRAY_BUFFER, sizeof(v_8) * vbo_data.size(),
+                 vbo_data.data(), GL_STATIC_DRAW);
+    GL_CHECK()
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_id);
-    GL_CHECK();
+    GL_CHECK()
+
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * ebo_data->size(),
                  ebo_data->data(), GL_DYNAMIC_DRAW);
-    GL_CHECK();
+    GL_CHECK()
 
     vertex_attrib_pointer();
+
+    glEnableVertexAttribArray(0);
+    GL_CHECK()
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     GL_CHECK()
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    GL_CHECK();
-
-    glBindVertexArray(0);
     GL_CHECK()
 
     restart_file(vertex_file);

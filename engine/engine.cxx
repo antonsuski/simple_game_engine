@@ -253,8 +253,8 @@ public:
     {
         int uniform;
         glUseProgram(shader_prog_id);
-        uniform = glGetUniformLocation(shader_prog_id, "mouse_coord");
-        glUniform2f(uniform, mouse_coords_x, mouse_coords_y);
+        //        uniform = glGetUniformLocation(shader_prog_id, "mouse_coord");
+        //        glUniform2f(uniform, mouse_coords_x, mouse_coords_y);
         vbo_buffer.bind_vao();
         glDrawArrays(GL_TRIANGLES, 0, vbo_buffer.get_vertex_conut());
         glBindVertexArray(0);
