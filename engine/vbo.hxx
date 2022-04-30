@@ -42,18 +42,18 @@ public:
 
     size_t size();
 
-    void            bind_buffer();
-    void            buffer_data(GLenum);
-    void            buffer_ebo();
-    void            vertex_attrib_pointer();
-    void            bind_vao();
-    void            bind_ebo();
-    void            unbind_vao();
-    void            print_buffer();
-    void            morf_color(float&);
-    const uint64_t& get_vertex_conut();
+    void bind_buffer();
+    void buffer_data(GLenum);
+    void buffer_ebo();
+    void vertex_attrib_pointer();
+    void bind_vao();
+    void bind_ebo();
+    void unbind_vao();
+    void print_buffer();
+    void morf_color(float&);
+    void bind_vao() const;
 
-    void            bind_vao() const;
+    const uint64_t& get_vertex_conut();
     const uint64_t& get_vertex_conut() const;
 };
 
@@ -71,8 +71,8 @@ public:
 
     v_3* get_data();
 
-    const uint64_t& get_vertex_conut();
-    const uint64_t& get_vertex_conut() const;
+    const uint64_t& get_vertex_count();
+    const uint64_t& get_vertex_count() const;
 
     void bind_buffer();
     void buffer_data(GLenum);

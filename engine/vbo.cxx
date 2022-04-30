@@ -194,6 +194,16 @@ void vbo_v_8::bind_vao() const
     GL_CHECK()
 }
 
+const uint64_t& vbo_v_8::get_vertex_conut()
+{
+    return vertex_count;
+}
+
+const uint64_t& vbo_v_8::get_vertex_conut() const
+{
+    return vertex_count;
+}
+
 void vbo_v_8::bind_ebo()
 {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_id);
@@ -319,12 +329,12 @@ v_3* vbo_v_3::get_data()
     return vbo_data->data();
 }
 
-const uint64_t& vbo_v_3::get_vertex_conut()
+const uint64_t& vbo_v_3::get_vertex_count()
 {
     return vertex_count;
 }
 
-const uint64_t& vbo_v_3::get_vertex_conut() const
+const uint64_t& vbo_v_3::get_vertex_count() const
 {
     return vertex_count;
 }
