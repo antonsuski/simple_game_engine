@@ -54,6 +54,38 @@ struct ENGINE_DECLSPEC v_3
     }
 };
 
+struct ENGINE_DECLSPEC v_6
+{
+    float x;
+    float y;
+    float z;
+
+    float r;
+    float g;
+    float b;
+
+    v_6()
+        : x(0.f)
+        , y(0.f)
+        , z(0.f)
+        , r(0.f)
+        , g(0.f)
+        , b(0.f)
+    {
+    }
+
+    v_6(float x_, float y_, float z_, float r_, float g_, float b_)
+        : x(x_)
+        , y(y_)
+        , z(z_)
+        , r(r_)
+        , g(g_)
+        , b(b_)
+
+    {
+    }
+};
+
 struct ENGINE_DECLSPEC v_4
 {
     float x;
@@ -232,6 +264,9 @@ ENGINE_DECLSPEC std::ostream& operator<<(std::ostream& stream, const v_3&);
 
 ENGINE_DECLSPEC std::istream& operator>>(std::istream& is, v_4&);
 ENGINE_DECLSPEC std::ostream& operator<<(std::ostream& stream, const v_4&);
+
+ENGINE_DECLSPEC std::istream& operator>>(std::istream& is, v_6&);
+ENGINE_DECLSPEC std::ostream& operator<<(std::ostream& stream, const v_6&);
 
 ENGINE_DECLSPEC std::istream& operator>>(std::istream& is, v_8&);
 ENGINE_DECLSPEC std::istream& operator>>(std::istream& is, triangle&);

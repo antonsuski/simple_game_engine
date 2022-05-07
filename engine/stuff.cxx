@@ -33,6 +33,24 @@ std::ostream& operator<<(std::ostream& stream, const v_3& v)
     return stream;
 }
 
+ENGINE_DECLSPEC std::istream& operator>>(std::istream& is, v_6& v)
+{
+    is >> v.x;
+    is >> v.y;
+    is >> v.z;
+    is >> v.r;
+    is >> v.g;
+    is >> v.b;
+    return is;
+}
+
+ENGINE_DECLSPEC std::ostream& operator<<(std::ostream& stream, const v_6& v)
+{
+    stream << v.x << " " << v.y << " " << v.z << " " << v.r << " " << v.g << " "
+           << v.b << " " << std::endl;
+    return stream;
+}
+
 std::istream& operator>>(std::istream& is, v_8& v)
 {
     is >> v.x;

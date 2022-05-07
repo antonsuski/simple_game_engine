@@ -11,6 +11,8 @@
 #define ENGINE_DECLSPEC
 #endif
 
+// TODO: make all vertex buffers template
+
 namespace engine
 {
 using attribute_es_32 = std::vector<std::tuple<GLuint, std::string_view>>;
@@ -81,4 +83,21 @@ public:
 
     void bind_vao() const;
 };
+
+class ENGINE_DECLSPEC vbo_6
+{
+private:
+    std::vector<v_6> vbo_data;
+    GLuint           vbo_id;
+    GLuint           vao_id;
+
+    uint64_t vertex_count;
+
+public:
+    vbo_6(std::string);
+
+    const uint64_t& get_vertex_count() const;
+    const void      bind_vao() const;
+};
+
 } // namespace engine

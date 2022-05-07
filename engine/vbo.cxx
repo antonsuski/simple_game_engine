@@ -100,14 +100,14 @@ engine::vbo_v_8::vbo_v_8(std::string_view path)
 
     vertex_attrib_pointer();
 
-    glEnableVertexAttribArray(0);
-    GL_CHECK()
+    // glEnableVertexAttribArray(0);
+    // GL_CHECK()
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    GL_CHECK()
+    // glBindBuffer(GL_ARRAY_BUFFER, 0);
+    // GL_CHECK()
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    GL_CHECK()
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    // GL_CHECK()
 
     restart_file(vertex_file);
     vertex_file.close();
@@ -403,6 +403,62 @@ void vbo_v_3::bind_vao() const
 std::istream& operator>>(std::istream& is, vbo_v_8& obj)
 {
     return is;
+}
+
+vbo_6::vbo_6(std::string path)
+{
+    std::fstream vertex_file;
+
+    vertex_file.exceptions(std::fstream::failbit | std::fstream::badbit);
+    vertex_file.open(path.data(), std::ios::in | std::ios::out);
+
+    if (vertex_file.is_open())
+    {
+        size_t count = get_line_count(vertex_file) - 1;
+        restart_file(vertex_file);
+        v_6 tr;
+
+        for (size_t iterator = 0; iterator < count; iterator++)
+        {
+            vertex_file >> tr;
+            vbo_data.push_back(tr);
+        }
+    }
+
+    vertex_count = vbo_data.size();
+
+    glGenVertexArrays(1, &vao_id);
+    glGenBuffers(1, &vbo_id);
+    bind_vao();
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(v_6) * vertex_count, vbo_data.data(),
+                 GL_STATIC_DRAW);
+    GL_CHECK();
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(v_6), nullptr);
+    GL_CHECK();
+    glEnableVertexAttribArray(0);
+    GL_CHECK();
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(v_6),
+                          (void*)(sizeof(v_3)));
+    GL_CHECK();
+    glEnableVertexAttribArray(1);
+    GL_CHECK();
+
+    glBindVertexArray(0);
+    GL_CHECK();
+}
+
+const uint64_t& vbo_6::get_vertex_count() const
+{
+    return vertex_count;
+}
+
+const void vbo_6::bind_vao() const
+{
+    glBindVertexArray(vao_id);
+    GL_CHECK();
 }
 
 } // namespace engine
