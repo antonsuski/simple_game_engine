@@ -279,10 +279,11 @@ engine::vbo_v_3::vbo_v_3(std::string_view path)
         restart_file(vertex_file);
         vbo_data = new std::vector<v_3>;
         v_3 tr;
-
+        std::cout << "vbo:\n";
         for (size_t iterator = 0; iterator < count; iterator++)
         {
             vertex_file >> tr;
+            std::cout << tr;
             vbo_data->push_back(tr);
         }
     }
@@ -421,6 +422,7 @@ vbo_6::vbo_6(std::string path)
         for (size_t iterator = 0; iterator < count; iterator++)
         {
             vertex_file >> tr;
+            std::cout << tr;
             vbo_data.push_back(tr);
         }
     }

@@ -64,8 +64,8 @@ int main(int /*argc*/, char* /*argv*/[])
             break;
         }
         engine->render(lol_buffer, lol_shader);
-        engine->render(v_buffer, v_shader);
-        // engine->tmp_test_method2(sh_prog, vao_id);
+        // engine->render(v_buffer, v_shader);
+        //  engine->tmp_test_method2(sh_prog, vao_id);
         engine->swap_buffers();
     }
 
