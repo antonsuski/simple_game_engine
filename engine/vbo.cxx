@@ -149,8 +149,6 @@ void vbo_v_8::buffer_ebo()
 
 void vbo_v_8::vertex_attrib_pointer()
 {
-    // clang-format off
-
     glVertexAttribPointer(0,
                           3,
                           GL_FLOAT,
