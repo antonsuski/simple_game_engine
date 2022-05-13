@@ -43,7 +43,7 @@ Beore build **SGE**  be shure to having next tools:
     - ninja
     - or etc.
 
-Clone repo and buid
+Clone repo and build
 
     git clone git@github.com:antonsuski/simple_game_engine.git
 
