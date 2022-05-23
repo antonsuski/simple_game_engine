@@ -1,0 +1,71 @@
+#include <iostream>
+#include <memory>
+#include <string_view>
+
+#include "engine.hxx"
+
+int main (int /*argc*/, char ** /*argv*/)
+{
+  std::cout << "Hello opengl_2-6_texture" << std::endl;
+  float tex_coords[] =
+    {
+      0.0f, 0.0f,  // lower-left corner
+      1.0f, 0.0f,  // lower-right corner
+      0.5f, 1.0f   // top-center corner
+    };
+
+    std::unique_ptr<engine::engine, void (*)(engine::engine*)> engine(
+        engine::create_engine(), engine::destroy_engine);
+
+    uint32_t h = 480;
+    uint32_t w = 640;
+
+    engine->init(w, h);
+
+    engine::vbo_6        lol_buffer("../../res/rgb_triangle_v_6.txt");
+    engine::shader_es_32 lol_shader("../../res/shaders/shader_v_6.vs",
+                                    "../../res/shaders/shader_v_6.fs");
+
+    bool continue_loop = true;
+    while (continue_loop)
+    {
+        using namespace engine;
+
+        event system_event;
+        engine->handl_imput(system_event);
+
+        switch (system_event.type)
+        {
+            case event::turn_off:
+            {
+                continue_loop = false;
+                std::clog << system_event << std::endl;
+            }
+            break;
+            case event::left:
+            {
+                std::clog << system_event << std::endl;
+            }
+            break;
+            case event::right:
+            {
+                std::clog << system_event << std::endl;
+            }
+            break;
+            case event::up:
+            {
+                std::clog << system_event << std::endl;
+            }
+            break;
+            case event::down:
+            {
+                std::clog << system_event << std::endl;
+            }
+            break;
+        }
+        engine->render(lol_buffer, lol_shader);
+        engine->swap_buffers();
+    }
+
+  return EXIT_SUCCESS;
+}
