@@ -4,27 +4,58 @@
 
 #include "engine.hxx"
 
-int main (int /*argc*/, char ** /*argv*/)
+int main(int /*argc*/, char** /*argv*/)
 {
-  std::cout << "Hello opengl_2-6_texture" << std::endl;
-  float tex_coords[] =
-    {
-      0.0f, 0.0f,  // lower-left corner
-      1.0f, 0.0f,  // lower-right corner
-      0.5f, 1.0f   // top-center corner
-    };
+    std::cout << "Hello opengl_2-6_texture" << std::endl;
 
     std::unique_ptr<engine::engine, void (*)(engine::engine*)> engine(
         engine::create_engine(), engine::destroy_engine);
 
     uint32_t h = 480;
     uint32_t w = 640;
+    uint32_t tex_id;
+    int      tex_h;
+    int      tex_w;
+    int      tex_channals;
+
+    unsigned char* tex_data;
+
+    float tex_coords[] = {
+        0.0f, 0.0f, // lower-left corner
+        1.0f, 0.0f, // lower-right corner
+        0.5f, 1.0f  // top-center corner
+    };
+    float tex_color[] = { 1.0f, 1.0f, 0.0f, 1.0f };
 
     engine->init(w, h);
 
     engine::vbo_6        lol_buffer("../../res/rgb_triangle_v_6.txt");
     engine::shader_es_32 lol_shader("../../res/shaders/shader_v_6.vs",
                                     "../../res/shaders/shader_v_6.fs");
+
+    glGenTextures(1, &tex_id);
+    glBindTexture(GL_TEXTURE, tex_id);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, tex_color);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                    GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    tex_data = stbi_load("../../red/images/wall.jpg", &tex_w, &tex_h,
+                         &tex_channals, 0);
+    if (tex_data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tex_w, tex_h, 0, GL_RGB,
+                     GL_UNSIGNED_BYTE, tex_data);
+
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        stbi_image_free(tex_data);
+    }
 
     bool continue_loop = true;
     while (continue_loop)
@@ -67,5 +98,5 @@ int main (int /*argc*/, char ** /*argv*/)
         engine->swap_buffers();
     }
 
-  return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
