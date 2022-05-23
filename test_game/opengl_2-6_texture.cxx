@@ -20,11 +20,11 @@ int main(int /*argc*/, char** /*argv*/)
 
     unsigned char* tex_data;
 
-    float tex_coords[] = {
-        0.0f, 0.0f, // lower-left corner
-        1.0f, 0.0f, // lower-right corner
-        0.5f, 1.0f  // top-center corner
-    };
+    // float tex_coords[] = {
+    //     0.0f, 0.0f, // lower-left corner
+    //     1.0f, 0.0f, // lower-right corner
+    //     0.5f, 1.0f  // top-center corner
+    // };
     float tex_color[] = { 1.0f, 1.0f, 0.0f, 1.0f };
 
     engine->init(w, h);
@@ -33,11 +33,15 @@ int main(int /*argc*/, char** /*argv*/)
     engine::shader_es_32 lol_shader("../../res/shaders/shader_v_6.vs",
                                     "../../res/shaders/shader_v_6.fs");
 
+    engine::vbo_8        v8_buffer("../../res/rgb_triangle.txt");
+    engine::shader_es_32 v8_shader("../../res/shaders/shader_v_8.vs",
+                                   "../../res/shaders/shader_v_8.fs");
+
     glGenTextures(1, &tex_id);
-    glBindTexture(GL_TEXTURE, tex_id);
+    glBindTexture(GL_TEXTURE_2D, tex_id);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, tex_color);
+    // glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, tex_color);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
@@ -94,7 +98,9 @@ int main(int /*argc*/, char** /*argv*/)
             }
             break;
         }
-        engine->render(lol_buffer, lol_shader);
+        glBindTexture(GL_TEXTURE_2D, tex_id);
+        // engine->render(lol_buffer, lol_shader);
+        engine->render(v8_buffer, v8_shader);
         engine->swap_buffers();
     }
 

@@ -1,6 +1,6 @@
-﻿#include "vbo.hxx"
-#include "gl_assist.hxx"
+﻿#include "gl_assist.hxx"
 #include "stuff.hxx"
+#include "vbo.hxx"
 
 #include <cmath>
 #include <fstream>
@@ -149,27 +149,15 @@ void vbo_v_8::buffer_ebo()
 
 void vbo_v_8::vertex_attrib_pointer()
 {
-    glVertexAttribPointer(0,
-                          3,
-                          GL_FLOAT,
-                          GL_FALSE,
-                          sizeof(v_8),
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(v_8),
                           reinterpret_cast<void*>(0));
     GL_CHECK()
 
-    glVertexAttribPointer(1,
-                          3,
-                          GL_FLOAT,
-                          GL_FALSE,
-                          sizeof(v_8),
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(v_8),
                           reinterpret_cast<void*>(3 * sizeof(float)));
     GL_CHECK()
 
-    glVertexAttribPointer(2,
-                          2,
-                          GL_FLOAT,
-                          GL_FALSE,
-                          sizeof(v_8),
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(v_8),
                           reinterpret_cast<void*>(6 * sizeof(float)));
 
     // clang-format on
@@ -456,6 +444,69 @@ const uint64_t& vbo_6::get_vertex_count() const
 }
 
 const void vbo_6::bind_vao() const
+{
+    glBindVertexArray(vao_id);
+    GL_CHECK();
+}
+
+vbo_8::vbo_8(std::string path)
+{
+    std::fstream vertex_file;
+
+    vertex_file.exceptions(std::fstream::failbit | std::fstream::badbit);
+    vertex_file.open(path.data(), std::ios::in | std::ios::out);
+
+    if (vertex_file.is_open())
+    {
+        size_t count = get_line_count(vertex_file) - 1;
+        restart_file(vertex_file);
+        v_8 tr;
+
+        for (size_t iterator = 0; iterator < count; iterator++)
+        {
+            vertex_file >> tr;
+            std::cout << tr;
+            vbo_data.push_back(tr);
+        }
+    }
+
+    vertex_count = vbo_data.size();
+
+    glGenVertexArrays(1, &vao_id);
+    glGenBuffers(1, &vbo_id);
+    bind_vao();
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(v_6) * vertex_count, vbo_data.data(),
+                 GL_STATIC_DRAW);
+    GL_CHECK();
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(v_8), nullptr);
+    GL_CHECK();
+    glEnableVertexAttribArray(0);
+    GL_CHECK();
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(v_8),
+                          (void*)(sizeof(v_3)));
+    GL_CHECK();
+    glEnableVertexAttribArray(1);
+    GL_CHECK();
+
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(v_8),
+                          (void*)(sizeof(v_3) * 2));
+    GL_CHECK();
+    glEnableVertexAttribArray(2);
+    GL_CHECK();
+
+    glBindVertexArray(0);
+    GL_CHECK();
+}
+
+const uint64_t& vbo_8::get_vertex_count() const
+{
+    return vertex_count;
+}
+
+void vbo_8::bind_vao() const
 {
     glBindVertexArray(vao_id);
     GL_CHECK();

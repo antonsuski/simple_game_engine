@@ -1,11 +1,14 @@
 #version 320 es
 
 precision mediump float;
+out vec4  fragColor;
+
+in vec2 out_tex_coord;
 in vec3 out_color;
-out vec4 fragColor;
-// uniform vec2 mouse_coord;
+
+uniform sampler2D out_texture;
 
 void main()
 {
-    fragColor = vec4(out_color , 1.0f);
+    fragColor = texture(out_texture, out_tex_coord);
 }

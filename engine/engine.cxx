@@ -262,12 +262,14 @@ public:
         glDrawArrays(GL_TRIANGLES, 0, vbo_buffer.get_vertex_count());
         glBindVertexArray(0);
     }
+
     void render(const vbo_6&        vbo_buffer,
                 const shader_es_32& shader) final override
     {
         shader.use();
         vbo_buffer.bind_vao();
         glDrawArrays(GL_TRIANGLES, 0, vbo_buffer.get_vertex_count());
+        glBindVertexArray(0);
     }
 
     void render(const vbo_v_8&      vbo_buffer,
@@ -281,6 +283,15 @@ public:
         vbo_buffer.bind_vao();
         glDrawElements(GL_TRIANGLES, vbo_buffer.get_vertex_conut(),
                        GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
+    }
+
+    void render(const vbo_8&        vbo_buffer,
+                const shader_es_32& shader) final override
+    {
+        shader.use();
+        vbo_buffer.bind_vao();
+        glDrawArrays(GL_TRIANGLES, 0, vbo_buffer.get_vertex_count());
         glBindVertexArray(0);
     }
 
@@ -427,7 +438,7 @@ public:
         unsigned int ebo_id;
 
         float vertices[]   = { -0.5f, -0.5f, 0.0f, 0.5f, -0.5f,
-                             0.0f,  0.0f,  0.5f, 0.0f };
+                               0.0f,  0.0f,  0.5f, 0.0f };
         float verts_cube[] = {
             0.5f,  0.5f,  0.0f, // top right
             0.5f,  -0.5f, 0.0f, // bottom right

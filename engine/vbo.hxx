@@ -100,4 +100,20 @@ public:
     const void      bind_vao() const;
 };
 
+class ENGINE_DECLSPEC vbo_8
+{
+private:
+    std::vector<v_8> vbo_data;
+    GLuint           vbo_id;
+    GLuint           vao_id;
+
+    uint64_t vertex_count;
+
+public:
+    vbo_8(std::string);
+
+    const uint64_t& get_vertex_count() const;
+    void            bind_vao() const;
+};
+
 } // namespace engine
