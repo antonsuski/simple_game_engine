@@ -1,6 +1,8 @@
 #include <algorithm>
 #include <array>
 #include <cassert>
+#include <iomanip>
+#include <iostream>
 #include <string_view>
 #include <vector>
 
@@ -183,54 +185,46 @@ public:
     bool handl_imput(event& e) override final
     {
         SDL_Event sdl_e;
+
         if (SDL_PollEvent(&sdl_e))
         {
             const bind* key_bind = nullptr;
-            switch (sdl_e.type)
+
+            if (sdl_e.type == SDL_QUIT)
             {
-                case SDL_QUIT:
-                {
-                    e.type = event::turn_off;
-                    e.name = "turn_off";
-                    return true;
-                }
-                break;
-                case SDL_KEYDOWN:
-                {
-                    check_event(sdl_e, key_bind);
-                    e.event_state = true;
-                    e.type        = key_bind->event.type;
-                    e.name        = key_bind->event.name;
-                }
-                break;
-                case SDL_KEYUP:
-                {
-                    check_event(sdl_e, key_bind);
-                    e.event_state = false;
-                    e.type        = key_bind->event.type;
-                    e.name        = key_bind->event.name;
-                }
-                case SDL_MOUSEMOTION:
-                {
-                    float x{ 0.0f }, y{ 0.0f };
-                    int   w{ 0 }, h{ 0 };
+                e.type = event::turn_off;
+                e.name = "turn_off";
+                return true;
+            }
+            if (sdl_e.type == SDL_KEYDOWN)
+            {
+                check_event(sdl_e, key_bind);
 
-                    mouse_coords_x = sdl_e.motion.x;
-                    mouse_coords_y = sdl_e.motion.y;
+                e.event_state = true;
+                e.type        = key_bind->event.type;
+                e.name        = key_bind->event.name;
+            }
+            if (sdl_e.type == SDL_KEYUP)
+            {
+                check_event(sdl_e, key_bind);
 
-                    SDL_GetWindowSize(window, &w, &h);
-                    mouse_coords_x =
-                        mouse_coords_x / static_cast<float>(w) * 2.f - 1.f;
-                    mouse_coords_y =
-                        mouse_coords_y / static_cast<float>(h) * 2.f - 1.f;
-                    mouse_coords_y *= -1.f;
+                e.event_state = false;
+                e.type        = key_bind->event.type;
+                e.name        = key_bind->event.name;
+            }
+            if (sdl_e.type == SDL_MOUSEMOTION)
+            {
+                // mouse_coords_x = sdl_e.motion.x / main_window_width * 2.f
+                // - 1.f; mouse_coords_y =
+                //     sdl_e.motion.y / main_window_height * 2.f - 1.f;
+                // mouse_coords_y *= -1.f;
 
-                    std::cout << "mcX:" << mouse_coords_x << " "
-                              << "mcY:" << mouse_coords_y << std::endl;
-                    break;
-                }
+                std::cout << std::setprecision(2) << std::setw(4)
+                          << "mcX:" << sdl_e.motion.x << " "
+                          << "mcY:" << sdl_e.motion.y << std::endl;
             }
         }
+
         return true;
     }
 

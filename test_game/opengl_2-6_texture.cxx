@@ -20,18 +20,13 @@ int main(int /*argc*/, char** /*argv*/)
 
     unsigned char* tex_data;
 
-    // float tex_coords[] = {
-    //     0.0f, 0.0f, // lower-left corner
-    //     1.0f, 0.0f, // lower-right corner
-    //     0.5f, 1.0f  // top-center corner
-    // };
     float tex_color[] = { 1.0f, 1.0f, 0.0f, 1.0f };
 
     engine->init(w, h);
 
-    engine::vbo_6        lol_buffer("../../res/rgb_triangle_v_6.txt");
-    engine::shader_es_32 lol_shader("../../res/shaders/shader_v_6.vs",
-                                    "../../res/shaders/shader_v_6.fs");
+    // engine::vbo_6        lol_buffer("../../res/rgb_triangle_v_6.txt");
+    // engine::shader_es_32 lol_shader("../../res/shaders/shader_v_6.vs",
+    //                                 "../../res/shaders/shader_v_6.fs");
 
     engine::vbo_8        v8_buffer("../../res/rgb_triangle.txt");
     engine::shader_es_32 v8_shader("../../res/shaders/shader_v_8.vs",
@@ -47,7 +42,7 @@ int main(int /*argc*/, char** /*argv*/)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
                     GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    tex_data = stbi_load("../../red/images/wall.jpg", &tex_w, &tex_h,
+    tex_data = stbi_load("../../res/images/wall.jpg", &tex_w, &tex_h,
                          &tex_channals, 0);
     if (tex_data)
     {
@@ -58,6 +53,7 @@ int main(int /*argc*/, char** /*argv*/)
     }
     else
     {
+        std::cout << "Cant load image" << std::endl;
         stbi_image_free(tex_data);
     }
 
