@@ -11,6 +11,7 @@
 #include <cassert>
 #include <fstream>
 #include <glad/glad.h>
+#include <iomanip>
 #include <iostream>
 #include <shader.hxx>
 
@@ -80,9 +81,9 @@ static bool check_event(const SDL_Event& sdl_event, const bind*& key)
 {
     using namespace std;
 
-    const auto it = find_if(begin(keys), end(keys), [&](const bind& b) {
-        return b.key == sdl_event.key.keysym.sym;
-    });
+    const auto it = find_if(begin(keys), end(keys),
+                            [&](const bind& b)
+                            { return b.key == sdl_event.key.keysym.sym; });
 
     if (it != end(keys))
     {
@@ -496,7 +497,10 @@ public:
                 // float y_center = float(height) / 2.0f;
                 x = original_x / float(width) * 2.0f - 1.0f;
                 y = original_y / float(height) * 2.0f - 1.0f;
+
                 y *= -1.0f;
+                std::cout << std::setprecision(2) << std::setw(4) << "x:" << x
+                          << "y:" << y << "\n";
                 //                tmp_uni.u0 = x;
                 //                tmp_uni.u1 = y;
                 //                tmp_uni.u2 = 0.4f;
@@ -628,8 +632,8 @@ public:
         buffer.buffer_data(GL_STATIC_DRAW);
         buffer.bind_ebo();
         buffer.buffer_ebo();
-//        glBindTexture(GL_TEXTURE_2D, texture_id);
-//        OM_GL_CHECK()
+        //        glBindTexture(GL_TEXTURE_2D, texture_id);
+        //        OM_GL_CHECK()
         glDrawElements(GL_TRIANGLES, buffer.ebo_size, GL_UNSIGNED_INT, 0);
         OM_GL_CHECK()
     }
