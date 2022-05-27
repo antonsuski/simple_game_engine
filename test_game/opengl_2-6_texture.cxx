@@ -24,9 +24,9 @@ int main(int /*argc*/, char** /*argv*/)
 
     engine->init(w, h);
 
-    // engine::vbo_6        lol_buffer("../../res/rgb_triangle_v_6.txt");
-    // engine::shader_es_32 lol_shader("../../res/shaders/shader_v_6.vs",
-    //                                 "../../res/shaders/shader_v_6.fs");
+    engine::vbo_6        lol_buffer("../../res/rgb_triangle_v_6.txt");
+    engine::shader_es_32 lol_shader("../../res/shaders/shader_v_6.vs",
+                                    "../../res/shaders/shader_v_6.fs");
 
     engine::vbo_8        v8_buffer("../../res/rgb_triangle.txt");
     engine::shader_es_32 v8_shader("../../res/shaders/shader_v_8.vs",
@@ -95,8 +95,8 @@ int main(int /*argc*/, char** /*argv*/)
             break;
         }
         glBindTexture(GL_TEXTURE_2D, tex_id);
-        // engine->render(lol_buffer, lol_shader);
-        engine->render(v8_buffer, v8_shader);
+        engine->render(lol_buffer, lol_shader);
+        // engine->render(v8_buffer, v8_shader);
         engine->swap_buffers();
     }
 

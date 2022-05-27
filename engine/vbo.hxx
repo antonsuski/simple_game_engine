@@ -103,16 +103,21 @@ public:
 class ENGINE_DECLSPEC vbo_8
 {
 private:
-    std::vector<v_8> vbo_data;
-    GLuint           vbo_id;
-    GLuint           vao_id;
+    std::vector<v_8>      vbo_data;
+    std::vector<uint32_t> ebo_data;
+    GLuint                vbo_id;
+    GLuint                vao_id;
+    GLuint                ebo_id;
 
     uint64_t vertex_count;
+    uint64_t index_count;
 
 public:
+    ~vbo_8();
     vbo_8(std::string);
 
     const uint64_t& get_vertex_count() const;
+    const uint64_t& get_index_count() const;
     void            bind_vao() const;
 };
 

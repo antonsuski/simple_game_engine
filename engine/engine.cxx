@@ -198,19 +198,23 @@ public:
             }
             if (sdl_e.type == SDL_KEYDOWN)
             {
-                check_event(sdl_e, key_bind);
-
-                e.event_state = true;
-                e.type        = key_bind->event.type;
-                e.name        = key_bind->event.name;
+                if (check_event(sdl_e, key_bind))
+                {
+                    e.event_state = true;
+                    e.type        = key_bind->event.type;
+                    e.name        = key_bind->event.name;
+                    return true;
+                }
             }
             if (sdl_e.type == SDL_KEYUP)
             {
-                check_event(sdl_e, key_bind);
-
-                e.event_state = false;
-                e.type        = key_bind->event.type;
-                e.name        = key_bind->event.name;
+                if (check_event(sdl_e, key_bind))
+                {
+                    e.event_state = true;
+                    e.type        = key_bind->event.type;
+                    e.name        = key_bind->event.name;
+                    return true;
+                }
             }
             if (sdl_e.type == SDL_MOUSEMOTION)
             {
@@ -222,10 +226,11 @@ public:
                 std::cout << std::setprecision(2) << std::setw(4)
                           << "mcX:" << sdl_e.motion.x << " "
                           << "mcY:" << sdl_e.motion.y << std::endl;
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 
     void update() override final {}
@@ -286,6 +291,9 @@ public:
         shader.use();
         vbo_buffer.bind_vao();
         glDrawArrays(GL_TRIANGLES, 0, vbo_buffer.get_vertex_count());
+
+        // glDrawElements(GL_TRIANGLES, vbo_buffer.get_index_count(),
+        //                GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
     }
 
