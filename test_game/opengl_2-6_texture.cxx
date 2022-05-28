@@ -63,42 +63,45 @@ int main(int /*argc*/, char** /*argv*/)
         using namespace engine;
 
         event system_event;
-        engine->handl_imput(system_event);
-
-        switch (system_event.type)
+        while (engine->handl_imput(system_event))
         {
-            case event::turn_off:
+            switch (system_event.type)
             {
-                continue_loop = false;
-                std::clog << system_event << std::endl;
+                case event::turn_off:
+                {
+                    continue_loop = false;
+                    std::clog << system_event << std::endl;
+                }
+                break;
+                case event::left:
+                {
+                    std::clog << system_event << std::endl;
+                }
+                break;
+                case event::right:
+                {
+                    std::clog << system_event << std::endl;
+                }
+                break;
+                case event::up:
+                {
+                    std::clog << system_event << std::endl;
+                }
+                break;
+                case event::down:
+                {
+                    std::clog << system_event << std::endl;
+                }
+                break;
+                default:
+                    break;
             }
-            break;
-            case event::left:
-            {
-                std::clog << system_event << std::endl;
-            }
-            break;
-            case event::right:
-            {
-                std::clog << system_event << std::endl;
-            }
-            break;
-            case event::up:
-            {
-                std::clog << system_event << std::endl;
-            }
-            break;
-            case event::down:
-            {
-                std::clog << system_event << std::endl;
-            }
-            break;
         }
+
         glBindTexture(GL_TEXTURE_2D, tex_id);
-        engine->render(lol_buffer, lol_shader);
-        // engine->render(v8_buffer, v8_shader);
+        // engine->render(lol_buffer, lol_shader);
+        engine->render(v8_buffer, v8_shader);
         engine->swap_buffers();
     }
-
     return EXIT_SUCCESS;
 }

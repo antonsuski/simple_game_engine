@@ -223,9 +223,9 @@ public:
                 //     sdl_e.motion.y / main_window_height * 2.f - 1.f;
                 // mouse_coords_y *= -1.f;
 
-                std::cout << std::setprecision(2) << std::setw(4)
-                          << "mcX:" << sdl_e.motion.x << " "
-                          << "mcY:" << sdl_e.motion.y << std::endl;
+                std::cout << std::setprecision(2) << "mcX:" << sdl_e.motion.x
+                          << std::setw(10) << "mcY:" << sdl_e.motion.y
+                          << std::endl;
                 return true;
             }
         }
@@ -290,10 +290,10 @@ public:
     {
         shader.use();
         vbo_buffer.bind_vao();
-        glDrawArrays(GL_TRIANGLES, 0, vbo_buffer.get_vertex_count());
+        // glDrawArrays(GL_TRIANGLES, 0, vbo_buffer.get_vertex_count());
 
-        // glDrawElements(GL_TRIANGLES, vbo_buffer.get_index_count(),
-        //                GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, vbo_buffer.get_index_count(),
+                       GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
     }
 
