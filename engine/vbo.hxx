@@ -97,7 +97,7 @@ public:
     vbo_6(std::string);
 
     const uint64_t& get_vertex_count() const;
-    const void      bind_vao() const;
+    void            bind_vao() const;
 };
 
 class ENGINE_DECLSPEC vbo_8
@@ -118,7 +118,8 @@ public:
 
     const uint64_t& get_vertex_count() const;
     const uint64_t& get_index_count() const;
-    void            bind_vao() const;
+
+    void bind_vao() const;
 };
 
 } // namespace engine

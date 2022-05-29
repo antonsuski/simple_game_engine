@@ -14,13 +14,24 @@
 
 namespace engine
 {
-// class ENGINE_DECLSPEC texture
-//{
-// public:
-//    virtual ~texture()                       = 0;
-//    virtual std::uint32_t get_width() const  = 0;
-//    virtual std::uint32_t get_height() const = 0;
-//};
+class ENGINE_DECLSPEC texture
+{
+private:
+    std::string path_to_texture;
+
+    unsigned char* tex_data;
+
+    uint32_t tex_id;
+    int      tex_h;
+    int      tex_w;
+    int      tex_channals;
+
+public:
+    ~texture();
+    texture(std::string path = "unknown");
+
+    void bind_texture() const;
+};
 
 class ENGINE_DECLSPEC texture2d
 {

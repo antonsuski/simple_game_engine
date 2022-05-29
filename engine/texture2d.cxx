@@ -8,6 +8,53 @@
 namespace engine
 {
 
+texture::~texture() {}
+
+texture::texture(std::string path)
+    : path_to_texture{ path }
+{
+    if (path == "unknown")
+    {
+        std::cerr << "uknown texture path\n";
+    }
+
+    glGenTextures(1, &tex_id);
+    glBindTexture(GL_TEXTURE_2D, tex_id);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+    // unknonw function for me. how does it work?
+    // glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, tex_color);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                    GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    tex_data = stbi_load("../../res/images/wall.jpg", &tex_w, &tex_h,
+                         &tex_channals, 0);
+
+    if (tex_data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tex_w, tex_h, 0, GL_RGB,
+                     GL_UNSIGNED_BYTE, tex_data);
+
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "Cant load image" << std::endl;
+    }
+
+    stbi_image_free(tex_data);
+    tex_data = nullptr;
+}
+
+void texture::bind_texture() const
+{
+    glBindTexture(GL_TEXTURE_2D, tex_id);
+    GL_CHECK();
+}
+
 void texture2d::bind()
 {
     //    GLboolean is_texture = glIsTexture(id);

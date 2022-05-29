@@ -446,7 +446,7 @@ const uint64_t& vbo_6::get_vertex_count() const
     return vertex_count;
 }
 
-const void vbo_6::bind_vao() const
+void vbo_6::bind_vao() const
 {
     glBindVertexArray(vao_id);
     GL_CHECK();
@@ -511,11 +511,11 @@ vbo_8::vbo_8(std::string path)
     GL_CHECK();
     bind_vao();
     glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(v_6) * vbo_data.size(),
+    glBufferData(GL_ARRAY_BUFFER, sizeof(v_8) * vbo_data.size(),
                  vbo_data.data(), GL_STATIC_DRAW);
     GL_CHECK();
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo_id);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_id);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * index_count,
                  ebo_data.data(), GL_DYNAMIC_DRAW);
     GL_CHECK();

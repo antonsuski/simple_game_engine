@@ -218,13 +218,17 @@ public:
             }
             if (sdl_e.type == SDL_MOUSEMOTION)
             {
-                // mouse_coords_x = sdl_e.motion.x / main_window_width * 2.f
-                // - 1.f; mouse_coords_y =
-                //     sdl_e.motion.y / main_window_height * 2.f - 1.f;
-                // mouse_coords_y *= -1.f;
+                SDL_GetWindowSize(window, &main_window_width,
+                                  &main_window_height);
 
-                std::cout << std::setprecision(2) << "mcX:" << sdl_e.motion.x
-                          << std::setw(10) << "mcY:" << sdl_e.motion.y
+                mouse_coords_x =
+                    ((2.f * sdl_e.motion.x / main_window_width)) - 1.f;
+                mouse_coords_y =
+                    ((2.f * sdl_e.motion.y / main_window_height)) - 1.f;
+                mouse_coords_y *= -1.f;
+
+                std::cout << std::setprecision(2) << "mcX:" << mouse_coords_x
+                          << std::setw(10) << "mcY:" << mouse_coords_y
                           << std::endl;
                 return true;
             }
@@ -290,11 +294,20 @@ public:
     {
         shader.use();
         vbo_buffer.bind_vao();
-        // glDrawArrays(GL_TRIANGLES, 0, vbo_buffer.get_vertex_count());
+        glDrawArrays(GL_TRIANGLES, 0, vbo_buffer.get_vertex_count());
 
-        glDrawElements(GL_TRIANGLES, vbo_buffer.get_index_count(),
-                       GL_UNSIGNED_INT, 0);
+        // glDrawElements(GL_TRIANGLES, vbo_buffer.get_index_count(),
+        //                GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
+    }
+
+    void render(const vbo_8& vbo_buffer, const shader_es_32& shader,
+                const texture& texture) final override
+    {
+        texture.bind_texture();
+        shader.use();
+        vbo_buffer.bind_vao();
+        glDrawArrays(GL_TRIANGLES, 0, vbo_buffer.get_vertex_count());
     }
 
     void swap_buffers() final override
