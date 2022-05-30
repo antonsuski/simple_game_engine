@@ -310,6 +310,8 @@ public:
         glDrawArrays(GL_TRIANGLES, 0, vbo_buffer.get_vertex_count());
     }
 
+    void render(const object2d& object) final override { object.render(); }
+
     void swap_buffers() final override
     {
         SDL_GL_SwapWindow(window);

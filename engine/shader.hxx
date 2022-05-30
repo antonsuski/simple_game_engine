@@ -26,7 +26,7 @@ class ENGINE_DECLSPEC shader_es_32
 public:
     unsigned int id;
 
-    explicit shader_es_32(const char*, const char*);
+    explicit shader_es_32(const std::string& vs, const std::string& fs);
 
     void use();
     void set_uniform_4mat(std::string_view, glm::mat4&);

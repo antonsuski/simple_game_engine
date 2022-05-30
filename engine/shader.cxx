@@ -1,12 +1,11 @@
-﻿#include "shader.hxx"
-#include "gl_assist.hxx"
+﻿#include "gl_assist.hxx"
+#include "shader.hxx"
 
 #include <vector>
 
 namespace engine
 {
-shader_es_32::shader_es_32(const char* vert_shader_path,
-                           const char* frag_shader_path)
+shader_es_32::shader_es_32(const std::string& vs, const std::string& fs)
 {
     std::string   vert_shader_src;
     std::string   frag_shader_src;
@@ -18,8 +17,8 @@ shader_es_32::shader_es_32(const char* vert_shader_path,
 
     try
     {
-        vert_shader_file.open(vert_shader_path);
-        frag_shader_file.open(frag_shader_path);
+        vert_shader_file.open(vs);
+        frag_shader_file.open(fs);
         std::stringstream vert_shader_stream, frag_shader_stream;
 
         vert_shader_stream << vert_shader_file.rdbuf();

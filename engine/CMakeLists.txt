@@ -11,6 +11,7 @@ add_library(engine
             stuff.hxx
             vbo.hxx
             texture2d.hxx
+            object2d.hxx
             stb_image.h
             glad.h
 
@@ -19,6 +20,7 @@ add_library(engine
             stuff.cxx
             vbo.cxx
             texture2d.cxx
+            object2d.cxx
             stb_image.cxx
             engine.cxx)
 

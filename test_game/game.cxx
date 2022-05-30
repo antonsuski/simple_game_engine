@@ -22,6 +22,8 @@ int main(int /*argc*/, char* /*argv*/[])
     engine::texture      txt_rgb_square("../../res/images/wall.jpg");
     engine::vbo_8        vbo_rgb_square("../../res/rgba_square.txt");
 
+    engine::object2d obj;
+
     bool continue_loop = true;
     while (continue_loop)
     {
@@ -63,7 +65,8 @@ int main(int /*argc*/, char* /*argv*/[])
             }
         }
 
-        engine->render(vbo_rgb_square, sh_rgb_square, txt_rgb_square);
+        // engine->render(vbo_rgb_square, sh_rgb_square, txt_rgb_square);
+        engine->render(obj);
         engine->swap_buffers();
     }
 
