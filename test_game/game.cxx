@@ -17,11 +17,6 @@ int main(int /*argc*/, char* /*argv*/[])
 
     engine->init(w, h);
 
-    engine::shader_es_32 sh_rgb_square("../../res/shaders/shader_v_8.vs",
-                                       "../../res/shaders/shader_v_8.fs");
-    engine::texture      txt_rgb_square("../../res/images/wall.jpg");
-    engine::vbo_8        vbo_rgb_square("../../res/rgba_square.txt");
-
     engine::object2d obj;
 
     bool continue_loop = true;

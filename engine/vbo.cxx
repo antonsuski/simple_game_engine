@@ -480,7 +480,6 @@ vbo_8::vbo_8(std::string path)
         for (size_t iterator = 0; iterator < count; iterator++)
         {
             vertex_file >> tr;
-            std::cout << tr;
             vbo_data.push_back(tr);
         }
     }

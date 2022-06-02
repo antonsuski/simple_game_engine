@@ -28,7 +28,6 @@ public:
              std::string texture_path = "../../res/images/wall.jpg");
 
     void render() const;
-    void resolution_cofficient(uint32_t& w, uint32_t& t);
 };
 
 } // namespace engine
