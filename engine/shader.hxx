@@ -33,7 +33,7 @@ public:
     void set_uniform_4mat(std::string_view, trans_mat_4x4&) const;
     void set_uniform_4f(std::string_view&, uniform&) const;
     void set_uniform_4f(uniform&) const;
-    void set_uniform_2f(std::string_view&, v_2&) const;
+    void set_uniform_2f(std::string_view, v_2&) const;
     void set_uniform_1i(std::string_view, GLint&) const;
     void use() const;
 };

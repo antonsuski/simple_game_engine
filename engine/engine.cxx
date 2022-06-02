@@ -486,6 +486,7 @@ public:
 
         init_default_shader(sh_prog);
     }
+
     virtual void tmp_test_method2(const unsigned int& sh_prog,
                                   const unsigned int& vao_id) override final
     {
@@ -494,6 +495,11 @@ public:
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
         //        glDrawArrays(GL_TRIANGLES, 0, 3);
+    }
+
+    virtual v_2 get_windonw_size() final override
+    {
+        return v_2{ main_window_width, main_window_height };
     }
 };
 

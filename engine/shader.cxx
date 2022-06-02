@@ -208,7 +208,7 @@ void shader_es_32::set_uniform_4f(std::string_view& uniforms_name,
     GL_CHECK()
 }
 
-void shader_es_32::set_uniform_2f(std::string_view& name, v_2& vector) const
+void shader_es_32::set_uniform_2f(std::string_view name, v_2& vector) const
 {
     use();
     glUniform2f(glGetUniformLocation(id, name.data()), vector.x, vector.y);

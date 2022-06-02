@@ -12,6 +12,11 @@ object2d::object2d(std::string buffer_path, std::string shader_path,
 {
 }
 
+const shader_es_32* object2d::get_shader() const
+{
+    return &_shader;
+}
+
 void object2d::render() const
 {
     _texture.bind_texture();

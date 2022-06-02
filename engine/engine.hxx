@@ -64,6 +64,7 @@ public:
                                  unsigned int& vao_id)        = 0;
     virtual void tmp_test_method2(const unsigned int& sh_prog,
                                   const unsigned int& vao_id) = 0;
+    virtual v_2  get_windonw_size()                           = 0;
     virtual bool handl_imput(event&)                          = 0;
     virtual bool init(int32_t, int32_t)                       = 0;
 };

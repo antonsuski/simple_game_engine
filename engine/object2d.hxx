@@ -27,6 +27,8 @@ public:
              std::string shader_path  = "../../res/shaders/shader_v_8",
              std::string texture_path = "../../res/images/wall.jpg");
 
+    const shader_es_32* get_shader() const;
+
     void render() const;
 };
 

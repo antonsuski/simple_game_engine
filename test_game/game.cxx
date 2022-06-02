@@ -61,6 +61,8 @@ int main(int /*argc*/, char* /*argv*/[])
         }
 
         // engine->render(vbo_rgb_square, sh_rgb_square, txt_rgb_square);
+        v_2 win_size = engine->get_windonw_size();
+        obj.get_shader()->set_uniform_2f("resolution", win_size);
         engine->render(obj);
         engine->swap_buffers();
     }
