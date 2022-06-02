@@ -12,12 +12,14 @@ int main(int /*argc*/, char* /*argv*/[])
     std::unique_ptr<engine::engine, void (*)(engine::engine*)> engine(
         engine::create_engine(), engine::destroy_engine);
 
-    uint32_t h = 480;
+    uint32_t h = 640;
     uint32_t w = 640;
 
     engine->init(w, h);
 
-    engine::object2d obj;
+    engine::object2d obj{ "../../res/rgba_square.txt",
+                          "../../res/shaders/shader_v_8",
+                          "../../res/images/tank.png" };
 
     bool continue_loop = true;
     while (continue_loop)

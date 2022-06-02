@@ -10,7 +10,7 @@ namespace engine
 
 texture::~texture() {}
 
-texture::texture(std::string path)
+texture::texture(std::string path, img_format format)
     : path_to_texture{ path }
 {
     if (path == "unknown")
@@ -30,12 +30,11 @@ texture::texture(std::string path)
                     GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    tex_data = stbi_load("../../res/images/wall.jpg", &tex_w, &tex_h,
-                         &tex_channals, 0);
-
+    stbi_set_flip_vertically_on_load(true);
+    tex_data = stbi_load(path.data(), &tex_w, &tex_h, &tex_channals, 0);
     if (tex_data)
     {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tex_w, tex_h, 0, GL_RGB,
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tex_w, tex_h, 0, format,
                      GL_UNSIGNED_BYTE, tex_data);
 
         glGenerateMipmap(GL_TEXTURE_2D);

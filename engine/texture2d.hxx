@@ -27,8 +27,14 @@ private:
     int      tex_channals;
 
 public:
+    enum img_format
+    {
+        RGB  = GL_RGB,
+        RGBA = GL_RGBA,
+    };
+
     ~texture();
-    texture(std::string path = "unknown");
+    texture(std::string path = "unknown", img_format format = RGB);
 
     void bind_texture() const;
 };

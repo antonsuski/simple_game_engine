@@ -8,7 +8,7 @@ object2d::object2d(std::string buffer_path, std::string shader_path,
                    std::string texture_path)
     : _buffer{ buffer_path }
     , _shader{ shader_path + ".vs", shader_path + ".fs" }
-    , _texture{ texture_path }
+    , _texture{ texture_path, texture::img_format::RGBA }
 {
 }
 
