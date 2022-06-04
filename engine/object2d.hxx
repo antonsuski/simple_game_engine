@@ -23,9 +23,10 @@ private:
 
 public:
     ~object2d();
-    object2d(std::string buffer_path  = "../../res/rgba_square.txt",
-             std::string shader_path  = "../../res/shaders/shader_v_8",
-             std::string texture_path = "../../res/images/wall.jpg");
+    object2d(std::string         buffer_path  = "../../res/rgba_square.txt",
+             std::string         shader_path  = "../../res/shaders/shader_v_8",
+             std::string         texture_path = "../../res/images/wall.jpg",
+             texture::img_format format       = texture::img_format::RGBA);
 
     const shader_es_32* get_shader() const;
 

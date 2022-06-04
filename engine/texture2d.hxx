@@ -37,6 +37,7 @@ public:
     texture(std::string path = "unknown", img_format format = RGB);
 
     void bind_texture() const;
+    void bind_textire(GLenum tex_unit) const;
 };
 
 class ENGINE_DECLSPEC texture2d

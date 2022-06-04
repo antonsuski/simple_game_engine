@@ -5,10 +5,10 @@ namespace engine
 object2d::~object2d() {}
 
 object2d::object2d(std::string buffer_path, std::string shader_path,
-                   std::string texture_path)
+                   std::string texture_path, texture::img_format format)
     : _buffer{ buffer_path }
     , _shader{ shader_path + ".vs", shader_path + ".fs" }
-    , _texture{ texture_path, texture::img_format::RGBA }
+    , _texture{ texture_path, format }
 {
 }
 
