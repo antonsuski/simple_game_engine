@@ -34,7 +34,7 @@ texture::texture(std::string path, img_format format)
     tex_data = stbi_load(path.data(), &tex_w, &tex_h, &tex_channals, 0);
     if (tex_data)
     {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tex_w, tex_h, 0, format,
+        glTexImage2D(GL_TEXTURE_2D, 0, format, tex_w, tex_h, 0, format,
                      GL_UNSIGNED_BYTE, tex_data);
 
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -50,6 +50,14 @@ texture::texture(std::string path, img_format format)
 
 void texture::bind_texture() const
 {
+    glBindTexture(GL_TEXTURE_2D, tex_id);
+    GL_CHECK();
+}
+
+void texture::bind_textire(GLenum tex_unit) const
+{
+    glActiveTexture(tex_unit);
+    GL_CHECK();
     glBindTexture(GL_TEXTURE_2D, tex_id);
     GL_CHECK();
 }

@@ -12,8 +12,18 @@
 #include "stb_image.h"
 #include "stuff.hxx"
 
-namespace engine
+namespace ENGINE_DECLSPEC engine
 {
+
+enum ENGINE_DECLSPEC tex_unit
+{
+    unit_0 = GL_TEXTURE0,
+    unit_1 = GL_TEXTURE1,
+    unit_2 = GL_TEXTURE2,
+    unit_3 = GL_TEXTURE3,
+    unit_4 = GL_TEXTURE4,
+};
+
 class ENGINE_DECLSPEC texture
 {
 private:

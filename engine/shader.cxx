@@ -225,7 +225,7 @@ void shader_es_32::set_uniform_4f(uniform& uniforms_data) const
 }
 
 void shader_es_32::set_uniform_1i(std::string_view uniform_name,
-                                  GLint&           value) const
+                                  const GLint&     value) const
 {
     use();
     glUniform1i(glGetUniformLocation(id, uniform_name.data()), value);

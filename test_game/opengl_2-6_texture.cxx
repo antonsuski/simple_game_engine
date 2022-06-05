@@ -1,6 +1,9 @@
 #include <iostream>
 #include <memory>
 #include <string_view>
+#include <tuple>
+#include <utility>
+#include <vector>
 
 #include "engine.hxx"
 
@@ -31,31 +34,20 @@ int main(int /*argc*/, char** /*argv*/)
     engine::vbo_8        v8_buffer("../../res/rgb_triangle.txt");
     engine::shader_es_32 v8_shader("../../res/shaders/shader_v_8.vs",
                                    "../../res/shaders/shader_v_8.fs");
+    engine::shader_es_32 v8_double_sh(
+        "../../res/shaders/shader_v_8.vs",
+        "../../res/shaders/shader_double_tex_v_8.fs");
+    std::vector<std::pair<engine::texture, engine::tex_unit>> tex_buffer{
+        std::make_pair(engine::texture{ "../../res/images/wall.jpg",
+                                        engine::texture::RGB },
+                       engine::unit_0),
+        std::make_pair(engine::texture{ "../../res/images/awesomeface.png",
+                                        engine::texture::RGBA },
+                       engine::unit_1)
+    };
 
-    glGenTextures(1, &tex_id);
-    glBindTexture(GL_TEXTURE_2D, tex_id);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, tex_color);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                    GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    tex_data = stbi_load("../../res/images/wall.jpg", &tex_w, &tex_h,
-                         &tex_channals, 0);
-    if (tex_data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tex_w, tex_h, 0, GL_RGB,
-                     GL_UNSIGNED_BYTE, tex_data);
-
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Cant load image" << std::endl;
-        stbi_image_free(tex_data);
-    }
+    v8_double_sh.set_uniform_1i("first_texture", 0);
+    v8_double_sh.set_uniform_1i("second_texture", 1);
 
     bool continue_loop = true;
     while (continue_loop)
@@ -97,10 +89,9 @@ int main(int /*argc*/, char** /*argv*/)
                     break;
             }
         }
-
-        glBindTexture(GL_TEXTURE_2D, tex_id);
-        // engine->render(lol_buffer, lol_shader);
-        engine->render(v8_buffer, v8_shader);
+        engine::v_2 win_res = engine->get_windonw_size();
+        v8_double_sh.set_uniform_2f("resolution", win_res);
+        engine->render(v8_buffer, v8_double_sh, tex_buffer);
         engine->swap_buffers();
     }
     return EXIT_SUCCESS;

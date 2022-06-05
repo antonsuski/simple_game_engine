@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <iostream>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 #include <SDL.h>
@@ -294,10 +295,10 @@ public:
     {
         shader.use();
         vbo_buffer.bind_vao();
-        glDrawArrays(GL_TRIANGLES, 0, vbo_buffer.get_vertex_count());
+        // glDrawArrays(GL_TRIANGLES, 0, vbo_buffer.get_vertex_count());
 
-        // glDrawElements(GL_TRIANGLES, vbo_buffer.get_index_count(),
-        //                GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, vbo_buffer.get_index_count(),
+                       GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
     }
 
@@ -306,6 +307,18 @@ public:
     {
         texture.bind_texture();
         shader.use();
+        vbo_buffer.bind_vao();
+        glDrawArrays(GL_TRIANGLES, 0, vbo_buffer.get_vertex_count());
+    }
+
+    void render(const vbo_8& vbo_buffer, const shader_es_32& shader,
+                const std::vector<std::pair<texture, tex_unit>>& tex_vector)
+    {
+        shader.use();
+        for (const auto& i : tex_vector)
+        {
+            i.first.bind_textire(i.second);
+        }
         vbo_buffer.bind_vao();
         glDrawArrays(GL_TRIANGLES, 0, vbo_buffer.get_vertex_count());
     }
