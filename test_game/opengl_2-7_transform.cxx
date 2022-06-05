@@ -1,3 +1,6 @@
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <memory>
 #include <string_view>
@@ -18,9 +21,21 @@ int main(int /*argc*/, char* /*argv*/[])
     engine->init(w, h);
 
     engine::object2d obj{ "../../res/rgba_square.txt",
-                          "../../res/shaders/shader_v_8",
-                          { "../../res/images/tank.png",
-                            engine::texture::RGBA } };
+                          "../../res/shaders/shader_transform_v_8.vs",
+                          "../../res/shaders/shader_v_8.fs",
+                          "../../res/images/awesomeface.png",
+                          engine::texture::RGBA };
+
+    std::cout << "-------------------glm------------------" << std::endl;
+    glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
+    glm::mat4 trans = glm::mat4(1.0f);
+    trans           = glm::translate(trans, glm::vec3(0.0f, 0.0f, 0.0f));
+    vec             = trans * vec;
+    std::cout << "x:" << vec.x << " y:" << vec.y << " z:" << vec.z << std::endl;
+
+    trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+    trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
+    std::cout << "-------------------glm------------------" << std::endl;
 
     bool continue_loop = true;
     while (continue_loop)
@@ -62,9 +77,12 @@ int main(int /*argc*/, char* /*argv*/[])
                     break;
             }
         }
-
+        trans = glm::rotate(
+            trans, static_cast<float>(engine->get_time_from_init() * 0.001),
+            glm::vec3(0.0, 0.0, 1.0));
         v_2 win_size = engine->get_windonw_size();
         obj.get_shader()->set_uniform_2f("resolution", win_size);
+        obj.get_shader()->set_uniform_4mat("transform", trans);
         engine->render(obj);
         engine->swap_buffers();
     }

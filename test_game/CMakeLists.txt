@@ -19,3 +19,12 @@ target_link_libraries(opengl_2-6_texture PRIVATE
 #                                        INTERFACE
 #                                        project_compiler_flags
                                         )
+
+add_executable(opengl_2-7_transform opengl_2-7_transform.cxx)
+target_compile_features(opengl_2-7_transform PUBLIC cxx_std_20)
+target_include_directories(opengl_2-7_transform PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/engine)
+target_link_libraries(opengl_2-7_transform   PRIVATE
+                                        engine
+#                                        INTERFACE
+#                                        project_compiler_flags
+                                        )

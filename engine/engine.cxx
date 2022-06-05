@@ -461,6 +461,13 @@ public:
     }
     ~engine_core() final override {}
 
+    virtual float get_time_from_init() final override
+    {
+        std::uint32_t ms_from_library_initialization = SDL_GetTicks();
+        float         seconds = ms_from_library_initialization * 0.001f;
+        return seconds;
+    }
+
     void tmp_test_method(unsigned int& sh_prog,
                          unsigned int& vao_id) override final
     {

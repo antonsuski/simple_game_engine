@@ -12,6 +12,15 @@ object2d::object2d(std::string buffer_path, std::string shader_path,
 {
 }
 
+object2d::object2d(std::string buffer_path, std::string vs_path,
+                   std::string fs_path, std::string texture_path,
+                   texture::img_format format)
+    : _buffer{ buffer_path }
+    , _shader{ vs_path, fs_path }
+    , _texture{ texture_path, format }
+{
+}
+
 const shader_es_32* object2d::get_shader() const
 {
     return &_shader;
