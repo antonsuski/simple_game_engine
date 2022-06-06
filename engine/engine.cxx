@@ -464,8 +464,8 @@ public:
     virtual float get_time_from_init() final override
     {
         std::uint32_t ms_from_library_initialization = SDL_GetTicks();
-        float         seconds = ms_from_library_initialization * 0.001f;
-        return seconds;
+        std::uint32_t seconds = ms_from_library_initialization / 1000;
+        return static_cast<float>(seconds);
     }
 
     void tmp_test_method(unsigned int& sh_prog,

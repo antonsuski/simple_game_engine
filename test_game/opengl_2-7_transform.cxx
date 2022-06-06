@@ -33,7 +33,10 @@ int main(int /*argc*/, char* /*argv*/[])
     vec             = trans * vec;
     std::cout << "x:" << vec.x << " y:" << vec.y << " z:" << vec.z << std::endl;
 
-    trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+    trans          = glm::translate(trans, glm::vec3(0.5, -0.5, 0.0));
+    glm::mat4 view = glm::mat4(1.0f);
+    view = glm::rotate(view, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+
     trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
     std::cout << "-------------------glm------------------" << std::endl;
 
@@ -41,7 +44,8 @@ int main(int /*argc*/, char* /*argv*/[])
     while (continue_loop)
     {
         using namespace engine;
-
+        view = glm::rotate(view, engine->get_time_from_init(),
+                           glm::vec3(0.0, 0.0, 1.0));
         event system_event;
         while (engine->handl_imput(system_event))
         {
@@ -55,21 +59,25 @@ int main(int /*argc*/, char* /*argv*/[])
                 break;
                 case event::left:
                 {
+                    trans = glm::translate(trans, glm::vec3(-0.1, 0.0, 0.0));
                     std::clog << system_event << std::endl;
                 }
                 break;
                 case event::right:
                 {
+                    trans = glm::translate(trans, glm::vec3(0.1, 0.0, 0.0));
                     std::clog << system_event << std::endl;
                 }
                 break;
                 case event::up:
                 {
+                    trans = glm::translate(trans, glm::vec3(0.0, 0.1, 0.0));
                     std::clog << system_event << std::endl;
                 }
                 break;
                 case event::down:
                 {
+                    trans = glm::translate(trans, glm::vec3(0.0, -0.1, 0.0));
                     std::clog << system_event << std::endl;
                 }
                 break;
@@ -77,12 +85,11 @@ int main(int /*argc*/, char* /*argv*/[])
                     break;
             }
         }
-        trans = glm::rotate(
-            trans, static_cast<float>(engine->get_time_from_init() * 0.001),
-            glm::vec3(0.0, 0.0, 1.0));
+
         v_2 win_size = engine->get_windonw_size();
         obj.get_shader()->set_uniform_2f("resolution", win_size);
         obj.get_shader()->set_uniform_4mat("transform", trans);
+        obj.get_shader()->set_uniform_4mat("view", view);
         engine->render(obj);
         engine->swap_buffers();
     }

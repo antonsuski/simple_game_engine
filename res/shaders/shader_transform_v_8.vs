@@ -9,6 +9,7 @@ out vec3 out_color;
 out vec2 out_tex_coord;
 
 uniform vec2 resolution;
+uniform mat4 view;
 uniform mat4 transform;
 vec2         new_pos;
 
@@ -19,5 +20,6 @@ void main()
 
     out_color     = a_color;
     out_tex_coord = a_tex_coord;
-    gl_Position   = transform * vec4(new_pos.x, new_pos.y, a_position.z, 1.0f);
+    gl_Position =
+        transform * view * vec4(new_pos.x, new_pos.y, a_position.z, 1.0f);
 }
