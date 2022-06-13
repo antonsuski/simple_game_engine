@@ -476,8 +476,8 @@ vbo_8::vbo_8(std::string path)
         size_t count = get_line_count(vertex_file) - 1;
         restart_file(vertex_file);
         v_8 tr;
-
-        for (size_t iterator = 0; iterator < count; iterator++)
+        vertex_file >> shape_size;
+        for (size_t iterator = 1; iterator < count; iterator++)
         {
             vertex_file >> tr;
             vbo_data.push_back(tr);
@@ -490,7 +490,7 @@ vbo_8::vbo_8(std::string path)
         ebo_data.push_back(iterator);
     }
     index_count = ebo_data.size();
-
+    std::clog << "shape_size " << shape_size << std::endl;
     std::clog << "----ebo----" << std::endl;
     for (auto i : ebo_data)
     {
@@ -557,6 +557,11 @@ void vbo_8::bind_vao() const
 {
     glBindVertexArray(vao_id);
     GL_CHECK();
+}
+
+v_2 vbo_8::get_size() const
+{
+    return shape_size;
 }
 
 } // namespace engine

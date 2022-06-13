@@ -38,6 +38,7 @@ public:
     event_type  type;
     std::string name;
     bool        event_state;
+    v_2         mouse_coords;
 
     event();
     event(event::event_type e_type, std::string e_name);
@@ -73,6 +74,7 @@ public:
     virtual void  tmp_test_method2(const unsigned int& sh_prog,
                                    const unsigned int& vao_id)       = 0;
     virtual v_2   get_windonw_size()                                 = 0;
+    virtual v_2   get_mouse_coords()                                 = 0;
     virtual bool  handl_imput(event&)                                = 0;
     virtual bool  init(int32_t, int32_t)                             = 0;
     virtual float get_time_from_init()                               = 0;

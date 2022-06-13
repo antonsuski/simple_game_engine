@@ -222,11 +222,11 @@ public:
                 SDL_GetWindowSize(window, &main_window_width,
                                   &main_window_height);
 
-                mouse_coords_x =
+                e.mouse_coords.x = mouse_coords_x =
                     ((2.f * sdl_e.motion.x / main_window_width)) - 1.f;
                 mouse_coords_y =
                     ((2.f * sdl_e.motion.y / main_window_height)) - 1.f;
-                mouse_coords_y *= -1.f;
+                e.mouse_coords.y = mouse_coords_y *= -1.f;
 
                 std::cout << std::setprecision(2) << "mcX:" << mouse_coords_x
                           << std::setw(10) << "mcY:" << mouse_coords_y
@@ -323,7 +323,19 @@ public:
         glDrawArrays(GL_TRIANGLES, 0, vbo_buffer.get_vertex_count());
     }
 
-    void render(const object2d& object) final override { object.render(); }
+    void render(const object2d& object) final override
+    {
+        v_2       win_size{ get_windonw_size() };
+        glm::mat4 model = object.get_model();
+        glm::mat4 view  = object.get_view();
+        object.get_shader()->set_uniform_2f("resolution", win_size);
+        object.get_shader()->set_uniform_4mat("transform", model);
+        object.get_shader()->set_uniform_4mat("view", view);
+        object.get_texture();
+        object.get_shader()->use();
+        object.get_vbo()->bind_vao();
+        glDrawArrays(GL_TRIANGLES, 0, object.get_vbo()->get_vertex_count());
+    }
 
     void swap_buffers() final override
     {
@@ -520,6 +532,11 @@ public:
     virtual v_2 get_windonw_size() final override
     {
         return v_2{ main_window_width, main_window_height };
+    }
+
+    virtual v_2 get_mouse_coords() final override
+    {
+        return v_2{ mouse_coords_x, mouse_coords_y };
     }
 };
 

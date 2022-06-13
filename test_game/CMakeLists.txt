@@ -28,3 +28,12 @@ target_link_libraries(opengl_2-7_transform   PRIVATE
 #                                        INTERFACE
 #                                        project_compiler_flags
                                         )
+
+add_executable(abba abba.cxx)
+target_compile_features(abba PUBLIC cxx_std_20)
+target_include_directories(abba PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/engine)
+target_link_libraries(abba   PRIVATE
+                                        engine
+#                                        INTERFACE
+#                                        project_compiler_flags
+                                        )

@@ -29,6 +29,7 @@ public:
     explicit shader_es_32(const std::string& vs, const std::string& fs);
 
     void use();
+    // void set_uniform_4mat(std::string_view, glm::mat4) const;
     void set_uniform_4mat(std::string_view, glm::mat4&) const;
     void set_uniform_4mat(std::string_view, trans_mat_4x4&) const;
     void set_uniform_4f(std::string_view&, uniform&) const;

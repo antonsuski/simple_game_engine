@@ -111,6 +111,7 @@ private:
 
     uint64_t vertex_count;
     uint64_t index_count;
+    v_2      shape_size;
 
 public:
     ~vbo_8();
@@ -118,6 +119,7 @@ public:
 
     const uint64_t& get_vertex_count() const;
     const uint64_t& get_index_count() const;
+    v_2             get_size() const;
 
     void bind_vao() const;
 };

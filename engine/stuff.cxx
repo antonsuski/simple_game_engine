@@ -15,7 +15,7 @@ std::istream& operator>>(std::istream& is, v_2& v)
 
 std::ostream& operator<<(std::ostream& stream, const v_2& v)
 {
-    stream << v.x << " " << v.y << " " << std::endl;
+    stream << v.x << " " << v.y;
     return stream;
 }
 

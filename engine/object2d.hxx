@@ -21,8 +21,14 @@ private:
     vbo_8        _buffer;
     shader_es_32 _shader;
     texture      _texture;
+    v_2          size;
+    v_2          position;
 
     float resolution_cofficient;
+
+    glm::mat4 model;
+    glm::mat4 view;
+    float     angle;
 
 public:
     ~object2d();
@@ -35,8 +41,19 @@ public:
              std::string texture_path, texture::img_format format);
 
     const shader_es_32* get_shader() const;
+    const vbo_8*        get_vbo() const;
+    const texture*      get_texture() const;
+    glm::mat4           get_view() const;
+    glm::mat4           get_model() const;
 
-    void render() const;
+    void move() const;
+
+    bool is_collide_sqr(v_2 mouse_coords);
+    bool is_collide_cir(v_2 mouse_coords);
+
+    void scale(glm::vec3 vector);
+    void translate(glm::vec3 vector);
+    void rotate(float angle);
 };
 
 } // namespace engine
