@@ -58,14 +58,11 @@ void object2d::move() const {}
 
 bool object2d::is_collide_sqr(v_2 mouse_coords)
 {
-    v_2 one;
-    v_2 two;
-
-    bool collisionX = this->position.x + this->size.x >= mouse_coords.x &&
+    bool collisionX = this->position.x + this->size.x/2.f >= mouse_coords.x &&
                       mouse_coords.x + 0.01 >= this->position.x;
     std::cout << "clox: " << collisionX << std::endl;
     //  collision y-axis?
-    bool collisionY = this->position.y + this->size.y >= mouse_coords.y &&
+    bool collisionY = this->position.y + this->size.y/2.f >= mouse_coords.y &&
                       mouse_coords.y + 0.01 >= this->position.y;
     // collision only if on both axes
     return collisionX && collisionY;
@@ -95,7 +92,7 @@ bool object2d::is_collide_cir(v_2 mouse_coords)
 void object2d::scale(glm::vec3 vector)
 {
     size  = { vector.r * size.x, vector.g * size.y };
-    model = glm::scale(model, vector);
+    model = glm::scale(model, glm::vec3(size.x, size.y, 0));
 }
 
 void object2d::translate(glm::vec3 vector)
@@ -103,7 +100,7 @@ void object2d::translate(glm::vec3 vector)
     position = { vector.r + position.x, vector.g + position.y };
     std::clog << "pos: " << position << std::endl;
     std::clog << "vec " << vector.r << " " << vector.g << std::endl;
-    view = glm::translate(view, vector);
+    view = glm::translate(view, glm::vec3(position.x, position.y, 0));
 }
 
 void object2d::rotate(float angle)

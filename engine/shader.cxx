@@ -169,7 +169,7 @@ void shader_es_32::set_uniform_4mat(std::string_view uniform_name,
     if (uniform_location == -1)
     {
         std::cerr << "can't get uniform location from shader\n";
-        throw std::runtime_error("can't get uniform location");
+//        throw std::runtime_error("can't get uniform location");
     }
 
     glUniformMatrix4fv(uniform_location, 1, GL_FALSE, glm::value_ptr(mat));
