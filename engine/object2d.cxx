@@ -54,39 +54,15 @@ glm::mat4 object2d::get_model() const
     return glm::mat4(model);
 }
 
-void object2d::move() const {}
-
-bool object2d::is_collide_sqr(v_2 mouse_coords)
+bool object2d::is_collide_point(v_2 mouse_coords)
 {
-    bool collisionX = this->position.x + this->size.x/2.f >= mouse_coords.x &&
-                      mouse_coords.x + 0.01 >= this->position.x;
-    std::cout << "clox: " << collisionX << std::endl;
-    //  collision y-axis?
-    bool collisionY = this->position.y + this->size.y/2.f >= mouse_coords.y &&
-                      mouse_coords.y + 0.01 >= this->position.y;
-    // collision only if on both axes
-    return collisionX && collisionY;
-}
+    float x_min{ this->position.x - this->size.x / 2.f },
+        x_max{ this->position.x + this->size.x / 2.f };
+    float y_min{ this->position.y - this->size.y / 2.f },
+        y_max{ this->position.y + this->size.y / 2.f };
 
-bool object2d::is_collide_cir(v_2 mouse_coords)
-{
-    // get center point circle first
-    glm::vec2 center(glm::vec2(mouse_coords.x, mouse_coords.y) + 0.1f);
-    // calculate AABB info (center, half-extents)
-    glm::vec2 aabb_half_extents(this->size.x / 2.0f, this->size.y / 2.0f);
-    glm::vec2 aabb_center(this->position.x + aabb_half_extents.x,
-                          this->position.y + aabb_half_extents.y);
-    // get difference vector between both centers
-    glm::vec2 difference = center - aabb_center;
-    glm::vec2 clamped =
-        glm::clamp(difference, -aabb_half_extents, aabb_half_extents);
-    // add clamped value to AABB_center and we get the value of box closest to
-    // circle
-    glm::vec2 closest = aabb_center + clamped;
-    // retrieve vector between center circle and closest point AABB and check if
-    // length <= radius
-    difference = closest - center;
-    return glm::length(difference) < 0.1f;
+    return x_min <= mouse_coords.x && mouse_coords.x <= x_max &&
+           y_min <= mouse_coords.y && mouse_coords.y <= y_max;
 }
 
 void object2d::scale(glm::vec3 vector)

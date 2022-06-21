@@ -46,10 +46,7 @@ public:
     glm::mat4           get_view() const;
     glm::mat4           get_model() const;
 
-    void move() const;
-
-    bool is_collide_sqr(v_2 mouse_coords);
-    bool is_collide_cir(v_2 mouse_coords);
+    bool is_collide_point(v_2 mouse_coords);
 
     void scale(glm::vec3 vector);
     void translate(glm::vec3 vector);
