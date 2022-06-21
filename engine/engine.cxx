@@ -538,7 +538,17 @@ public:
     {
         return v_2{ mouse_coords_x, mouse_coords_y };
     }
-};
+    bool is_window_on_focus() final override
+    {
+        uint32_t window_flags = SDL_GetWindowFlags(window);
+
+        if (window_flags & SDL_WINDOW_MOUSE_FOCUS)
+        {
+            return true;
+        }
+        return false;
+    }
+}; // class engine_core
 
 static bool already_exist = false;
 

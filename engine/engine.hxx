@@ -75,6 +75,7 @@ public:
                                    const unsigned int& vao_id)       = 0;
     virtual v_2   get_windonw_size()                                 = 0;
     virtual v_2   get_mouse_coords()                                 = 0;
+    virtual bool  is_window_on_focus()                               = 0;
     virtual bool  handl_imput(event&)                                = 0;
     virtual bool  init(int32_t, int32_t)                             = 0;
     virtual float get_time_from_init()                               = 0;

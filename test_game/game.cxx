@@ -62,6 +62,10 @@ int main(int /*argc*/, char* /*argv*/[])
                     break;
             }
         }
+        if (engine->is_window_on_focus())
+        {
+            std::cout << "captured\n";
+        }
 
         v_2 win_size = engine->get_windonw_size();
         obj.get_shader()->set_uniform_2f("resolution", win_size);

@@ -90,7 +90,8 @@ int main(int /*argc*/, char* /*argv*/[])
             }
         }
 
-        if (obj.is_collide_point(engine->get_mouse_coords()))
+        if (obj.is_collide_point(engine->get_mouse_coords()) &&
+            engine->is_window_on_focus())
         {
             std::cout << "lol\n";
         }
