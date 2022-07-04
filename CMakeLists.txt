@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.16)
 project(simple_game_engine LANGUAGES CXX C)
 
 add_subdirectory(engine)
-add_subdirectory(test_game)
+add_subdirectory(examples)
 
 
 add_library(project_compiler_flags INTERFACE)
