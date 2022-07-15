@@ -37,12 +37,3 @@ target_link_libraries(abba   PRIVATE
 #                                        INTERFACE
 #                                        project_compiler_flags
                                         )
-
-add_executable(gpp_2_design_command gpp_2_design_command.cxx)
-target_compile_features(gpp_2_design_command PUBLIC cxx_std_20)
-target_include_directories(gpp_2_design_command PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/engine)
-target_link_libraries(gpp_2_design_command   PRIVATE
-                                        engine
-#                                        INTERFACE
-#                                        project_compiler_flags
-                                        )
