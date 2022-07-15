@@ -1,36 +1,28 @@
 ﻿cmake_minimum_required(VERSION 3.16)
 
-project(engine LANGUAGES CXX C)
+project(engine VERSION 1.1 LANGUAGES CXX C)
 
-option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
+# option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
 add_library(engine
-    src/engine.cxx
-    src/shader.cxx
-    src/texture2d.cxx
-    src/stuff.cxx
-    src/stb_image.cxx
-    src/vbo.cxx
-    src/input_handler.cxx
-    src/imgui_impl_opengl3.cpp
-    src/imgui_impl_sdl.cpp
-    
-    include/engine.hxx
-    include/glad/glad.c
-    include/glad/glad.h
-    include/shader.hxx
-    include/om_gl_check.hxx
-    include/picopng.hxx
-    include/stb_image.h
-    include/texture2d.hxx
-    include/stuff.hxx
-    include/vbo.hxx
-    include/input_handler.hxx
-    include/imgui_impl_opengl3.h
-    include/imgui_impl_sdl.h
-)
+            engine.hxx
+            gl_assist.hxx
+            shader.hxx
+            stuff.hxx
+            vbo.hxx
+            texture2d.hxx
+            object2d.hxx
+            stb_image.h
+            glad.h
 
-find_package(SDL2 CONFIG REQUIRED)
+            glad.c
+            shader.cxx
+            stuff.cxx
+            vbo.cxx
+            texture2d.cxx
+            object2d.cxx
+            stb_image.cxx
+            engine.cxx)
 
 if(MINGW)
     set(SDL2 "C:/Program Files/SDL2/lib")
@@ -47,5 +39,34 @@ if(MINGW)
 endif()
 
 target_compile_features(engine PUBLIC cxx_std_20)
-target_include_directories(engine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_link_libraries(engine PUBLIC imgui)
+target_link_libraries(engine INTERFACE project_compiler_flags)
+target_include_directories(engine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+if(WIN32)
+    set(glm_DIR "F:/libs/glm-master/glm-master/cmake/glm")
+endif()
+
+find_package(SDL2 REQUIRED)
+find_package(glm REQUIRED)
+
+# set path file for linking with debug SDL2
+#set(SDL2_LIB_D "/home/antonsyski/devel/repos/simple_game_engine/build/SDL2-2.0.14/libSDL2-2.0d.so.0.14.0")
+
+target_include_directories(engine PRIVATE ${SDL2_INCLUDE_DIRS})
+
+if(MINGW)
+    target_link_libraries(engine PRIVATE
+        SDL2::SDL2
+        SDL2::SDL2main
+        glm::glm
+        )
+elseif(UNIX)
+    target_link_libraries(engine PRIVATE
+        SDL2::SDL2
+        SDL2::SDL2main
+        glm::glm
+
+        #${SDL2_LIB_D}
+        #GL
+        )
+endif()
