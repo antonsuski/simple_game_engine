@@ -473,10 +473,11 @@ vbo_8::vbo_8(std::string path)
 
     if (vertex_file.is_open())
     {
-        size_t count = get_line_count(vertex_file) - 1;
+        size_t count = get_line_count(vertex_file);
         restart_file(vertex_file);
         v_8 tr;
-        vertex_file >> shape_size;
+        shape_size.x = 1.f;
+        shape_size.y = 1.f;
         for (size_t iterator = 1; iterator < count; iterator++)
         {
             vertex_file >> tr;
