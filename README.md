@@ -1,6 +1,6 @@
 # Simple game engine
 
-![Cat](./res/images//Icecat1-300x300.svg)
+<img src="./res/images//engine-logo.png" width="300">
 
 ## Overview
 
