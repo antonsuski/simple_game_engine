@@ -464,6 +464,87 @@ vbo_8::~vbo_8()
     GL_CHECK()
 }
 
+vbo_8::vbo_8()
+    : vbo_data{
+        { -0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f },
+        { -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f },
+        { 0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f },
+        { 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f },
+    },
+    //TODO: make shure that the ebo are interpritate treangles are correctly
+    //            1
+    //           0.5
+    //  -1  -0.5  0  0.5   1
+    //          -0.5
+    //           -1
+
+    ebo_data{0,1,2,2,1,3}
+{
+    std::clog << "shape_size " << shape_size << std::endl;
+    std::clog << "----ebo----" << std::endl;
+    for (auto i : ebo_data)
+    {
+
+        std::clog << i << std::endl;
+    }
+    std::clog << "----vbo----" << std::endl;
+    for (auto i : vbo_data)
+    {
+        std::clog << i;
+    }
+
+    vertex_count = vbo_data.size();
+    index_count  = ebo_data.size();
+
+    // generation vao, vbo, ebo
+    glGenVertexArrays(1, &vao_id);
+    GL_CHECK();
+
+    glGenBuffers(1, &vbo_id);
+    GL_CHECK();
+
+    glGenBuffers(1, &ebo_id);
+    GL_CHECK();
+
+    bind_vao();
+
+    // loading vbo and ebo into GPU memory
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(v_8) * vertex_count, vbo_data.data(),
+                 GL_STATIC_DRAW);
+    GL_CHECK();
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_id);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * index_count,
+                 ebo_data.data(), GL_DYNAMIC_DRAW);
+    GL_CHECK();
+
+    // binding buffers and explaining rules of reading vbo for opengl
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(v_8), nullptr);
+    GL_CHECK();
+
+    glEnableVertexAttribArray(0);
+    GL_CHECK();
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(v_8),
+                          (void*)(sizeof(v_3)));
+    GL_CHECK();
+
+    glEnableVertexAttribArray(1);
+    GL_CHECK();
+
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(v_8),
+                          (void*)(sizeof(v_3) * 2));
+    GL_CHECK();
+
+    glEnableVertexAttribArray(2);
+    GL_CHECK();
+
+    // unbind vao
+    glBindVertexArray(0);
+    GL_CHECK();
+}
+
 vbo_8::vbo_8(std::string path)
 {
     std::fstream vertex_file;
