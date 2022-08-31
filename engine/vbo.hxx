@@ -115,6 +115,7 @@ private:
 
 public:
     ~vbo_8();
+    vbo_8();
     vbo_8(std::string);
 
     const uint64_t& get_vertex_count() const;
