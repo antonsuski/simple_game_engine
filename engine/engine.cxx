@@ -317,7 +317,7 @@ public:
         shader.use();
         for (const auto& i : tex_vector)
         {
-            i.first.bind_textire(i.second);
+            i.first.bind_texture(i.second);
         }
         vbo_buffer.bind_vao();
         glDrawArrays(GL_TRIANGLES, 0, vbo_buffer.get_vertex_count());
@@ -328,13 +328,22 @@ public:
         v_2       win_size{ get_windonw_size() };
         glm::mat4 model = object.get_model();
         glm::mat4 view  = object.get_view();
+        object.get_shader()->use();
         object.get_shader()->set_uniform_2f("resolution", win_size);
         object.get_shader()->set_uniform_4mat("transform", model);
         object.get_shader()->set_uniform_4mat("view", view);
-        object.get_texture();
-        object.get_shader()->use();
+        object.get_texture()->bind_texture();
         object.get_vbo()->bind_vao();
-        glDrawArrays(GL_TRIANGLES, 0, object.get_vbo()->get_vertex_count());
+
+        if (object.get_texture()->is_loaded)
+        {
+            glDrawArrays(GL_TRIANGLES, 0, object.get_vbo()->get_vertex_count());
+        }
+        else
+        {
+            glDrawElements(GL_TRIANGLES, object.get_vbo()->get_index_count(),
+                           GL_UNSIGNED_INT, 0);
+        }
     }
 
     void swap_buffers() final override
@@ -456,12 +465,17 @@ public:
         std::clog << "Resolution: " << main_window_width << "x"
                   << main_window_height << std::endl;
 
-        glEnable(GL_DEPTH_TEST);
-        GL_CHECK()
+        // glEnable(GL_DEPTH_TEST);
+        // GL_CHECK()
         glEnable(GL_BLEND);
         GL_CHECK()
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         GL_CHECK()
+        // glBlendEquation(GL_FUNC_ADD);
+        // GL_CHECK()
+        // glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE,
+        //                     GL_ZERO);
+        // GL_CHECK()
 
         if (!init_default_shader(shader_prog_id))
         {

@@ -43,11 +43,13 @@ public:
         RGBA = GL_RGBA,
     };
 
+    bool is_loaded{ false };
+
     ~texture();
     texture(std::string path = "unknown", img_format format = RGB);
 
     void bind_texture() const;
-    void bind_textire(GLenum tex_unit) const;
+    void bind_texture(GLenum tex_unit) const;
 };
 
 class ENGINE_DECLSPEC texture2d

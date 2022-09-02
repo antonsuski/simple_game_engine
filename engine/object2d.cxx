@@ -4,6 +4,12 @@ namespace engine
 {
 object2d::~object2d() {}
 
+object2d::object2d()
+    : _shader{ "../../res/shaders/default_shader_v_8.vs",
+               "../../res/shaders/default_shader_v_8.fs" }
+{
+}
+
 object2d::object2d(std::string buffer_path, std::string shader_path,
                    std::string texture_path, texture::img_format format)
     : _buffer{ buffer_path }

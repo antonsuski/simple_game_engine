@@ -1,14 +1,11 @@
 #include <iostream>
 #include <memory>
-#include <string_view>
 
 #include "engine.hxx"
-#include "game_object.hxx"
 
-int main(int /*argc*/, char* /*argv*/[])
+int main(int, char const**)
 {
-    std::string_view lol{ "lol? Hello world" };
-    std::cout << lol << std::endl;
+    std::cout << "Hello, world!\n";
 
     std::unique_ptr<engine::engine, void (*)(engine::engine*)> engine(
         engine::create_engine(), engine::destroy_engine);
@@ -18,11 +15,11 @@ int main(int /*argc*/, char* /*argv*/[])
 
     engine->init(w, h);
 
-    engine::object2d new_obj;
-    engine::object2d obj{ "../../res/rgba_square.txt",
-                          "../../res/shaders/shader_v_8",
-                          { "../../res/images/awesomeface.png",
-                            engine::texture::RGBA } };
+    // resources
+
+    engine::vbo_8        default_vbo;
+    engine::shader_es_32 v8_shader("../../res/shaders/default_shader_v_8.vs",
+                                   "../../res/shaders/default_shader_v_8.fs");
 
     bool continue_loop = true;
     while (continue_loop)
@@ -64,11 +61,7 @@ int main(int /*argc*/, char* /*argv*/[])
                     break;
             }
         }
-
-        v_2 win_size = engine->get_windonw_size();
-        obj.get_shader()->set_uniform_2f("resolution", win_size);
-        engine->render(new_obj);
-        // engine->render(obj);
+        engine->render(default_vbo, v8_shader);
         engine->swap_buffers();
     }
 

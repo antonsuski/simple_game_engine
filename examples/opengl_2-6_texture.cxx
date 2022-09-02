@@ -16,14 +16,14 @@ int main(int /*argc*/, char** /*argv*/)
 
     uint32_t h = 480;
     uint32_t w = 640;
-    uint32_t tex_id;
-    int      tex_h;
-    int      tex_w;
-    int      tex_channals;
+    // uint32_t tex_id;
+    // int      tex_h;
+    // int      tex_w;
+    // int      tex_channals;
 
-    unsigned char* tex_data;
+    // unsigned char* tex_data;
 
-    float tex_color[] = { 1.0f, 1.0f, 0.0f, 1.0f };
+    // float tex_color[] = { 1.0f, 1.0f, 0.0f, 1.0f };
 
     engine->init(w, h);
 

@@ -38,6 +38,7 @@ texture::texture(std::string path, img_format format)
                      GL_UNSIGNED_BYTE, tex_data);
 
         glGenerateMipmap(GL_TEXTURE_2D);
+        is_loaded = true;
     }
     else
     {
@@ -54,7 +55,7 @@ void texture::bind_texture() const
     GL_CHECK();
 }
 
-void texture::bind_textire(GLenum tex_unit) const
+void texture::bind_texture(GLenum tex_unit) const
 {
     glActiveTexture(tex_unit);
     GL_CHECK();
