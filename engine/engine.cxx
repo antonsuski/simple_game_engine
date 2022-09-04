@@ -207,7 +207,7 @@ public:
                     return true;
                 }
             }
-            if (sdl_e.type == SDL_KEYUP)
+            else if (sdl_e.type == SDL_KEYUP)
             {
                 if (check_event(sdl_e, key_bind))
                 {

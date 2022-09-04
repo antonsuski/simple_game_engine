@@ -40,3 +40,13 @@ target_link_libraries(abba   PRIVATE
 #                                        INTERFACE
 #                                        project_compiler_flags
                                         )
+
+add_executable(pattern_command pattern_command.cxx
+                                pattern_command.hxx)
+target_compile_features(pattern_command PUBLIC cxx_std_20)
+target_include_directories(pattern_command PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/engine)
+target_link_libraries(pattern_command   PRIVATE
+                                        engine
+#                                        INTERFACE
+#                                        project_compiler_flags
+                                        )
