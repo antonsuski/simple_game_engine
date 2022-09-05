@@ -8,14 +8,25 @@ class command
 {
 private:
 public:
-    virtual ~command();
-    virtual void execute() = 0;
+    virtual ~command(){};
+    virtual void execute(engine::object2d* obj) = 0;
 };
+
+class command_go_up : public command
+{
+private:
+public:
+    virtual ~command_go_up(){};
+    virtual void execute(engine::object2d* obj)
+    {
+        obj->translate({ 0.f, 0.00001f, 0.f });
+    }
+} command_go_up;
 
 class imput_handler
 {
 private:
-    command* button_up;
+    command* button_up{ &command_go_up };
     command* button_down;
 
 public:
@@ -40,12 +51,12 @@ command* imput_handler::handle_imput(engine::engine* engine,
     if (system_event.type == event::up)
     {
         std::cout << system_event << '\n';
-        return button_up->execute();
+        return button_up;
     }
     if (system_event.type == event::down)
     {
         std::cout << system_event << '\n';
-        return button_down->execute();
+        return button_down;
     }
     return nullptr;
 }
