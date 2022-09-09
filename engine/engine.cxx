@@ -238,6 +238,58 @@ public:
         return false;
     }
 
+    virtual bool new_handler(event& e)
+    {
+        SDL_Event sdl_e;
+
+        while (SDL_PollEvent(&sdl_e))
+        {
+            if (sdl_e.type == SDL_QUIT)
+            {
+                e.type = event::turn_off;
+                e.name = "turn_off";
+                return true;
+            }
+        }
+
+        const bind* key_bind = nullptr;
+        check_event(sdl_e, key_bind);
+
+        if (key_bind)
+        {
+            if (sdl_e.type == SDL_KEYDOWN)
+            {
+                e.event_state = true;
+                e.type        = key_bind->event.type;
+                e.name        = key_bind->event.name;
+                return true;
+            }
+            else if (sdl_e.type == SDL_KEYUP)
+            {
+                e.event_state = true;
+                e.type        = key_bind->event.type;
+                e.name        = key_bind->event.name;
+                return true;
+            }
+        }
+
+        if (sdl_e.type == SDL_MOUSEMOTION)
+        {
+            SDL_GetWindowSize(window, &main_window_width, &main_window_height);
+
+            e.mouse_coords.x = mouse_coords_x =
+                ((2.f * sdl_e.motion.x / main_window_width)) - 1.f;
+            mouse_coords_y =
+                ((2.f * sdl_e.motion.y / main_window_height)) - 1.f;
+            e.mouse_coords.y = mouse_coords_y *= -1.f;
+
+            std::cout << std::setprecision(2) << "mcX:" << mouse_coords_x
+                      << std::setw(10) << "mcY:" << mouse_coords_y << std::endl;
+            return true;
+        }
+        return false;
+    }
+
     void update() override final {}
     void render() override final {}
 

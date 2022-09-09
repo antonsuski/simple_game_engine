@@ -33,7 +33,7 @@ int main(int /*argc*/, char* /*argv*/[])
     while (continue_loop)
     {
         command* current_command =
-            event_handler.handle_imput(engine.get(), continue_loop);
+            event_handler.new_handle_imput(continue_loop);
         if (current_command)
         {
             current_command->execute(&obj);
