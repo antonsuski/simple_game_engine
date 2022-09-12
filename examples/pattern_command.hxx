@@ -5,15 +5,15 @@
 
 #include "engine.hxx"
 
-class command
-{
-private:
-public:
-    virtual ~command(){};
-    virtual void execute(engine::object2d* obj) = 0;
-};
+// class command
+// {
+// private:
+// public:
+//     virtual ~command(){};
+//     virtual void execute(engine::object2d* obj) = 0;
+// };
 
-class command_go_up : public command
+class command_go_up : public engine::command
 {
 private:
 public:
@@ -24,7 +24,7 @@ public:
     }
 } command_go_up;
 
-class command_go_down : public command
+class command_go_down : public engine::command
 {
 private:
 public:
@@ -38,16 +38,16 @@ public:
 class imput_handler
 {
 private:
-    command* button_up{ &command_go_up };
-    command* button_down{ &command_go_down };
+    engine::command* button_up{ &command_go_up };
+    engine::command* button_down{ &command_go_down };
 
 public:
-    command* handle_imput(engine::engine* engine, bool& continue_loop);
-    command* new_handle_imput(bool& continue_loop);
+    engine::command* handle_imput(engine::engine* engine, bool& continue_loop);
+    engine::command* new_handle_imput(bool& continue_loop);
 };
 
-command* imput_handler::handle_imput(engine::engine* engine,
-                                     bool&           continue_loop)
+engine::command* imput_handler::handle_imput(engine::engine* engine,
+                                             bool&           continue_loop)
 {
     using namespace engine;
 
@@ -74,7 +74,7 @@ command* imput_handler::handle_imput(engine::engine* engine,
     return nullptr;
 }
 
-command* imput_handler::new_handle_imput(bool& continue_loop)
+engine::command* imput_handler::new_handle_imput(bool& continue_loop)
 {
     using namespace engine;
     event system_event;

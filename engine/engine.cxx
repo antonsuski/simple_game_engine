@@ -91,13 +91,15 @@ static bool init_default_shader(unsigned int& shader_prog_id)
 
 struct bind
 {
-    engine::event event;
-    SDL_KeyCode   key_code;
+    engine::event    event;
+    engine::command* command;
+    SDL_KeyCode      key_code;
 
     bind(SDL_KeyCode key_code_, engine::event::event_type event_,
-         std::string name_)
+         std::string name_, engine::command* command_ = nullptr)
         : event(event_, name_)
         , key_code(key_code_)
+        , command(command_)
     {
     }
 };
@@ -290,6 +292,22 @@ public:
         return false;
     }
 
+    bool bind_command(const event& e, command* c) override final
+    {
+        auto it = std::find_if(key_map.begin(), key_map.end(),
+                               [&](bind& b)
+                               {
+                                   if (e.type == b.event.type)
+                                   {
+                                       return true;
+                                   }
+                                   return false;
+                               });
+        if (it != key_map.end())
+        {
+            it->command = c;
+        }
+    }
     void update() override final {}
     void render() override final {}
 

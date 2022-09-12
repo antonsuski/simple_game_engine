@@ -46,6 +46,14 @@ public:
 
 std::ostream& operator<<(std::ostream& out, const event& e);
 
+class ENGINE_DECLSPEC command
+{
+private:
+public:
+    virtual ~command(){};
+    virtual void execute(engine::object2d* obj) = 0;
+};
+
 class ENGINE_DECLSPEC engine
 {
 public:
@@ -79,6 +87,7 @@ public:
     virtual bool  handl_imput(event&)                                = 0;
     virtual bool  new_handler(event&)                                = 0;
     virtual bool  init(int32_t, int32_t)                             = 0;
+    virtual bool  bind_command(const event&, command*)               = 0;
     virtual float get_time_from_init()                               = 0;
 };
 
