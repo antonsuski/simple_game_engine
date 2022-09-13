@@ -82,7 +82,7 @@ void object2d::translate(glm::vec3 vector)
     position = { vector.r + position.x, vector.g + position.y };
     std::clog << "pos: " << position << std::endl;
     std::clog << "vec " << vector.r << " " << vector.g << std::endl;
-    view = glm::translate(view, glm::vec3(position.x, position.y, 0));
+    view = glm::translate(view, glm::vec3(vector.r, vector.g, 0));
 }
 
 void object2d::rotate(float angle)

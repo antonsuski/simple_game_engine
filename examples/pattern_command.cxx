@@ -20,6 +20,9 @@ int main(int /*argc*/, char* /*argv*/[])
 
     engine->init(w, h);
 
+    engine->bind_command(event::event_type::up, &command_go_up);
+    engine->bind_command(event::event_type::down, &command_go_down);
+
     engine::object2d new_obj;
     engine::object2d obj{ "../../res/rgba_square.txt",
                           "../../res/shaders/shader_transform_v_8.vs",
@@ -27,16 +30,24 @@ int main(int /*argc*/, char* /*argv*/[])
                           "../../res/images/awesomeface.png",
                           engine::texture::RGBA };
 
-    imput_handler event_handler;
-
     bool continue_loop = true;
     while (continue_loop)
     {
-        command* current_command =
-            event_handler.new_handle_imput(continue_loop);
+        command* current_command = nullptr;
+        event    main_event;
+
+        while (engine->event_handler(main_event, current_command))
+        {
+            if (main_event.type == event::event_type::turn_off)
+            {
+                continue_loop = false;
+                std::clog << main_event << "\n";
+            }
+        }
         if (current_command)
         {
             current_command->execute(&obj);
+            std::clog << main_event << "\n";
         }
 
         v_2 win_size = engine->get_windonw_size();

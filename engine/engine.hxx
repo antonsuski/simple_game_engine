@@ -85,9 +85,9 @@ public:
     virtual v_2   get_mouse_coords()                                 = 0;
     virtual bool  is_window_on_focus()                               = 0;
     virtual bool  handl_imput(event&)                                = 0;
-    virtual bool  new_handler(event&)                                = 0;
+    virtual bool  event_handler(event&, command*&)                   = 0;
     virtual bool  init(int32_t, int32_t)                             = 0;
-    virtual bool  bind_command(const event&, command*)               = 0;
+    virtual bool  bind_command(const event::event_type&, command*)   = 0;
     virtual float get_time_from_init()                               = 0;
 };
 
