@@ -48,7 +48,6 @@ std::ostream& operator<<(std::ostream& out, const event& e);
 
 class ENGINE_DECLSPEC command
 {
-private:
 public:
     virtual ~command(){};
     virtual void execute(engine::object2d* obj) = 0;
