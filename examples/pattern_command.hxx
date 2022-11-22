@@ -19,7 +19,7 @@ public:
     virtual ~command_go_up(){};
     virtual void execute(engine::object2d* obj)
     {
-        obj->translate({ 0.f, 0.00001f, 0.f });
+        obj->translate({ 0.f, 0.005f, 0.f });
     }
 } command_go_up;
 
@@ -30,7 +30,7 @@ public:
     virtual ~command_go_down(){};
     virtual void execute(engine::object2d* obj)
     {
-        obj->translate({ 0.f, -0.00001f, 0.f });
+        obj->translate({ 0.f, -0.005f, 0.f });
     }
 } command_go_down;
 
@@ -59,12 +59,12 @@ command* imput_handler::handle_imput(engine::engine* engine,
             return nullptr;
         }
     }
-    if (system_event.type == event::up)
+    if (system_event.type == event::up && system_event.event_state)
     {
         // std::cout << system_event << '\n';
         return button_up;
     }
-    if (system_event.type == event::down)
+    if (system_event.type == event::down && system_event.event_state)
     {
         // std::cout << system_event << '\n';
         return button_down;

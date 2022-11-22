@@ -211,7 +211,7 @@ public:
             {
                 if (check_event(sdl_e, key_bind))
                 {
-                    e.event_state = true;
+                    e.event_state = false;
                     e.type        = key_bind->event.type;
                     e.name        = key_bind->event.name;
                     return true;
