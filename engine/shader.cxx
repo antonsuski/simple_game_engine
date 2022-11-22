@@ -141,9 +141,6 @@ shader_es_32::shader_es_32(const std::string& vs, const std::string& fs)
         GL_CHECK()
     }
 
-    glEnable(GL_DEPTH_TEST);
-    GL_CHECK()
-
     glDeleteShader(vert_shader);
     glDeleteShader(frag_shader);
 }

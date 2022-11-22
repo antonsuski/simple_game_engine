@@ -4,6 +4,12 @@ namespace engine
 {
 object2d::~object2d() {}
 
+object2d::object2d()
+    : _shader{ "../../res/shaders/default_shader_v_8.vs",
+               "../../res/shaders/default_shader_v_8.fs" }
+{
+}
+
 object2d::object2d(std::string buffer_path, std::string shader_path,
                    std::string texture_path, texture::img_format format)
     : _buffer{ buffer_path }
@@ -76,7 +82,7 @@ void object2d::translate(glm::vec3 vector)
     position = { vector.r + position.x, vector.g + position.y };
     std::clog << "pos: " << position << std::endl;
     std::clog << "vec " << vector.r << " " << vector.g << std::endl;
-    view = glm::translate(view, glm::vec3(position.x, position.y, 0));
+    view = glm::translate(view, glm::vec3(vector.r, vector.g, 0));
 }
 
 void object2d::rotate(float angle)
