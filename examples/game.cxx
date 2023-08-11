@@ -30,41 +30,16 @@ int main(int /*argc*/, char* /*argv*/[])
         event system_event;
         while (engine->handl_imput(system_event))
         {
-            switch (system_event.type)
+            if(system_event.type == event::turn_off)
             {
-                case event::turn_off:
-                {
-                    continue_loop = false;
-                    std::clog << system_event << std::endl;
-                }
-                break;
-                case event::left:
-                {
-                    std::clog << system_event << std::endl;
-                }
-                break;
-                case event::right:
-                {
-                    std::clog << system_event << std::endl;
-                }
-                break;
-                case event::up:
-                {
-                    std::clog << system_event << std::endl;
-                }
-                break;
-                case event::down:
-                {
-                    std::clog << system_event << std::endl;
-                }
-                break;
-                default:
-                    break;
+                continue_loop = false;
+                std::clog << system_event << "\n";
             }
         }
-        if (engine->is_window_on_focus())
+
+        if(engine->is_button_pushed(button::space_button))
         {
-            std::cout << "captured\n";
+            std::clog << "space_button\n";
         }
 
         v_2 win_size = engine->get_windonw_size();
