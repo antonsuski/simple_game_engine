@@ -3,6 +3,7 @@
 #include <cassert>
 #include <iomanip>
 #include <iostream>
+#include <map>
 #include <string_view>
 #include <utility>
 #include <vector>
@@ -102,6 +103,12 @@ struct bind
     }
 };
 
+struct imm_bind
+{
+    SDL_Scancode   scancode;
+    engine::button btn;
+};
+
 static const bind unknown_bind{ SDLK_UNKNOWN, engine::event::unknown,
                                 "unknown" };
 
@@ -115,6 +122,10 @@ std::array<bind, 9> key_map{ { { SDLK_a, engine::event::left, "left" },
                                { SDLK_RETURN, engine::event::start, "start" },
                                { SDLK_ESCAPE, engine::event::turn_off,
                                  "turn_off" } } };
+
+static const std::map<engine::button, SDL_Scancode> scan_map{
+    { engine::button::space_button, SDL_SCANCODE_SPACE }
+};
 
 static bool check_event(const SDL_Event& sdl_event, const bind*& engine_bind)
 {
@@ -176,7 +187,9 @@ class engine_core final : public engine
     SDL_Window*   window{ nullptr };
     SDL_GLContext gl_context{};
 
-    int32_t main_window_height{}, main_window_width{};
+    int32_t        main_window_height{}, main_window_width{};
+    int            keys_states_size;
+    const uint8_t* keys_states{ SDL_GetKeyboardState(&keys_states_size) };
 
     float mouse_coords_x, mouse_coords_y;
 
@@ -236,6 +249,12 @@ public:
         }
 
         return false;
+    }
+
+    bool is_button_pushed(const button& btn) final override
+    {
+        SDL_Scancode cs = scan_map.at(btn);
+        return keys_states[cs];
     }
 
     void update() override final {}

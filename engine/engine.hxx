@@ -17,6 +17,19 @@
 
 namespace engine
 {
+enum button
+{
+
+    w_button,
+    a_button,
+    s_button,
+    d_button,
+    q_button,
+    e_button,
+    esc_button,
+    return_button,
+    space_button,
+};
 
 class ENGINE_DECLSPEC event
 {
@@ -77,6 +90,7 @@ public:
     virtual v_2   get_mouse_coords()                                 = 0;
     virtual bool  is_window_on_focus()                               = 0;
     virtual bool  handl_imput(event&)                                = 0;
+    virtual bool  is_button_pushed(const button&)                    = 0;
     virtual bool  init(int32_t, int32_t)                             = 0;
     virtual float get_time_from_init()                               = 0;
 };
